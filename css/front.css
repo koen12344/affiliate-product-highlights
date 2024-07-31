@@ -1,0 +1,74 @@
+.phft-products-multiple {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 1rem;
+	padding-top:15px;
+	padding-bottom:15px;
+}
+
+.phft-product {
+	box-sizing: border-box;
+	padding: 1rem;
+	background-color: #fff;
+	border: 1px solid #eee;
+	flex-direction: column;
+	display: flex;
+	color:#000000;
+}
+
+	.phft-products-multiple .phft-product{
+		flex-basis: 100%; /* By default, display products in a single column */
+	}
+
+	.phft-product h3{
+		font-size:18px;
+		display:block;
+		height:9rem;
+	}
+
+	.phft-product img {
+		display:block;
+		margin:0 auto;
+		padding:10px 0;
+	}
+
+	.phft-product .phft-product-description{
+		font-size:16px;
+
+	}
+
+	.phft-product .phft-product-price{
+		width:100%;
+		text-align:center;
+		padding:10px 0;
+		font-weight:bold;
+		font-size:20px;
+		margin-top: auto;
+	}
+
+	.phft-product .phft-button-link{
+		display:block;
+		width:100%;
+		padding: 5px 0;
+		background-color:#611431;
+		color:#fff !important;
+		border-radius: 5px;
+		text-align: center;
+		text-decoration: none;
+	}
+		.phft-product .phft-button-link:hover{
+			background-color:#363636;
+		}
+/* Medium devices (tablets, 768px and up) */
+@media (min-width: 768px) {
+	.phft-products-multiple .phft-product {
+		flex-basis: calc(50% - 1rem); /* Display products in 2 columns */
+	}
+}
+
+/* Large devices (desktops, 992px and up) */
+@media (min-width: 992px) {
+	.phft-products-multiple .phft-product {
+		flex-basis: calc(33.333% - 1rem); /* Display products in 3 columns */
+	}
+}

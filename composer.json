@@ -1,0 +1,71 @@
+{
+    "name": "koen12344/affiliate-product-highlights",
+    "description": "Plugin to display products from various affiliate network product feeds in WordPress",
+    "type": "project",
+    "autoload": {
+        "psr-4": {
+            "Koen12344\\AffiliateProductHighlights\\": "src/php/"
+        },
+      "classmap": ["aph-vendor"]
+    },
+    "authors": [
+        {
+            "name": "Koen Reus",
+            "email": "koen@koenreus.com"
+        }
+    ],
+    "require": {
+        "php": ">=7.0",
+        "deliciousbrains/wp-background-processing": "^1.1.1",
+      "ext-simplexml": "*",
+      "ext-xmlreader": "*",
+      "ext-mbstring": "*",
+      "ext-dom": "*",
+      "ext-intl": "*",
+        "psr/container": "^2.0"
+    },
+    "scripts": {
+      "strauss": [
+        "/usr/local/bin/strauss"
+      ],
+      "post-install-cmd": [
+        "@strauss"
+      ],
+      "post-update-cmd": [
+        "@strauss"
+      ]
+    },
+    "extra": {
+      "strauss": {
+        "target_directory": "aph-vendor",
+        "namespace_prefix": "Koen12344\\APH_Vendor\\",
+        "classmap_prefix": "Koen12344_APH_Vendor_",
+        "constant_prefix": "APH_Vendor_",
+        "packages": [
+        ],
+        "override_autoload": {
+        },
+        "exclude_from_copy": {
+          "packages": [
+          ],
+          "namespaces": [
+          ],
+          "file_patterns": [
+          ]
+        },
+        "exclude_from_prefix": {
+          "packages": [
+          ],
+          "namespaces": [
+          ],
+          "file_patterns": [
+            "/^psr.*$/"
+          ]
+        },
+        "namespace_replacement_patterns" : {
+        },
+        "delete_vendor_packages": true,
+        "delete_vendor_files": true
+      }
+    }
+}
