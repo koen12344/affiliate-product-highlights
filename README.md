@@ -23,7 +23,6 @@ Currently supports TradeTracker and AdTraction.
 * **Fast & efficient**: Product data is stored locally, product images are sideloaded and optimized
 * **Flexible shortcode**: Show random products, specific products, search by (partial) product name
 
-
 [![Twitter URL](https://img.shields.io/twitter/url/https/twitter.com/KoenReus.svg?style=social&label=Follow%20%40KoenReus)](https://twitter.com/KoenReus)
 
 ## Installation ##
@@ -37,21 +36,18 @@ Currently supports TradeTracker and AdTraction.
 * **selection**: An ID of a selection of products generated through 'Affiliate Product Highlights' > 'Selections'
 * **limit**: The amount of products that should be displayed (default: 6)
 * **product_ids**: Display specific product IDs. Separated by a comma, e.g. 123,323,312 (currently no easy way to get these IDs apart from going into PHPMyAdmin)
-* **search**: Show only products containing this word or sentence in their title (may be inefficient with a lot of products)
+* **search**: Show only products containing this word or sentence in their title (may be inefficient with a lot of products in the database)
 * **random**: Randomize the results
 
 ## Frequently Asked Questions ##
 
 ## Screenshots ##
 
-### 1. This screen shot description corresponds to screenshot-1.(png|jpg|jpeg|gif). Note that the screenshot is taken from ###
-![This screen shot description corresponds to screenshot-1.(png|jpg|jpeg|gif). Note that the screenshot is taken from](http://ps.w.org/affiliate-product-highlights/assets/screenshot-1.png)
+### 1. Plugin in action on the frontend ###
+![Plugin in action on the frontend](assets/screenshot-1.png)
 
-the /assets directory or the directory that contains the stable readme.txt (tags or trunk). Screenshots in the /assets
-directory take precedence. For example, `/assets/screenshot-1.png` would win over `/tags/4.3/screenshot-1.png`
-(or jpg, jpeg, gif).
-### 2. This is the second screen shot ###
-![This is the second screen shot](http://ps.w.org/affiliate-product-highlights/assets/screenshot-2.png)
+### 2. Making a selection of specific products ###
+![Making a selection of specific products](assets/screenshot-2.png)
 
 
 ## Changelog ##
