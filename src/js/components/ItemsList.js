@@ -1,7 +1,7 @@
 import {useState} from "@wordpress/element";
 import {CheckboxControl, Popover} from "@wordpress/components";
-
-export default function ItemsList({ items, selection, setSelection }){
+import {__} from "@wordpress/i18n";
+export default function ItemsList({ items, isSaving, selection, setSelection }){
 
 	const [ isVisible, setVisible ] = useState({});
 	const toggleVisible = (id) => {
@@ -26,8 +26,10 @@ export default function ItemsList({ items, selection, setSelection }){
 			<thead>
 			<tr>
 				<th className="manage-column column-cb check-column"></th>
-				<th>Title</th>
-				<th>Price</th>
+				<th>ID</th>
+				<th>{__("Title", 'affiliate-product-highlights')}</th>
+				<th>{__('Price', 'affiliate-product-highlights')}</th>
+				<th>{__('Feed', 'affiliate-product-highlights')}</th>
 			</tr>
 			</thead>
 			<tbody>
@@ -36,9 +38,12 @@ export default function ItemsList({ items, selection, setSelection }){
 					<td><CheckboxControl
 						onChange={ (checked)=>handleCheckbox(checked, item.id) }
 						checked={ selection[item.id] === true }
+						disabled={isSaving}
 					/></td>
+					<td>{item.id}</td>
 					<td><a href="#" onMouseOut={() => toggleVisible(item.id)} onMouseEnter={ () => toggleVisible(item.id) }>{item.product_name}</a>{ isVisible[item.id] && <Popover><img src={item.image_url} width={200} /></Popover> }</td>
 					<td>{item.product_price}</td>
+					<td></td>
 				</tr>
 			))}
 			</tbody>

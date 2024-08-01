@@ -3,7 +3,9 @@ import {useEffect, useState} from "@wordpress/element";
 import apiFetch from '@wordpress/api-fetch';
 import {SearchControl, TextControl} from "@wordpress/components";
 import {addQueryArgs} from "@wordpress/url";
-import {useDebounce, usePrevious} from "@wordpress/compose";
+import {useDebounce, usePrevious, useCopyToClipboard} from "@wordpress/compose";
+import {__} from "@wordpress/i18n";
+
 
 const { selection_id } = psfg_localize_metabox;
 
@@ -16,6 +18,8 @@ export default function SelectionMetabox(){
 
 	const [selection, setSelection ] = useState({});
 
+	const [isSaving, setSaving] = useState(false);
+
 	const loadItems = () => {
 		apiFetch({path: addQueryArgs('/phft/v1/items', {
 				'search': searchTerm,
@@ -25,7 +29,15 @@ export default function SelectionMetabox(){
 				setItems(data);
 			});
 	}
+
+	const saveSelection = () => {
+		setSaving(true);
+		apiFetch({path:'/phft/v1/selection', method:'POST', data: {'selection_id': selection_id, 'selection': selection}}).finally(()=> setSaving(false));
+	}
+
 	const debouncedFetchData  = useDebounce(loadItems, 500);
+
+	const debouncedSaveSelection = useDebounce(saveSelection, 500);
 
 	useEffect(() => {
 		if(prevSearchTerm === undefined){
@@ -35,19 +47,20 @@ export default function SelectionMetabox(){
 		}
 	}, [searchTerm]);
 
-	const saveSelection = () => {
-		apiFetch({path:'/phft/v1/selection', method:'POST', data: {'selection_id': selection_id, 'selection': selection}}).finally();
+	useEffect(() => {
+		debouncedSaveSelection();
+	}, [selection]);
+	const updateSelection = (selection) => {
+		setSelection(selection);
+		// debouncedSaveSelection();
 	}
 
-	useEffect(() => {
-		saveSelection();
-	}, [selection]);
-
 
 	useEffect(() => {
+		setSaving(true);
 		apiFetch({path:addQueryArgs('/phft/v1/selection', {'selection_id': selection_id})}).then((data) =>{
 			setSelection({...selection, ...data});
-		});
+		}).finally(() => setSaving(false));
 	}, []);
 
 	return (
@@ -56,10 +69,10 @@ export default function SelectionMetabox(){
 				onChange={ setSearchTerm }
 				value={ searchTerm }
 			/>
-			<ItemsList items={ items } selection={selection} setSelection={setSelection}/>
+			<ItemsList items={ items } isSaving={isSaving} selection={selection} setSelection={updateSelection}/>
 			<br />
 			<TextControl
-				label="Shortcode"
+				label={__('Shortcode', 'affiliate-product-highlights')}
 				value={"[product-highlights selection=" + selection_id + "]"}
 				disabled={true}
 			/>

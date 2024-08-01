@@ -1,6 +1,6 @@
 {
   "name": "affiliate-product-highlights",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "main": "Gruntfile.js",
   "author": "Koen Reus",
   "scripts": {
@@ -20,6 +20,7 @@
     "@wordpress/components": "^25.14.0",
     "@wordpress/compose": "^6.25.0",
     "@wordpress/element": "^5.25.0",
+    "@wordpress/i18n": "^5.4.0",
     "@wordpress/scripts": "^27.0.0",
     "@wordpress/url": "^3.49.0"
   }

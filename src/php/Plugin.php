@@ -15,7 +15,7 @@ class Plugin {
 
 	const DOMAIN = 'affiliate-product-highlights';
 
-	const VERSION = '0.1.0';
+	const VERSION = '0.1.1';
 
 	const REST_NAMESPACE = 'phft/v1';
 
@@ -95,6 +95,7 @@ class Plugin {
         sku varchar(255) DEFAULT NULL,
         product_name varchar(255) NOT NULL,
         product_price DECIMAL(10,2) NOT NULL DEFAULT '0.00',
+        product_original_price DECIMAL(10,2) NOT NULL DEFAULT '0.00',
         product_currency varchar(3) NOT NULL,
 		product_url varchar(255) NOT NULL,
 	 	product_description TEXT,
@@ -226,15 +227,22 @@ class Plugin {
 			'feed_id' => null,
 			'search' => null,
 			'random' => null,
+			'selection' => null,
 		], $atts, 'product-highlights');
 
 		$query = "SELECT p.*, i.image_url, i.wp_media_id, i.id AS image_id FROM {$wpdb->prefix}phft_products p LEFT JOIN {$wpdb->prefix}phft_images i ON p.id = i.product_id";
 		$params = [];
 
+		if(!is_null($atts['selection'])){
+			$item_selection = get_post_meta((int)$atts['selection'], '_phft_item_selection', true);
+			$ids = array_keys($item_selection);
+			$atts['product_ids'] = implode(',', $ids);
+		}
+
 		if(!is_null($atts['product_ids'])){
 			$product_ids = explode(',', $atts['product_ids']);
 			$placeholders = implode(',', array_fill(0, count($product_ids), '%d'));
-			$query .= " WHERE p.product_id IN ({$placeholders})";
+			$query .= " WHERE p.id IN ({$placeholders})";
 			$params = array_merge($params, $product_ids);
 		}
 
@@ -294,7 +302,9 @@ class Plugin {
 		$fmt = numfmt_create( $locale, NumberFormatter::CURRENCY );
 		$product_url = esc_url(home_url('/phft/' . urlencode($product->slug)));
 
-		$output = '<div class="phft-product">';
+		$has_sale = $product->product_original_price > $product->product_price;
+
+		$output = '<div class="phft-product'.($has_sale ? ' phft-sale-product' : '').'">';
 		$output .= '<a target="_blank" rel="nofollow noopener sponsored" href="'.$product_url.'"><h3>'.mb_strimwidth(esc_html($product->product_name), 0, 70, '...').'</h3></a>';
 		if (!empty($product->images)) {
 			$output .= '<div class="phft-product-image">';
@@ -302,7 +312,7 @@ class Plugin {
 			$output .= '</div>';
 		}
 		$output .= '<div class="phft-product-description">'. mb_strimwidth(wp_strip_all_tags($product->product_description), 0, 160, '...').'</div>';
-		$output .= '<div class="phft-product-price">'.numfmt_format_currency($fmt, $product->product_price, $product->product_currency).'</div>';
+		$output .= '<div class="phft-product-price">'.numfmt_format_currency($fmt, $product->product_price, $product->product_currency).($has_sale ? '<span class="phft-original-price">'.numfmt_format_currency($fmt, $product->product_original_price, $product->product_currency).'</span>':'').'</div>';
 		$output .= '<a class="phft-button-link" target="_blank" rel="nofollow noopener sponsored" href="'.$product_url.'">'.esc_html__('View').'</a>';
 		$output .= '</div>';
 

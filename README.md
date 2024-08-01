@@ -5,7 +5,7 @@
 **Requires at least:** 5.1  
 **Tested up to:** 6.6.1  
 **Requires PHP:** 7.0  
-**Stable tag:** 0.1.0  
+**Stable tag:** 0.1.1  
 **License:** GPLv2 or later  
 **License URI:** https://www.gnu.org/licenses/gpl-2.0.html  
 
@@ -16,12 +16,18 @@ A beautiful way to display products from affiliate network product feeds on your
 With the **Affiliate Product Highlights** plugin for WordPress you can create beautiful in-content sections showing relevant
 products from product feeds of various affiliate networks.
 
-Currently supports TradeTracker and AdTraction.
+Networks currently supported:
+* AdTraction
+* TradeTracker
+
+**Features:**
 
 * **Automatic product feed import**: Product feeds are updated daily for up-to-date pricing and product availability
 * **Cloaked links**: Affiliate links are redirected through your own website URL
 * **Fast & efficient**: Product data is stored locally, product images are sideloaded and optimized
 * **Flexible shortcode**: Show random products, specific products, search by (partial) product name
+
+See the plugin in action [here](https://projectplatenspelers.nl/).
 
 [![Twitter URL](https://img.shields.io/twitter/url/https/twitter.com/KoenReus.svg?style=social&label=Follow%20%40KoenReus)](https://twitter.com/KoenReus)
 
@@ -32,12 +38,37 @@ Currently supports TradeTracker and AdTraction.
 1. Add one or more affiliate product feeds through 'Affiliate Product Highlights' > 'Feeds'
 1. Place the [product-highlights] shortcode wherever you want to display your affiliate products using attributes below
 
-**Supported shortcode attributes:**
-* **selection**: An ID of a selection of products generated through 'Affiliate Product Highlights' > 'Selections'
-* **limit**: The amount of products that should be displayed (default: 6)
-* **product_ids**: Display specific product IDs. Separated by a comma, e.g. 123,323,312 (currently no easy way to get these IDs apart from going into PHPMyAdmin)
-* **search**: Show only products containing this word or sentence in their title (may be inefficient with a lot of products in the database)
-* **random**: Randomize the results
+### Supported shortcode attributes
+
+* `selection`: An ID of a selection of products generated through 'Affiliate Product Highlights' > 'Selections'
+* `limit`: The amount of products that should be displayed (default: 6)
+* `product_ids`: Display specific product IDs. Separated by a comma, e.g. 123,323,312 (currently no easy way to get these IDs apart from going into PHPMyAdmin)
+* `search`: Show only products containing this word or sentence in their title (may be inefficient with a lot of products in the database)
+* `random`: Randomize the results
+
+#### Examples
+
+* `[product-highlights selection=107]`: Show products from the selection with ID 107
+* `[product-highlights selection=107 limit=1 random=1]`: Show a single random product from the selection with ID 107
+* `[product-highlights product_ids="2304,2306,2307,665"]`: Show products with specific IDs
+
+### Styling
+
+The plugin comes with minimal styling that can be easily adjusted with some custom CSS.
+
+* `phft-products-multiple` (div): Wrapper class around all products (if the `limit` parameter is higher than 1)
+* `phft-product` (div): Product wrapper class
+* `phft-product-image` (div): Product image wrapper (contains a > img)
+* `phft-product-description` (div)
+* `phft-product-price` (div)
+* `phft-button-link` (a): The call-to-action button
+
+Colors can be adjusted by overriding the default CSS variables:
+
+* `--phft-button-text-color`: Button text color (default: #fff)
+* `--phft-button-background-color`: Button background color (default: #611431)
+* `--phft-button-hover-color`: Button hover color (default: #363636)
+* `--phft-product-border-color`: Color for the border around the individual products
 
 ## Frequently Asked Questions ##
 
@@ -51,6 +82,13 @@ Currently supports TradeTracker and AdTraction.
 
 
 ## Changelog ##
+
+### 0.1.1 ###
+* Added: Product ID and Feed in selection section
+* Added: AdTraction sale price
+* Fix: product_ids parameter
+* Fix: selection logic
+* Fix: AdTraction prices above 999
 
 ### 0.1.0 ###
 * Initial public alpha release
