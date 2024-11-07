@@ -2,7 +2,11 @@
 
 namespace Koen12344\AffiliateProductHighlights\BackgroundProcessing;
 
-use Koen12344\AffiliateProductHighlights\Provider\AdTraction\ProductMapping;
+use Exception;
+use InvalidArgumentException;
+use Koen12344\AffiliateProductHighlights\Provider\AdTraction\ProductMapping as AdtractionProductMapping;
+use Koen12344\AffiliateProductHighlights\Provider\Daisycon\ProductMapping as DaisyconProductMapping;
+use Koen12344\AffiliateProductHighlights\Provider\TradeTracker\ProductMapping as TradeTrackerProductMapping;
 use SimpleXMLElement;
 use WP_Http;
 use XMLReader;
@@ -55,7 +59,7 @@ class BackgroundProcess extends \Koen12344_APH_Vendor_WP_Background_Process {
 
 	public function download_xml_file($url) {
 		if (filter_var($url, FILTER_VALIDATE_URL) === false) {
-			return false;
+			throw new InvalidArgumentException(__('Invalid feed URL', 'affiliate-product-highlights'));
 		}
 
 		if(!function_exists('wp_tempnam')){
@@ -66,7 +70,7 @@ class BackgroundProcess extends \Koen12344_APH_Vendor_WP_Background_Process {
 		$handle = fopen($tmp_file, 'w');
 
 		if ($handle === false) {
-			return false;
+			throw new Exception(__('Unable to to get write access to store temporary file.', 'affiliate-product-highlights'));
 		}
 
 		$http = new WP_Http();
@@ -79,7 +83,7 @@ class BackgroundProcess extends \Koen12344_APH_Vendor_WP_Background_Process {
 		if (is_wp_error($response)) {
 			@fclose($handle);
 			@unlink($tmp_file);
-			return false;
+			throw new Exception(sprintf(__('Unable to download the feed: %s', 'affiliate-product-highlights'), $response->get_error_message()));
 		}
 
 		fclose($handle);
@@ -93,7 +97,7 @@ class BackgroundProcess extends \Koen12344_APH_Vendor_WP_Background_Process {
 		$reader->open($file);
 
 		while ($reader->read()) {
-			if ($reader->nodeType == XMLReader::ELEMENT && $reader->name == 'product') {
+			if ($reader->nodeType == XMLReader::ELEMENT && ($reader->name === 'product' || $reader->name === 'product_info')) {
 				$product = new SimpleXMLElement($reader->readOuterXML());
 
 				if($feed_type == 'tradetracker'){
@@ -103,14 +107,21 @@ class BackgroundProcess extends \Koen12344_APH_Vendor_WP_Background_Process {
 						(int)$product->campaignID,
 						$feed_id
 					));
-					$mapped_product = new \Koen12344\AffiliateProductHighlights\Provider\TradeTracker\ProductMapping($product);
+					$mapped_product = new TradeTrackerProductMapping($product);
 				}elseif($feed_type == 'adtraction'){
 					$existing_product = $wpdb->get_row($wpdb->prepare(
 						"SELECT * FROM " . $wpdb->prefix . 'phft_products' . " WHERE sku = %s AND feed_id = %d",
 						(string)$product->SKU,
 						$feed_id
 					));
-					$mapped_product = new ProductMapping($product);
+					$mapped_product = new AdtractionProductMapping($product);
+				}elseif($feed_type == 'daisycon'){
+					$existing_product = $wpdb->get_row($wpdb->prepare(
+						"SELECT * FROM " . $wpdb->prefix . 'phft_products' . " WHERE sku = %s AND feed_id = %d",
+						(string)$product->sku,
+						$feed_id
+					));
+					$mapped_product = new DaisyconProductMapping($product);
 				}else{
 					break;
 				}
@@ -132,29 +143,30 @@ class BackgroundProcess extends \Koen12344_APH_Vendor_WP_Background_Process {
 				} else {
 					$product_slug = sanitize_title($product_data['product_name']);
 					$product_data['slug'] = $product_slug;
-					$inserted = false;
 					$suffix = 1;
 
-					while(!$inserted){
+					while($suffix <= 20){ //Try 20 times then bail
 						$result = @$wpdb->insert($wpdb->prefix . 'phft_products', $product_data);
-						if($result){
-							$inserted = true;
-						}else{
-							if($wpdb->last_error && strpos($wpdb->last_error, 'Duplicate entry') !== false){
-								$product_data['slug'] = $product_slug . '-' . $suffix;
-								$suffix++;
-							}else{
-								break;
-							}
+						if($result) {
+							break;
 						}
 
+						if($wpdb->last_error && strpos($wpdb->last_error, "for key 'slug_unique'") !== false){
+							$product_data['slug'] = $product_slug . '-' . $suffix;
+							$suffix++;
+							continue;
+						}
+
+						break;
 					}
 
 
 					$inserted_id = $wpdb->insert_id;
 				}
+				if($inserted_id > 0){
+					$this->import_images($feed_id, (int)$inserted_id, $mapped_product->get_product_images());
+				}
 
-				$this->import_images($feed_id, (int)$inserted_id, $mapped_product->get_product_images());
 			}
 		}
 
@@ -174,7 +186,7 @@ class BackgroundProcess extends \Koen12344_APH_Vendor_WP_Background_Process {
 
 		$output_xml = new SimpleXMLElement('<products/>');
 		while($reader->read()){
-			if ($reader->nodeType == XMLReader::ELEMENT && $reader->name === 'product') {
+			if ($reader->nodeType == XMLReader::ELEMENT && ($reader->name === 'product' || $reader->name === 'product_info')) {
 				$product = new SimpleXMLElement($reader->readOuterXML());
 				$node = dom_import_simplexml($output_xml->addChild('product'));
 				$node->parentNode->replaceChild($node->ownerDocument->importNode(dom_import_simplexml($product), true), $node);
@@ -223,13 +235,24 @@ class BackgroundProcess extends \Koen12344_APH_Vendor_WP_Background_Process {
 
 		$xml_url = get_post_meta($item['feed_id'], '_phft_feed_url', true);
 
-		$temp_file = $this->download_xml_file($xml_url);
+		$network = $this->get_affiliate_network($xml_url);
+		if(!$network){
+			update_post_meta($item['feed_id'], '_phft_last_error', __('The affiliate network this feed belongs to is unrecognized'));
+			return false;
+		}
 
-		update_post_meta($item['feed_id'], '_phft_last_import', time());
+		try{
+			$temp_file = $this->download_xml_file($xml_url);
+		}catch (Exception $e){
+			update_post_meta($item['feed_id'], '_phft_last_error', $e->getMessage());
+			return false;
+		}
 
 		$item['action'] = 'split_feed';
-		$item['feed_type'] = $this->get_affiliate_network($xml_url);
+		$item['feed_type'] = $network;
 		$item['temp_file'] = $temp_file;
+
+		update_post_meta($item['feed_id'], '_phft_last_import', time());
 
 		return $item;
 	}
@@ -249,8 +272,9 @@ class BackgroundProcess extends \Koen12344_APH_Vendor_WP_Background_Process {
 
 
 	    $networks = [
-	        'adtraction' => 'adtraction.com',
-	        'tradetracker' => 'tradetracker.net',
+	        'adtraction'        => 'adtraction.com',
+	        'tradetracker'      => 'tradetracker.net',
+		    'daisycon'          => 'daisycon.io',
 	    ];
 
 
@@ -260,6 +284,6 @@ class BackgroundProcess extends \Koen12344_APH_Vendor_WP_Background_Process {
 	        }
 		}
 
-		return 'unknown';
+		return false;
 	}
 }

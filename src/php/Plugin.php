@@ -15,7 +15,7 @@ class Plugin {
 
 	const DOMAIN = 'affiliate-product-highlights';
 
-	const VERSION = '0.1.1';
+	const VERSION = '0.2.0';
 
 	const REST_NAMESPACE = 'phft/v1';
 
@@ -57,6 +57,8 @@ class Plugin {
 
 		add_shortcode('product-highlights', [$this, 'display_products_shortcode']);
 
+		add_shortcode('phft-link', [$this, 'product_link_shortcode']);
+
 		add_action('init', function(){
 			add_rewrite_rule('^phft/([^/]+)/?$', 'index.php?phft_product=$matches[1]', 'top');
 			add_rewrite_tag('%phft_product%', '([^/]+)');
@@ -80,14 +82,14 @@ class Plugin {
 
 		global $wpdb;
 
-		// Set the table name
 		$products_table = $wpdb->prefix . 'phft_products';
 
-		// Set the character set and collation for the table
+		$images_table = $wpdb->prefix.'phft_images';
+
 		$charset_collate = $wpdb->get_charset_collate();
 
 		// Define the table schema
-		$products_sql = "CREATE TABLE $products_table (
+		$sql = "CREATE TABLE $products_table (
         id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
         feed_id bigint(20) UNSIGNED NOT NULL,
         campaign_id bigint(20) UNSIGNED DEFAULT NULL,
@@ -109,12 +111,7 @@ class Plugin {
         KEY product_name_idx (product_name)
     ) $charset_collate;";
 
-		// Create or update the table using dbDelta
-		dbDelta($products_sql);
-
-		$images_table = $wpdb->prefix.'phft_images';
-
-		$images_sql  = "CREATE TABLE $images_table (
+		$sql  .= "CREATE TABLE $images_table (
     		id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
     		feed_id bigint(20) UNSIGNED NOT NULL,
     		product_id bigint(20) UNSIGNED NOT NULL,
@@ -122,10 +119,11 @@ class Plugin {
     		wp_media_id bigint(20) UNSIGNED NOT NULL,
     		imported_at datetime NOT NULL,
     		PRIMARY KEY  (id),
+    		FOREIGN KEY (product_id) REFERENCES $products_table(id) ON DELETE CASCADE,
     		KEY image_url_idx (image_url)
 		) $charset_collate;";
 
-		dbDelta($images_sql);
+		dbDelta($sql);
 
 		if(!wp_next_scheduled('phft_update_feeds')){
 			wp_schedule_event(time(), 'daily', 'phft_update_feeds');
@@ -136,6 +134,20 @@ class Plugin {
 
 	public static function deactivate(){
 
+	}
+
+	public static function uninstall(){
+		global $wpdb;
+
+		//Delete all sideloaded media
+		$wp_media = $wpdb->get_results("SELECT wp_media_id FROM {$wpdb->prefix}phft_images WHERE wp_media_id > 0");
+		if($wp_media){
+			foreach($wp_media as $media){
+				wp_delete_attachment($media->wp_media_id, true);
+			}
+		}
+
+		$wpdb->query("DROP TABLE IF EXISTS {$wpdb->prefix}phft_images,{$wpdb->prefix}phft_products");
 	}
 
 	public function is_loaded(): bool {
@@ -300,7 +312,7 @@ class Plugin {
 	public function draw_product($product){
 		$locale = get_locale();
 		$fmt = numfmt_create( $locale, NumberFormatter::CURRENCY );
-		$product_url = esc_url(home_url('/phft/' . urlencode($product->slug)));
+		$product_url = esc_url(trailingslashit(home_url('/phft/' . urlencode($product->slug))));
 
 		$has_sale = $product->product_original_price > $product->product_price;
 
@@ -319,6 +331,26 @@ class Plugin {
 		return $output;
 	}
 
+
+	public function product_link_shortcode($atts, $content){
+		global $wpdb;
+
+		$atts = shortcode_atts([
+			'product_id' => null,
+		], $atts, 'phft-link');
+
+		if($atts['product_id'] === null){
+			return $content;
+		}
+
+		$product_id = $atts['product_id'];
+
+		$product = $wpdb->get_row($wpdb->prepare("SELECT * FROM {$wpdb->prefix}phft_products WHERE id = %d", $product_id));
+
+		$product_url = esc_url(trailingslashit(home_url('/phft/' . urlencode($product->slug))));
+
+		return '<a target="_blank" rel="nofollow noopener sponsored" href="'.$product_url.'">'.$content.'</a>';
+	}
 
 	public function save_feed_metabox($post_id, $post, $update){
 		if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) {
@@ -346,8 +378,6 @@ class Plugin {
 
 		global $wpdb;
 
-		$wpdb->query($wpdb->prepare("DELETE FROM {$wpdb->prefix}phft_products WHERE feed_id = %d", $post_id));
-
 		$wp_media = $wpdb->get_results($wpdb->prepare("SELECT wp_media_id FROM {$wpdb->prefix}phft_images WHERE feed_id = %d AND wp_media_id > 0", $post_id));
 
 		if($wp_media){
@@ -356,8 +386,7 @@ class Plugin {
 			}
 		}
 
-
-		$wpdb->query($wpdb->prepare("DELETE FROM {$wpdb->prefix}phft_images WHERE feed_id = %d", $post_id));
+		$wpdb->query($wpdb->prepare("DELETE FROM {$wpdb->prefix}phft_products WHERE feed_id = %d", $post_id));
 	}
 
 

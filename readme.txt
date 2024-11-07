@@ -5,11 +5,11 @@ Tags: tradetracker, adtraction, affiliate, feed, products
 Requires at least: 5.1
 Tested up to: 6.6.1
 Requires PHP: 7.0
-Stable tag: 0.1.1
+Stable tag: 0.2.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-A beautiful way to display products from affiliate network product feeds on your website. Currently supports TradeTracker and AdTraction.
+A beautiful way to display products from affiliate network product feeds on your website. Currently supports Daisycon, TradeTracker and AdTraction.
 
 == Description ==
 
@@ -19,6 +19,7 @@ products from product feeds of various affiliate networks.
 Networks currently supported:
 * AdTraction
 * TradeTracker
+* Daisycon
 
 **Features:**
 
@@ -78,6 +79,12 @@ Colors can be adjusted by overriding the default CSS variables:
 2. Making a selection of specific products
 
 == Changelog ==
+
+= 0.2.0 =
+* Added: Uninstall function
+* Added: Daisycon support
+* Added: Shortcode for direct links to products
+* Improved: SQL logic
 
 = 0.1.1 =
 * Added: Product ID and Feed in selection section

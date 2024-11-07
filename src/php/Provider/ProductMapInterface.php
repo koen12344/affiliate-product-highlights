@@ -15,7 +15,6 @@ interface ProductMapInterface {
 	 * Get normalized array mapping.
 	 *
 	 * @return array:
-	 *                 - 'feed_id': int
 	 *                 - 'campaign_id': int|null
 	 *                 - 'product_id': int|null
 	 *                 - 'sku': string|null
@@ -25,7 +24,6 @@ interface ProductMapInterface {
 	 *                 - 'product_url': string
 	 *                 - 'product_description': string
 	 *                 - 'product_ean': string|null
-	 *                 - 'imported_at': string (datetime in 'Y-m-d H:i:s' format)
 	 */
 	public function get_product_mapping(): array;
 

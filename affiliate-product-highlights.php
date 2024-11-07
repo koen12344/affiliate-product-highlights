@@ -7,7 +7,7 @@
  * Author URI:      https://koenreus.com
  * Text Domain:     affiliate-product-highlights
  * Domain Path:     /languages
- * Version:         0.1.1
+ * Version:         0.2.0
  *
  * @package         Affiliate_Product_Highlights
  */
@@ -18,6 +18,7 @@ require 'vendor/autoload.php';
 
 register_activation_hook(__FILE__, ['Koen12344\AffiliateProductHighlights\Plugin', 'activate']);
 register_deactivation_hook(__FILE__, ['Koen12344\AffiliateProductHighlights\Plugin', 'deactivate']);
+register_uninstall_hook(__FILE__, ['Koen12344\AffiliateProductHighlights\Plugin', 'uninstall']);
 
 $affiliate_product_highlights = new Plugin(__FILE__);
 
