@@ -94,7 +94,9 @@ class BackgroundProcess extends \Koen12344_APH_Vendor_WP_Background_Process {
 		global $wpdb;
 
 		$reader = new XMLReader();
-		$reader->open($file);
+		if(!$reader->open($file)){
+			return; //Todo: better error reporting for this
+		}
 
 		while ($reader->read()) {
 			if ($reader->nodeType == XMLReader::ELEMENT && ($reader->name === 'product' || $reader->name === 'product_info')) {
@@ -181,7 +183,9 @@ class BackgroundProcess extends \Koen12344_APH_Vendor_WP_Background_Process {
 		}
 
 		$reader = new XMLReader();
-		$reader->open($temp_file);
+		if(!$reader->open($temp_file)){
+			return false; //todo: better error reporting for this
+		}
 		$product_counter = 0;
 
 		$output_xml = new SimpleXMLElement('<products/>');
