@@ -32,7 +32,9 @@ class GetItemsEndpoint implements EndpointInterface {
 	public function respond( WP_REST_Request $request ) {
 		$search_term_raw = $request->get_param('search');
 
+		$json_params = $request->get_json_params();
 
+		$selection = $json_params['selection'];
 
 		$search_term = $this->wpdb->esc_like( $search_term_raw );
 		$where_clause = '';
@@ -45,14 +47,18 @@ class GetItemsEndpoint implements EndpointInterface {
 		$filters = $request->get_param('filters');
 		if(!empty($filters)) {
 			foreach ($filters as $filter) {
-				if($filter['field'] === 'in_selection' && wp_validate_boolean($filter['value'])){
-					$json_params = $request->get_json_params();
+				if($filter['field'] === 'in_selection'){
 
-					$selection = $json_params['selection'];
+					$include = wp_validate_boolean($filter['value']);
 
 					$ids = implode(',', array_keys($selection));
 
-					$where_clause = " WHERE p.id IN (" . $ids . ")";
+					if($include) {
+						$where_clause = " WHERE p.id IN (" . $ids . ")";
+					}else{
+						$where_clause = " WHERE p.id NOT IN (" . $ids . ")";
+					}
+
 
 				}
 			}
@@ -101,6 +107,8 @@ class GetItemsEndpoint implements EndpointInterface {
 			$result->product_price = numfmt_format_currency( $fmt, $result->product_price, $result->product_currency );
 			$result->feed_name     = $feeds_by_id[ $result->feed_id ]->post_title ?? '';
 			$result->feed_url      = get_edit_post_link( $result->feed_id, null );
+			$result->product_description = wp_trim_words(wp_strip_all_tags( $result->product_description ), 15);
+			$result->in_selection = array_key_exists($result->id, $selection);
 		}
 
 		$total_pages = (int) ceil( $total_items / $per_page );

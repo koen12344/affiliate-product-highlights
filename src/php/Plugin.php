@@ -16,7 +16,7 @@ class Plugin {
 
 	const DOMAIN = 'affiliate-product-highlights';
 
-	const VERSION = '0.3.1';
+	const VERSION = '0.3.2';
 
 	const REST_NAMESPACE = 'phft/v1';
 
@@ -76,8 +76,16 @@ class Plugin {
 		add_action('template_redirect', function(){
 			$product_slug = get_query_var('phft_product');
 			if($product_slug){
-				global $wpdb;
-				$product = $wpdb->get_row($wpdb->prepare("SELECT * FROM {$wpdb->prefix}phft_products WHERE slug = %s", $product_slug));
+				$cache_key = 'phft_product_' . md5($product_slug);
+				$product = wp_cache_get($cache_key, 'phft');
+				if ($product === false) {
+					global $wpdb;
+					$product = $wpdb->get_row($wpdb->prepare("SELECT product_url FROM {$wpdb->prefix}phft_products WHERE slug = %s", $product_slug));
+					if ($product) {
+						wp_cache_set($cache_key, $product, 'phft', 3600*24);
+					}
+				}
+
 				if($product){
 					wp_redirect($product->product_url, 302);
 					exit;

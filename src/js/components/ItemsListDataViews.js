@@ -18,9 +18,9 @@ export default function ItemsListDataViews( { itemSelection, setItemSelection })
 		{
 			id: 'in_selection',
 			label: 'In selection',
-			getValue: ({item}) => true,
+			// getValue: ({ item }) => !!selection[item.id],
 			render: ( { item } ) => (
-				<Icon icon={ check } />
+				!!itemSelection[item.id] && <Icon icon={ check } />
 			),
 			enableHiding: true,
 			elements: [
@@ -132,6 +132,21 @@ export default function ItemsListDataViews( { itemSelection, setItemSelection })
 				});
 				setItemSelection({...itemSelection, ...itemstoAdd});
 				console.log(itemSelection);
+			},
+		},
+		{
+			id: 'remove-from-selection',
+			label: __( 'Remove from selection' ),
+			isPrimary: true,
+			icon: 'minus',
+			supportsBulk: true,
+			callback: ( selectedItems ) => {
+				const newSelection = { ...itemSelection };
+				selectedItems.forEach( ( item ) => {
+					delete newSelection[item.id];
+				});
+				setItemSelection(newSelection);
+				console.log(newSelection);
 			},
 		},
 	];
