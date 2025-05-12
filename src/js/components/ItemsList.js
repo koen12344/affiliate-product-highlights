@@ -1,6 +1,7 @@
 import {useState} from "@wordpress/element";
 import {CheckboxControl, Popover} from "@wordpress/components";
 import {__} from "@wordpress/i18n";
+
 export default function ItemsList({ items, isSaving, selection, setSelection }){
 
 	const [ isVisible, setVisible ] = useState({});
@@ -43,7 +44,7 @@ export default function ItemsList({ items, isSaving, selection, setSelection }){
 					<td>{item.id}</td>
 					<td><a href="#" onMouseOut={() => toggleVisible(item.id)} onMouseEnter={ () => toggleVisible(item.id) }>{item.product_name}</a>{ isVisible[item.id] && <Popover><img src={item.image_url} width={200} /></Popover> }</td>
 					<td>{item.product_price}</td>
-					<td></td>
+					<td><a href={item.feed_url}>{item.feed_name}</a></td>
 				</tr>
 			))}
 			</tbody>

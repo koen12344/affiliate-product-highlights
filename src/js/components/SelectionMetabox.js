@@ -5,6 +5,7 @@ import {SearchControl, TextControl} from "@wordpress/components";
 import {addQueryArgs} from "@wordpress/url";
 import {useDebounce, usePrevious, useCopyToClipboard} from "@wordpress/compose";
 import {__} from "@wordpress/i18n";
+import ItemsListDataViews from "./ItemsListDataViews";
 
 
 const { selection_id } = psfg_localize_metabox;
@@ -26,7 +27,7 @@ export default function SelectionMetabox(){
 			})
 		})
 			.then(data => {
-				setItems(data);
+				setItems(data.items);
 			});
 	}
 
@@ -38,14 +39,14 @@ export default function SelectionMetabox(){
 	const debouncedFetchData  = useDebounce(loadItems, 500);
 
 	const debouncedSaveSelection = useDebounce(saveSelection, 500);
-
-	useEffect(() => {
-		if(prevSearchTerm === undefined){
-			loadItems();
-		}else{
-			debouncedFetchData();
-		}
-	}, [searchTerm]);
+	//
+	// useEffect(() => {
+	// 	if(prevSearchTerm === undefined){
+	// 		loadItems();
+	// 	}else{
+	// 		debouncedFetchData();
+	// 	}
+	// }, [searchTerm]);
 
 	useEffect(() => {
 		debouncedSaveSelection();
@@ -65,11 +66,12 @@ export default function SelectionMetabox(){
 
 	return (
 		<>
-			<SearchControl
-				onChange={ setSearchTerm }
-				value={ searchTerm }
-			/>
-			<ItemsList items={ items } isSaving={isSaving} selection={selection} setSelection={updateSelection}/>
+			{/*<SearchControl*/}
+			{/*	onChange={ setSearchTerm }*/}
+			{/*	value={ searchTerm }*/}
+			{/*/>*/}
+			{/*<ItemsList items={ items } isSaving={isSaving} selection={selection} setSelection={updateSelection}/>*/}
+			<ItemsListDataViews itemSelection={ selection } setItemSelection={ setSelection }/>
 			<br />
 			<TextControl
 				label={__('Shortcode', 'affiliate-product-highlights')}

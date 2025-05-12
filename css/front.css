@@ -6,12 +6,11 @@
 }
 
 .phft-products-multiple {
-	display: flex;
-	flex-wrap: wrap;
-	gap: 1rem;
 	padding-top:15px;
 	padding-bottom:15px;
-	justify-content: space-between;
+	display: grid;
+	gap: 10px;
+	grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
 }
 
 .phft-product {
@@ -22,14 +21,17 @@
 	display: flex;
 }
 
-	.phft-products-multiple .phft-product{
-		flex-basis: 100%; /* By default, display products in a single column */
-	}
 
 	.phft-product h3{
-		font-size:18px;
-		display:block;
-		height:2rem;
+		font-size: 18px;
+		margin-bottom: 10px;
+		display: -webkit-box; /* Enables the clamping behavior */
+		-webkit-line-clamp: 2; /* Limits to 2 lines */
+		-webkit-box-orient: vertical; /* Sets the box orientation */
+		overflow: hidden; /* Hides overflowing text */
+		text-overflow: ellipsis; /* Adds the ... for overflowing text */
+		height: 3em; /* Ensures consistent height (2 lines at font-size of 18px) */
+		line-height: 1.5em; /* Adjust line spacing to match the height */
 	}
 
 	.phft-product img {
@@ -78,16 +80,3 @@
 		.phft-product .phft-button-link:hover{
 			background-color:var(--phft-button-hover-color);
 		}
-/* Medium devices (tablets, 768px and up) */
-@media (min-width: 768px) {
-	.phft-products-multiple .phft-product {
-		flex-basis: calc(50% - 1rem); /* Display products in 2 columns */
-	}
-}
-
-/* Large devices (desktops, 992px and up) */
-@media (min-width: 992px) {
-	.phft-products-multiple .phft-product {
-		flex-basis: calc(33.333% - 1rem); /* Display products in 3 columns */
-	}
-}

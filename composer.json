@@ -14,15 +14,22 @@
             "email": "koen@koenreus.com"
         }
     ],
+    "repositories": [
+      {
+        "type": "vcs",
+        "url": "https://github.com/koen12344/multisite-background-processing"
+      }
+    ],
     "require": {
         "php": ">=7.0",
-        "deliciousbrains/wp-background-processing": "^1.1.1",
+        "deliciousbrains/wp-background-processing": "dev-multisite-fix",
       "ext-simplexml": "*",
       "ext-xmlreader": "*",
       "ext-mbstring": "*",
       "ext-dom": "*",
       "ext-intl": "*",
-        "psr/container": "^2.0"
+        "psr/container": "^2.0",
+        "koen12344/github-plugin-updater": "dev-main"
     },
     "scripts": {
       "strauss": [
@@ -67,5 +74,7 @@
         "delete_vendor_packages": true,
         "delete_vendor_files": true
       }
-    }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
 }

@@ -9,6 +9,7 @@ use Koen12344\AffiliateProductHighlights\Configuration\RestApiConfiguration;
 use Koen12344\AffiliateProductHighlights\Configuration\WordPressConfiguration;
 use Koen12344\AffiliateProductHighlights\DependencyInjection\Container;
 use Koen12344\AffiliateProductHighlights\PostTypes\FeedPostType;
+use Koen12344\APH_Vendor\Koen12344\GithubPluginUpdater\Version_1_0_0\Updater;
 use NumberFormatter;
 
 class Plugin {
@@ -42,6 +43,14 @@ class Plugin {
 			return new BackgroundProcess();
 		});
 
+		$updater = new Updater(
+			new \WP_Http(),
+			$file,
+			'koen12344',
+			'affiliate-product-highlights',
+			self::VERSION
+		);
+		$updater->register();
 
 
 		add_action('admin_menu', [$this, 'add_admin_page']);

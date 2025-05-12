@@ -4,20 +4,20 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "7007dd4caf7120f4374f66a2b4f7040f",
+    "content-hash": "fe13fec761582248a4a97bf9ea2ac046",
     "packages": [
         {
             "name": "deliciousbrains/wp-background-processing",
-            "version": "1.3.1",
+            "version": "dev-multisite-fix",
             "source": {
                 "type": "git",
-                "url": "https://github.com/deliciousbrains/wp-background-processing.git",
-                "reference": "6d1e48165e461260075b9f161b3861c7278f71e7"
+                "url": "https://github.com/koen12344/multisite-background-processing.git",
+                "reference": "c2cd0568285853d4ac6e4d09e05451c00c37d632"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/deliciousbrains/wp-background-processing/zipball/6d1e48165e461260075b9f161b3861c7278f71e7",
-                "reference": "6d1e48165e461260075b9f161b3861c7278f71e7",
+                "url": "https://api.github.com/repos/koen12344/multisite-background-processing/zipball/c2cd0568285853d4ac6e4d09e05451c00c37d632",
+                "reference": "c2cd0568285853d4ac6e4d09e05451c00c37d632",
                 "shasum": ""
             },
             "require": {
@@ -39,7 +39,6 @@
                     "classes/"
                 ]
             },
-            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "GPL-2.0-or-later"
             ],
@@ -51,10 +50,50 @@
             ],
             "description": "WP Background Processing can be used to fire off non-blocking asynchronous requests or as a background processing tool, allowing you to queue tasks.",
             "support": {
-                "issues": "https://github.com/deliciousbrains/wp-background-processing/issues",
-                "source": "https://github.com/deliciousbrains/wp-background-processing/tree/1.3.1"
+                "source": "https://github.com/koen12344/multisite-background-processing/tree/multisite-fix"
             },
-            "time": "2024-02-28T13:39:06+00:00"
+            "time": "2025-01-02T14:56:18+00:00"
+        },
+        {
+            "name": "koen12344/github-plugin-updater",
+            "version": "dev-main",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/koen12344/github-plugin-updater.git",
+                "reference": "2d59638a75b8258983cc595b6f7f239a6a10c19d"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/koen12344/github-plugin-updater/zipball/2d59638a75b8258983cc595b6f7f239a6a10c19d",
+                "reference": "2d59638a75b8258983cc595b6f7f239a6a10c19d",
+                "shasum": ""
+            },
+            "require": {
+                "ext-json": "*"
+            },
+            "default-branch": true,
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Koen12344\\GithubPluginUpdater\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "GPL-2.0-or-later"
+            ],
+            "authors": [
+                {
+                    "name": "Koen Reus",
+                    "email": "koen@koenreus.com"
+                }
+            ],
+            "description": "Modern and lightweight GitHub plugin updater library",
+            "support": {
+                "issues": "https://github.com/koen12344/github-plugin-updater/issues",
+                "source": "https://github.com/koen12344/github-plugin-updater/tree/main"
+            },
+            "time": "2024-12-24T13:57:48+00:00"
         },
         {
             "name": "psr/container",
@@ -112,9 +151,12 @@
     ],
     "packages-dev": [],
     "aliases": [],
-    "minimum-stability": "stable",
-    "stability-flags": [],
-    "prefer-stable": false,
+    "minimum-stability": "dev",
+    "stability-flags": {
+        "deliciousbrains/wp-background-processing": 20,
+        "koen12344/github-plugin-updater": 20
+    },
+    "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
         "php": ">=7.0",

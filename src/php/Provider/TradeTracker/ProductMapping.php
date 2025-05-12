@@ -37,7 +37,9 @@ class ProductMapping implements ProductMapInterface {
 
 	private function get_product_ean() {
 		foreach ($this->product_xml->properties->property as $property) {
-			if ((string)$property['name'] === 'GTIN') {
+			if ((string)$property['name'] === 'EAN') {
+				return (string)$property->value;
+			}elseif ((string)$property['name'] === 'GTIN') {
 				return (string)$property->value;
 			}
 		}
