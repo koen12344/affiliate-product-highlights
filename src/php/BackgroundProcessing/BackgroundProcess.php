@@ -7,20 +7,40 @@ use InvalidArgumentException;
 use Koen12344\AffiliateProductHighlights\Provider\AdTraction\ProductMapping as AdtractionProductMapping;
 use Koen12344\AffiliateProductHighlights\Provider\Daisycon\ProductMapping as DaisyconProductMapping;
 use Koen12344\AffiliateProductHighlights\Provider\TradeTracker\ProductMapping as TradeTrackerProductMapping;
+use Psr\Log\LoggerInterface;
 use SimpleXMLElement;
 use WP_Http;
 use XMLReader;
 
 class BackgroundProcess extends \Koen12344_APH_Vendor_WP_Background_Process {
 
+	private LoggerInterface $logger;
+
+	public function __construct(LoggerInterface $logger) {
+
+
+		parent::__construct();
+		$this->logger = $logger;
+	}
 
 	protected function task( $item ) {
-		if($item['action'] === 'download_feed'){
-			return $this->download_feed($item);
-		}elseif($item['action'] === 'split_feed'){
-			return $this->split_feed($item);
-		}elseif($item['action'] === 'import_chunk'){
-			return $this->import_chunk($item);
+		try{
+			if($item['action'] === 'download_feed'){
+				return $this->download_feed($item);
+			}elseif($item['action'] === 'split_feed'){
+				return $this->split_feed($item);
+			}elseif($item['action'] === 'import_chunk'){
+				return $this->import_chunk($item);
+			}elseif($item['action'] === 'update_in_latest_import'){
+				return $this->update_in_latest_import($item);
+			}
+		}catch(\Throwable $t){
+			$this->logger->error($t->getMessage(), ['feed_id' => $item['feed_id'], 'action' => $item['action']]);
+
+
+
+
+			update_post_meta($item['feed_id'], '_phft_last_error', $t->getMessage());
 		}
 
 		return false;
@@ -95,7 +115,7 @@ class BackgroundProcess extends \Koen12344_APH_Vendor_WP_Background_Process {
 
 		$reader = new XMLReader();
 		if(!$reader->open($file)){
-			return; //Todo: better error reporting for this
+			throw new Exception(__('Unable to open the file', 'affiliate-product-highlights'));
 		}
 
 		while ($reader->read()) {
@@ -132,6 +152,7 @@ class BackgroundProcess extends \Koen12344_APH_Vendor_WP_Background_Process {
 				$product_data = [
 					'feed_id'               => $feed_id,
 					'imported_at'           => current_time('mysql', true),
+					'in_latest_import'      => 1,
 				];
 
 				$product_data = array_merge($product_data, $mapped_product->get_product_mapping());
@@ -184,7 +205,7 @@ class BackgroundProcess extends \Koen12344_APH_Vendor_WP_Background_Process {
 
 		$reader = new XMLReader();
 		if(!$reader->open($temp_file)){
-			return false; //todo: better error reporting for this
+			throw new Exception(__('Unable to open the temp file', 'affiliate-product-highlights'));
 		}
 		$product_counter = 0;
 
@@ -227,6 +248,11 @@ class BackgroundProcess extends \Koen12344_APH_Vendor_WP_Background_Process {
 			]);
 		}
 
+		$this->push_to_queue([
+			'action'        => 'update_in_latest_import',
+			'feed_id'       => $item['feed_id'],
+		]);
+
 		$this->save();
 
 		$reader->close();
@@ -241,22 +267,18 @@ class BackgroundProcess extends \Koen12344_APH_Vendor_WP_Background_Process {
 
 		$network = $this->get_affiliate_network($xml_url);
 		if(!$network){
-			update_post_meta($item['feed_id'], '_phft_last_error', __('The affiliate network this feed belongs to is unrecognized'));
-			return false;
+			throw new InvalidArgumentException(__('The affiliate network this feed belongs to is unrecognized'));
 		}
 
-		try{
-			$temp_file = $this->download_xml_file($xml_url);
-		}catch (Exception $e){
-			update_post_meta($item['feed_id'], '_phft_last_error', $e->getMessage());
-			return false;
-		}
+		update_post_meta($item['feed_id'], '_phft_last_import', current_time('mysql', true));
+
+
+		$temp_file = $this->download_xml_file($xml_url);
+
 
 		$item['action'] = 'split_feed';
 		$item['feed_type'] = $network;
 		$item['temp_file'] = $temp_file;
-
-		update_post_meta($item['feed_id'], '_phft_last_import', time());
 
 		return $item;
 	}
@@ -288,6 +310,96 @@ class BackgroundProcess extends \Koen12344_APH_Vendor_WP_Background_Process {
 	        }
 		}
 
+		return false;
+	}
+
+	public function complete(){
+		parent::complete();
+
+		//lockout to prevent daily report from being triggered when saving a feed
+		$is_daily_update = get_option('phft_is_daily_update', false);
+		if(!$is_daily_update){
+			return;
+		}
+		delete_option('phft_is_daily_update');
+
+		$this->send_slack_report();
+	}
+
+	private function send_slack_report(){
+		$webhook_url = get_option("phft_slack_webhook_url");
+		if(empty($webhook_url) || !filter_var($webhook_url, FILTER_VALIDATE_URL)){
+			return;
+		}
+
+
+		global $wpdb;
+		$table = $wpdb->prefix . 'phft_logs';
+		$logs = $wpdb->get_results( "SELECT * FROM $table" );
+
+		$attachments = [];
+		if(empty($logs)){
+			return;
+		}
+		foreach($logs as $log){
+			$context = maybe_unserialize($log->context);
+
+			$attachments[] = [
+				"title" => sprintf("Action: %s", $log->action),
+				"title_link" => !empty($context->feed_id) ? get_edit_post_link((int)$context->feed_id, '') : null,
+				'text'  => $log->message,
+				'color' => 'bad'
+			];
+		}
+				$message = [
+//					'text' => '*Daily report*',
+			'attachments' => $attachments
+		];
+
+		wp_remote_post( $webhook_url, [
+			'method'  => 'POST',
+			'headers' => [ 'Content-Type' => 'application/json' ],
+			'body'    => wp_json_encode( $message ),
+		] );
+
+//			if(!empty($webhook_url)){
+//				$feed = get_post($item['feed_id']);
+//
+//				$message = [
+////					'text' => '*Daily report*',
+//					'attachments' => [
+//						[
+//							"title" => sprintf("Feed: %s", $feed->post_title),
+//                            "title_link" => get_edit_post_link($feed->ID, ''),
+//							'text'  => sprintf("Failed to import feed. Error: %s", $t->getMessage()),
+//							'color' => 'bad'
+//						]
+//					]
+//				];
+//
+//				wp_remote_post( $webhook_url, [
+//					'method'  => 'POST',
+//					'headers' => [ 'Content-Type' => 'application/json' ],
+//					'body'    => wp_json_encode( $message ),
+//				] );
+//			}
+
+		$wpdb->query( "DELETE FROM $table" );
+	}
+
+	private function update_in_latest_import( $item ) {
+		$last_import_timestamp = get_post_meta($item['feed_id'], '_phft_last_import', true);
+
+		global $wpdb;
+
+		$table = $wpdb->prefix . 'phft_products';
+
+		$query = $wpdb->prepare(
+			"UPDATE {$table} SET in_latest_import=0 WHERE imported_at < %s AND feed_id=%d",
+			$last_import_timestamp,
+			$item['feed_id']
+		);
+		$wpdb->query($query);
 		return false;
 	}
 }

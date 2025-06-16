@@ -37,41 +37,73 @@ class GetItemsEndpoint implements EndpointInterface {
 		$selection = $json_params['selection'];
 
 		$search_term = $this->wpdb->esc_like( $search_term_raw );
-		$where_clause = '';
+
+		$where_parts = [];
+		$params = [];
+
 		if ( ! empty( $search_term ) ) {
-			$where_clause = $this->wpdb->prepare(
-				" WHERE product_name LIKE %s",
-				'%' . $search_term . '%'
-			);
+//			$where_clause = $this->wpdb->prepare(
+//				" WHERE product_name LIKE %s",
+//				'%' . $search_term . '%'
+//			);
+
+			$where_parts[] = "product_name LIKE %s";
+			$params[] = '%' . $search_term . '%';
 		}
 		$filters = $request->get_param('filters');
 		if(!empty($filters)) {
 			foreach ($filters as $filter) {
-				if($filter['field'] === 'in_selection'){
+				switch($filter['field']) {
+					case 'in_selection':
+						$include = wp_validate_boolean($filter['value']);
+						$ids = array_map('intval', array_keys($selection));
+						if(!empty($ids)) {
+							$placeholders = implode( ',', array_fill( 0, count( $ids ), '%d' ) );
 
-					$include = wp_validate_boolean($filter['value']);
+							$where_parts[] = "p.id " . ( !$include ? "NOT " : "" ) . "IN (" . $placeholders . ")";
 
-					$ids = implode(',', array_keys($selection));
-
-					if($include) {
-						$where_clause = " WHERE p.id IN (" . $ids . ")";
-					}else{
-						$where_clause = " WHERE p.id NOT IN (" . $ids . ")";
-					}
-
-
+							$params = array_merge( $params, $ids );
+						}
+						break;
+					case 'in_latest_import':
+						$in_import = intval($filter['value']);
+						$where_parts[] = "p.in_latest_import=%d";
+						$params[] = $in_import;
 				}
 			}
 		}
 
+		$where_clause = '';
+		if ( ! empty( $where_parts ) ) {
+			$where_clause = ' WHERE ' . implode( ' AND ', $where_parts );
+		}
+
+
 		// Total count query
 		$count_query = "SELECT COUNT(*) FROM {$this->wpdb->prefix}phft_products p $where_clause";
-		$total_items = (int) $this->wpdb->get_var( $count_query );
+		$total_items = (int) $this->wpdb->get_var($this->wpdb->prepare( $count_query, $params ));
 
 		// Pagination
 		$per_page = max( 1, (int) $request->get_param('per_page') );
 		$page = max( 1, (int) $request->get_param('page') );
 		$offset = ( $page - 1 ) * $per_page;
+
+
+		$order = $request->get_param('order') ? $request->get_param('order') : 'asc';
+		$orderby = $request->get_param('orderby');
+
+		$order_by_query = "";
+		if(!empty($orderby)) {
+			$fields = [
+				'id'            => 'id',
+				'product_name' => 'product_name',
+				'in_latest_import' => 'in_latest_import',
+				'product_price' => 'product_price',
+			];
+			$direction = strtoupper($order);
+			$direction = in_array( $direction, [ 'ASC', 'DESC' ], true ) ? $direction : 'ASC';
+			$order_by_query = "ORDER BY p.".($fields[$orderby] ?? 'product_name')." {$direction}";
+		}
 
 		// Main data query
 		$data_query = "
@@ -79,9 +111,12 @@ class GetItemsEndpoint implements EndpointInterface {
 		FROM {$this->wpdb->prefix}phft_products p
 		LEFT JOIN {$this->wpdb->prefix}phft_images i ON p.id = i.product_id
 		$where_clause
+		$order_by_query
 		LIMIT %d OFFSET %d
 	";
-		$prepared_query = $this->wpdb->prepare( $data_query, $per_page, $offset );
+		$params[] = $per_page;
+		$params[] = $offset;
+		$prepared_query = $this->wpdb->prepare( $data_query, $params );
 		$results = $this->wpdb->get_results( $prepared_query );
 
 		// Format and augment results

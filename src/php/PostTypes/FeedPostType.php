@@ -69,6 +69,7 @@ class FeedPostType implements PostTypeInterface {
 	public function supports(): array {
 		return [
 			'title',
+			'thumbnail',
 		];
 	}
 

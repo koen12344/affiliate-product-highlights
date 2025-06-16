@@ -21,7 +21,7 @@
       }
     ],
     "require": {
-        "php": ">=7.0",
+        "php": ">=8.0",
         "deliciousbrains/wp-background-processing": "dev-multisite-fix",
       "ext-simplexml": "*",
       "ext-xmlreader": "*",
@@ -29,7 +29,8 @@
       "ext-dom": "*",
       "ext-intl": "*",
         "psr/container": "^2.0",
-        "koen12344/github-plugin-updater": "dev-main"
+        "koen12344/github-plugin-updater": "dev-main",
+        "psr/log": "^3.0"
     },
     "scripts": {
       "strauss": [

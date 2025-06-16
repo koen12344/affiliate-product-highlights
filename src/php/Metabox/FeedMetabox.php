@@ -25,6 +25,7 @@ class FeedMetabox extends PostTypeMetabox {
 
 		if(!empty($last_error)){
 			echo sprintf(__('Last error: %s', 'affiliate-product-highlights'), $last_error);
+			echo "<br /><br />";
 		}
 
 		echo "Feed Url: <input type='text' name='_phft_feed_url' value='{$value}' />";

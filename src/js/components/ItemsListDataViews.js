@@ -1,10 +1,10 @@
 import {DataViews} from "@wordpress/dataviews";
 import {useEffect, useMemo, useState} from "@wordpress/element";
-import {Icon} from "@wordpress/components";
+import {ExternalLink, Icon} from "@wordpress/components";
 import {__} from "@wordpress/i18n";
 import apiFetch from "@wordpress/api-fetch";
 import {addQueryArgs} from "@wordpress/url";
-import {check} from "@wordpress/icons";
+import {check, notFound, copy } from "@wordpress/icons";
 
 export default function ItemsListDataViews( { itemSelection, setItemSelection }){
 
@@ -35,34 +35,72 @@ export default function ItemsListDataViews( { itemSelection, setItemSelection })
 			],
 			filterBy: {
 				operators: ['is']
+			},
+			enableSorting: false,
+		},
+		{
+			id: 'in_latest_import',
+			label: 'In latest import',
+			enableHiding: true,
+			render: ( { item } ) => (
+				item.in_latest_import === "1" && <Icon icon={ check } /> || <Icon icon={ notFound } />
+			),
+			elements: [
+				{
+					value: 1,
+					label: "Yes"
+				},
+				{
+					value: 0,
+					label: "No"
+				},
+			],
+			filterBy: {
+				operators: ['is']
 			}
 		},
 		{
 			id: 'product_name',
 			label: 'Product Name',
 			enableHiding: false,
+			render: ( { item } ) => (
+				<ExternalLink target="_blank" href={item.product_url}>{item.product_name}</ExternalLink>
+			),
+		},
+		{
+			id: 'id',
+			label: 'ID',
+		},
+		{
+			id: 'product_url',
+			label: 'Link',
+			render: ( { item } ) => (
+				<ExternalLink target="_blank" href={item.product_url}>View</ExternalLink>
+			),
+			enableSorting: false,
 		},
 		{
 			id: 'product_price',
 			label: 'Price',
-			enableHiding: true,
+			// enableHiding: true,
 		},
 		{
 			id: 'product_description',
 			label: 'Description',
-			enableHiding: false,
+			enableSorting: false,
 		},
 		{
 			id: 'feed',
 			label: 'Feed',
 			render: ({item}) => (
 				<a target="_blank" href={ item.feed_url }>{item.feed_name}</a>
-			)
+			),
+			enableSorting: false,
 		},
 		{
 			id: 'image_url',
-			label: 'image',
-			enableHiding: false,
+			label: 'Product image',
+			enableSorting: false,
 			render: ( { item } ) => (
 				<img alt={ item.product_name } src={ item.image_url } width="50" height="50" />
 			),
@@ -74,10 +112,10 @@ export default function ItemsListDataViews( { itemSelection, setItemSelection })
 		type: 'table',
 		perPage: 10,
 		page: 1,
-		sort: {
-			field: 'product_name',
-			direction: 'desc',
-		},
+		// sort: {
+		// 	field: 'product_name',
+		// 	direction: 'desc',
+		// },
 		search: '',
 		filters: [
 			// { field: 'in_selection', operator: 'is', value: [ true, false ] },
@@ -146,9 +184,19 @@ export default function ItemsListDataViews( { itemSelection, setItemSelection })
 					delete newSelection[item.id];
 				});
 				setItemSelection(newSelection);
-				console.log(newSelection);
 			},
 		},
+		{
+			id: 'copy-link-to-clipboard',
+			label: __('Copy single product link shortcode'),
+			isPrimary: true,
+			icon: copy,
+			supportsBulk: false,
+			callback: ([ item ]) => {
+				navigator.clipboard.writeText('[phft-link product_id=' + item.id + ']');
+				console.log(item);
+			},
+		}
 	];
 
 	const queryArgs = useMemo(() => {

@@ -34,7 +34,7 @@
 		line-height: 1.5em; /* Adjust line spacing to match the height */
 	}
 
-	.phft-product img {
+	.phft-product .phft-product-image img {
 		display:block;
 		margin:0 auto;
 		padding:10px 0;

@@ -2,12 +2,14 @@
 
 namespace Koen12344\AffiliateProductHighlights;
 use Koen12344\AffiliateProductHighlights\BackgroundProcessing\BackgroundProcess;
+use Koen12344\AffiliateProductHighlights\Configuration\AdminConfiguration;
 use Koen12344\AffiliateProductHighlights\Configuration\EventManagementConfiguration;
 use Koen12344\AffiliateProductHighlights\Configuration\MetaboxConfiguration;
 use Koen12344\AffiliateProductHighlights\Configuration\PostTypeConfiguration;
 use Koen12344\AffiliateProductHighlights\Configuration\RestApiConfiguration;
 use Koen12344\AffiliateProductHighlights\Configuration\WordPressConfiguration;
 use Koen12344\AffiliateProductHighlights\DependencyInjection\Container;
+use Koen12344\AffiliateProductHighlights\Logger\Logger;
 use Koen12344\AffiliateProductHighlights\PostTypes\FeedPostType;
 use Koen12344\APH_Vendor\Koen12344\GithubPluginUpdater\Version_1_0_0\Updater;
 use NumberFormatter;
@@ -16,7 +18,7 @@ class Plugin {
 
 	const DOMAIN = 'affiliate-product-highlights';
 
-	const VERSION = '0.3.2';
+	const VERSION = '0.3.3';
 
 	const REST_NAMESPACE = 'phft/v1';
 
@@ -39,8 +41,13 @@ class Plugin {
 			'plugin_rest_namespace' => self::REST_NAMESPACE,
 		]);
 
+		$this->container->register('Logger', function($container) {
+			global $wpdb;
+			return new Logger($wpdb);
+		});
+
 		$this->container->register('BackgroundProcess', function($container){
-			return new BackgroundProcess();
+			return new BackgroundProcess($this->container->get('Logger'));
 		});
 
 		$updater = new Updater(
@@ -73,25 +80,7 @@ class Plugin {
 			add_rewrite_tag('%phft_product%', '([^/]+)');
 		});
 
-		add_action('template_redirect', function(){
-			$product_slug = get_query_var('phft_product');
-			if($product_slug){
-				$cache_key = 'phft_product_' . md5($product_slug);
-				$product = wp_cache_get($cache_key, 'phft');
-				if ($product === false) {
-					global $wpdb;
-					$product = $wpdb->get_row($wpdb->prepare("SELECT product_url FROM {$wpdb->prefix}phft_products WHERE slug = %s", $product_slug));
-					if ($product) {
-						wp_cache_set($cache_key, $product, 'phft', 3600*24);
-					}
-				}
-
-				if($product){
-					wp_redirect($product->product_url, 302);
-					exit;
-				}
-			}
-		});
+		add_image_size('phft-logo', 100, 30, );
 	}
 
 	public static function activate(){
@@ -102,6 +91,8 @@ class Plugin {
 		$products_table = $wpdb->prefix . 'phft_products';
 
 		$images_table = $wpdb->prefix.'phft_images';
+
+		$logs_table = $wpdb->prefix.'phft_logs';
 
 		$charset_collate = $wpdb->get_charset_collate();
 
@@ -121,6 +112,7 @@ class Plugin {
 	 	product_ean varchar(13) NOT NULL,
 	 	slug varchar(255) NOT NULL,
 	 	imported_at datetime NOT NULL,
+        in_latest_import tinyint(1) NOT NULL DEFAULT 1,
 	 	PRIMARY KEY  (id),
         UNIQUE KEY feed_campaign_product_unique (feed_id, campaign_id, product_id),
         UNIQUE KEY feed_sku_unique (feed_id, sku),
@@ -139,6 +131,19 @@ class Plugin {
     		FOREIGN KEY (product_id) REFERENCES $products_table(id) ON DELETE CASCADE,
     		KEY image_url_idx (image_url)
 		) $charset_collate;";
+
+		$sql .= "CREATE TABLE $logs_table (
+		id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+		feed_id BIGINT UNSIGNED NULL,
+		action VARCHAR(100) NULL,
+		level VARCHAR(20) NOT NULL,
+		message TEXT NOT NULL,
+		context LONGTEXT NULL,
+		created_at DATETIME NOT NULL,
+		PRIMARY KEY (id),
+		KEY feed_id (feed_id),
+		KEY action (action)
+	) $charset_collate;";
 
 		dbDelta($sql);
 
@@ -177,6 +182,7 @@ class Plugin {
 		}
 
 		$this->container->configure([
+			AdminConfiguration::class,
 			MetaboxConfiguration::class,
 			PostTypeConfiguration::class,
 			EventManagementConfiguration::class,
@@ -212,6 +218,7 @@ class Plugin {
 		}
 
 		$this->background_process->save()->dispatch();
+		update_option('phft_is_daily_update', true);
 	}
 
 	public function enqueue_styles() {
@@ -259,8 +266,9 @@ class Plugin {
 			'selection' => null,
 		], $atts, 'product-highlights');
 
-		$query = "SELECT p.*, i.image_url, i.wp_media_id, i.id AS image_id FROM {$wpdb->prefix}phft_products p LEFT JOIN {$wpdb->prefix}phft_images i ON p.id = i.product_id";
+
 		$params = [];
+		$where_parts = [];
 
 		if(!is_null($atts['selection'])){
 			$item_selection = get_post_meta((int)$atts['selection'], '_phft_item_selection', true);
@@ -271,24 +279,32 @@ class Plugin {
 		if(!is_null($atts['product_ids'])){
 			$product_ids = explode(',', $atts['product_ids']);
 			$placeholders = implode(',', array_fill(0, count($product_ids), '%d'));
-			$query .= " WHERE p.id IN ({$placeholders})";
+			$where_parts[] = "p.id IN ({$placeholders})";
 			$params = array_merge($params, $product_ids);
 		}
 
 		if(!is_null($atts['search'])){
 			$search_term = $wpdb->esc_like($atts['search']);
-			$query .= " WHERE product_name LIKE '%".esc_sql($search_term)."%'";
+			$where_parts[] = "product_name LIKE '%".esc_sql($search_term)."%'";
 		}
 
+		$where_parts[] = "in_latest_import=1";
+
+		$where_clause = '';
+		if ( ! empty( $where_parts ) ) {
+			$where_clause = ' WHERE ' . implode( ' AND ', $where_parts );
+		}
+
+		$query_string = "SELECT p.*, i.image_url, i.wp_media_id, i.id AS image_id FROM {$wpdb->prefix}phft_products p LEFT JOIN {$wpdb->prefix}phft_images i ON p.id = i.product_id $where_clause";
 		if(!is_null($atts['random'])){
-			$query .= " ORDER BY RAND()";
+			$query_string .= " ORDER BY RAND()";
 		}
 
-
-		$query .= " LIMIT %d";
+		$query_string .= " LIMIT %d";
 		$params[] = $atts['limit'];
 
-		$query = $wpdb->prepare($query,
+		$query = $wpdb->prepare(
+			$query_string,
 			$params
 		);
 
@@ -333,7 +349,10 @@ class Plugin {
 
 		$has_sale = $product->product_original_price > $product->product_price;
 
+
+
 		$output = '<div class="phft-product'.($has_sale ? ' phft-sale-product' : '').'">';
+		$output .= get_the_post_thumbnail($product->feed_id, 'phft-logo');
 		$output .= '<a target="_blank" rel="nofollow noopener sponsored" href="'.$product_url.'"><h3>'.mb_strimwidth(esc_html($product->product_name), 0, 70, '...').'</h3></a>';
 		if (!empty($product->images)) {
 			$output .= '<div class="phft-product-image">';
@@ -429,13 +448,13 @@ class Plugin {
 	}
 
 	public function add_admin_page(){
-		add_menu_page(
-			__('Affiliate Product Highlights', 'affiliate-product-highlights'),
-			'Affiliate Product Highlights',
-			'manage_options',
-			self::DOMAIN,
-			[$this, 'render_admin_page' ]
-		);
+//		add_menu_page(
+//			__('Affiliate Product Highlights', 'affiliate-product-highlights'),
+//			'Affiliate Product Highlights',
+//			'manage_options',
+//			self::DOMAIN,
+//			[$this, 'render_admin_page' ]
+//		);
 	}
 	public function render_admin_page(){
 		echo "hi";

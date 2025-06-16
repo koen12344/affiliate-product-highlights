@@ -8,6 +8,7 @@
       <excludeFolder url="file://$MODULE_DIR$/vendor/deliciousbrains/wp-background-processing" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/psr/container" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/koen12344/github-plugin-updater" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/psr/log" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

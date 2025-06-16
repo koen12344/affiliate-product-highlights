@@ -15,6 +15,7 @@ class FeedCustomColumnSubscriber implements SubscriberInterface{
 
 	public function add_custom_columns($columns) {
 		$columns['imported_items'] = esc_html__('Imported Items', 'affiliate-product-highlights');
+		$columns['no_longer_in_feed'] = esc_html__('No longer in feed', 'affiliate-product-highlights');
 		$columns['last_import'] = esc_html__('Last Import', 'affiliate-product-highlights');
 		return $columns;
 	}
@@ -26,11 +27,14 @@ class FeedCustomColumnSubscriber implements SubscriberInterface{
 				"SELECT COUNT(*) FROM {$wpdb->prefix}phft_products WHERE feed_id = %d",
 				$post_id
 			));
+		}elseif($column === 'no_longer_in_feed'){
+			echo $wpdb->get_var( $wpdb->prepare(
+				"SELECT COUNT(*) FROM {$wpdb->prefix}phft_products WHERE feed_id = %d AND in_latest_import=0",
+				$post_id
+			));
 		}elseif($column === 'last_import'){
 			$last_import = get_post_meta($post_id, '_phft_last_import', true);
-			echo wp_date( get_option( 'date_format' ), $last_import );
-			echo "&nbsp;";
-			echo wp_date( get_option( 'time_format' ), $last_import );
+			echo $last_import;
 		}
 	}
 }
