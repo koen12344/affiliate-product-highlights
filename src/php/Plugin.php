@@ -286,9 +286,10 @@ class Plugin {
 		if(!is_null($atts['search'])){
 			$search_term = $wpdb->esc_like($atts['search']);
 			$where_parts[] = "product_name LIKE '%".esc_sql($search_term)."%'";
+			$where_parts[] = "in_latest_import=1";
 		}
 
-		$where_parts[] = "in_latest_import=1";
+
 
 		$where_clause = '';
 		if ( ! empty( $where_parts ) ) {
