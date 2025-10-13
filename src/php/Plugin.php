@@ -109,7 +109,7 @@ class Plugin {
         product_currency varchar(3) NOT NULL,
 		product_url varchar(255) NOT NULL,
 	 	product_description TEXT,
-	 	product_ean varchar(13) NOT NULL,
+	 	product_ean varchar(15) NOT NULL,
 	 	slug varchar(255) NOT NULL,
 	 	imported_at datetime NOT NULL,
         in_latest_import tinyint(1) NOT NULL DEFAULT 1,

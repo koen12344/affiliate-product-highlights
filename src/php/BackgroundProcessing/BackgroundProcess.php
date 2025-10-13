@@ -179,7 +179,7 @@ class BackgroundProcess extends \Koen12344_APH_Vendor_WP_Background_Process {
 							$suffix++;
 							continue;
 						}
-
+						//todo: log other potential database errors
 						break;
 					}
 
@@ -211,6 +211,7 @@ class BackgroundProcess extends \Koen12344_APH_Vendor_WP_Background_Process {
 
 		$output_xml = new SimpleXMLElement('<products/>');
 		while($reader->read()){
+			//todo: product or product_info seems specific to an affiliate network?
 			if ($reader->nodeType == XMLReader::ELEMENT && ($reader->name === 'product' || $reader->name === 'product_info')) {
 				$product = new SimpleXMLElement($reader->readOuterXML());
 				$node = dom_import_simplexml($output_xml->addChild('product'));
@@ -274,6 +275,12 @@ class BackgroundProcess extends \Koen12344_APH_Vendor_WP_Background_Process {
 
 
 		$temp_file = $this->download_xml_file($xml_url);
+
+		$reader = new XMLReader();
+		if(!$reader->open($temp_file)){
+			throw new Exception(__('Unable to open the temp file', 'affiliate-product-highlights'));
+		}
+
 
 
 		$item['action'] = 'split_feed';

@@ -34,7 +34,7 @@ class ExternalRedirectSubscriber implements SubscriberInterface{
 			if($product){
 				wp_redirect($product->product_url, 302);
 				if(!$product->in_latest_import){
-					$this->logger->alert(sprintf('Detected outgoing click on item that is no longer available in feed: %s, referring URL: %s', $product->product_name, wp_get_referer()), ['feed_id' => $product->feed_id, 'action' => 'redirect'] );
+					$this->logger->alert(sprintf('Detected outgoing click on item that is no longer available in feed: %s, referring URL: %s', $product->product_name, wp_get_referer() ? wp_get_referer() : "Unknown"), ['feed_id' => $product->feed_id, 'action' => 'redirect'] );
 				}
 				exit;
 			}
