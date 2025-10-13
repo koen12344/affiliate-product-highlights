@@ -60,9 +60,6 @@ class Plugin {
 		$updater->register();
 
 
-		add_action('admin_menu', [$this, 'add_admin_page']);
-
-
 		add_action("save_post_phft-feeds", [$this, 'save_feed_metabox'], 10, 3);
 
 		add_action("before_delete_post", [$this, 'delete_feed'], 10 ,2);
@@ -452,15 +449,7 @@ class Plugin {
 		wp_enqueue_style( 'phft-metabox-style', $this->container->get('plugin_url') . 'build/style-metabox.css', array( 'wp-components' ) );
 	}
 
-	public function add_admin_page(){
-//		add_menu_page(
-//			__('Affiliate Product Highlights', 'affiliate-product-highlights'),
-//			'Affiliate Product Highlights',
-//			'manage_options',
-//			self::DOMAIN,
-//			[$this, 'render_admin_page' ]
-//		);
-	}
+
 	public function render_admin_page(){
 		echo "hi";
 	}

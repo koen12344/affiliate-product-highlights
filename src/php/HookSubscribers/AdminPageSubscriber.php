@@ -16,7 +16,7 @@ class AdminPageSubscriber implements SubscriberInterface{
 	public static function get_subscribed_hooks(): array {
 		return [
 			'admin_menu' => 'add_admin_page',
-			'admin_init' => 'regiser_settings',
+			'admin_init' => 'register_settings',
 		];
 	}
 
@@ -36,11 +36,11 @@ class AdminPageSubscriber implements SubscriberInterface{
 			$this->admin_page->get_capability(),
 			$this->admin_page->get_menu_slug(),
 			[$this->admin_page, 'render_page'],
-			0
+			3
 		);
 	}
 
-	public function regiser_settings(){
+	public function register_settings(){
 		$this->admin_page->register_settings();
 	}
 }

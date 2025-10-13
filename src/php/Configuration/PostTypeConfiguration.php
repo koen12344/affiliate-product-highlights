@@ -12,8 +12,8 @@ class PostTypeConfiguration implements ContainerConfigurationInterface {
 	public function modify( Container $container ) {
 		$container['posttypes'] = $container->service(function(Container $container){
 			return [
-				'feed_post_type' => new FeedPostType($container['plugin_domain']),
 				'selections_post_type' => new SelectionsPostType($container['plugin_domain']),
+				'feed_post_type' => new FeedPostType($container['plugin_domain']),
 			];
 		});
 	}
