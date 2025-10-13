@@ -272,6 +272,9 @@ class Plugin {
 
 		if(!is_null($atts['selection'])){
 			$item_selection = get_post_meta((int)$atts['selection'], '_phft_item_selection', true);
+			if(!is_array($item_selection) || empty($item_selection)){
+				return esc_html__("The product selection doesn't contain any items", 'affiliate-product-highlights');
+			}
 			$ids = array_keys($item_selection);
 			$atts['product_ids'] = implode(',', $ids);
 		}
