@@ -445,6 +445,7 @@ class Plugin {
 		wp_register_script('phft-metabox', $this->container->get('plugin_url').'build/metabox.js', $script_assets['dependencies'], $script_assets['version'], true);
 		wp_localize_script('phft-metabox', 'psfg_localize_metabox', [
 			'selection_id' => get_the_ID(),
+			'userView' => get_user_meta(get_current_user_id(), 'phft_selection_view', true),
 		]);
 		wp_enqueue_script('phft-metabox');
 

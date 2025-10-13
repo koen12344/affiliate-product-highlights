@@ -1,10 +1,12 @@
 import {DataViews} from "@wordpress/dataviews";
-import {useEffect, useMemo, useState} from "@wordpress/element";
+import {useEffect, useMemo, useRef, useState} from "@wordpress/element";
 import {ExternalLink, Icon} from "@wordpress/components";
 import {__} from "@wordpress/i18n";
 import apiFetch from "@wordpress/api-fetch";
 import {addQueryArgs} from "@wordpress/url";
 import {check, notFound, copy } from "@wordpress/icons";
+
+const { userView } = psfg_localize_metabox;
 
 export default function ItemsListDataViews( { itemSelection, setItemSelection }){
 
@@ -130,7 +132,32 @@ export default function ItemsListDataViews( { itemSelection, setItemSelection })
 		descriptionField: 'product_description',
 		fields: [ 'in_selection', 'status' ],
 		layout: {},
+		...userView,
 	} );
+
+	const didMount = useRef(false);
+
+	useEffect(() => {
+		if(!didMount.current){
+			didMount.current = true;
+			return;
+		}
+
+		const { type, perPage, fields, sort } = view;
+
+		apiFetch({
+			path: addQueryArgs('/phft/v1/view'),
+			method:'POST',
+			data: {view: {type, perPage, fields, sort}}
+
+		})
+			.then(data => {
+
+			})
+			.finally(() => {
+
+			});
+	}, [view.type, view.perPage, view.fields, view.sort]);
 
 
 	const defaultLayouts = {
@@ -158,7 +185,7 @@ export default function ItemsListDataViews( { itemSelection, setItemSelection })
 		// },
 		{
 			id: 'add-to-selection',
-			label: __( 'Add to selection' ),
+			label: __( 'Add to selection', 'affiliate-product-highlights' ),
 			isPrimary: true,
 			icon: 'plus',
 			supportsBulk: true,
@@ -174,7 +201,7 @@ export default function ItemsListDataViews( { itemSelection, setItemSelection })
 		},
 		{
 			id: 'remove-from-selection',
-			label: __( 'Remove from selection' ),
+			label: __( 'Remove from selection', 'affiliate-product-highlights' ),
 			isPrimary: true,
 			icon: 'minus',
 			supportsBulk: true,
@@ -188,7 +215,7 @@ export default function ItemsListDataViews( { itemSelection, setItemSelection })
 		},
 		{
 			id: 'copy-link-to-clipboard',
-			label: __('Copy single product link shortcode'),
+			label: __('Copy single product link shortcode', 'affiliate-product-highlights' ),
 			isPrimary: true,
 			icon: copy,
 			supportsBulk: false,

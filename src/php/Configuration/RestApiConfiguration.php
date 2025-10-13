@@ -7,6 +7,7 @@ use Koen12344\AffiliateProductHighlights\DependencyInjection\ContainerConfigurat
 use Koen12344\AffiliateProductHighlights\RestAPI\GetItemsEndpoint;
 use Koen12344\AffiliateProductHighlights\RestAPI\GetSelectionEndpoint;
 use Koen12344\AffiliateProductHighlights\RestAPI\SaveSelectionEndpoint;
+use Koen12344\AffiliateProductHighlights\RestAPI\SaveViewEndpoint;
 
 class RestApiConfiguration implements ContainerConfigurationInterface {
 
@@ -16,6 +17,7 @@ class RestApiConfiguration implements ContainerConfigurationInterface {
 				'get_items_endpoint' => new GetItemsEndpoint($container['wpdb']),
 				'save_selection_endpoint' => new SaveSelectionEndpoint(),
 				'get_selection_endpoint' => new GetSelectionEndpoint(),
+				'save_view_endpoint' => new SaveViewEndpoint(),
 			];
 		});
 	}
