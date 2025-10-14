@@ -10,7 +10,7 @@ class AdminConfiguration implements ContainerConfigurationInterface{
 
 	public function modify( Container $container ) {
 		$container['page.admin'] = $container->service(function($container) {
-			return new AdminPage();
+			return new AdminPage($container['plugin_path'], $container['plugin_url']);
 		});
 	}
 }

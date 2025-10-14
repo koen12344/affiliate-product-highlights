@@ -1,6 +1,6 @@
 import {render} from "@wordpress/element";
 
-import './style.scss';
+import './metabox.scss';
 import SelectionMetabox from "./components/SelectionMetabox";
 
 window.addEventListener(

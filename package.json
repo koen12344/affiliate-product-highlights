@@ -7,8 +7,8 @@
     "grunt-start": "grunt default",
     "grunt-readme": "grunt readme",
     "grunt-i18n": "grunt i18n",
-    "start": "wp-scripts start src/js/metabox.js",
-    "build": "wp-scripts build src/js/metabox.js"
+    "start": "wp-scripts start src/js/metabox.js src/js/admin.js",
+    "build": "wp-scripts build src/js/metabox.js src/js/admin.js"
   },
   "devDependencies": {
     "grunt": "~0.4.5",
