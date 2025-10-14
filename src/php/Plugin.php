@@ -77,7 +77,8 @@ class Plugin {
 			add_rewrite_tag('%phft_product%', '([^/]+)');
 		});
 
-		add_image_size('phft-logo', 100, 30, );
+		add_image_size('phft-logo', 100, 30 );
+		add_image_size('phft-product-thumb', 0, 150 );
 	}
 
 	public static function activate(){
@@ -243,7 +244,7 @@ class Plugin {
 				'id' => $image_id,
 			]);
 		}
-		return wp_get_attachment_image_url($wp_media_id);
+		return wp_get_attachment_image_url($wp_media_id, 'phft-product-thumb');
 	}
 
 
