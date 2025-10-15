@@ -6,6 +6,9 @@ import apiFetch from "@wordpress/api-fetch";
 import {addQueryArgs} from "@wordpress/url";
 import {check, notFound, copy } from "@wordpress/icons";
 
+import { useSelect } from '@wordpress/data';
+import { store as coreDataStore } from '@wordpress/core-data';
+
 const { userView } = psfg_localize_metabox;
 
 export default function ItemsListDataViews( { itemSelection, setItemSelection }){
@@ -15,6 +18,13 @@ export default function ItemsListDataViews( { itemSelection, setItemSelection })
 	const [paginationInfo, setPaginationInfo ] = useState({});
 
 	const [selection, setSelection ] = useState([] );
+
+	const feeds = useSelect(
+		select =>
+			select( coreDataStore ).getEntityRecords( 'postType', 'phft-feeds' ),
+		[]
+	);
+
 
 	const fields = [
 		{
@@ -42,7 +52,7 @@ export default function ItemsListDataViews( { itemSelection, setItemSelection })
 		},
 		{
 			id: 'in_latest_import',
-			label: 'In latest import',
+			label: __('In latest import', 'affiliate-product-highlights'),
 			enableHiding: true,
 			render: ( { item } ) => (
 				item.in_latest_import === "1" && <Icon icon={ check } /> || <Icon icon={ notFound } />
@@ -50,11 +60,11 @@ export default function ItemsListDataViews( { itemSelection, setItemSelection })
 			elements: [
 				{
 					value: 1,
-					label: "Yes"
+					label: __('Yes', 'affiliate-product-highlights'),
 				},
 				{
 					value: 0,
-					label: "No"
+					label: __('No', 'affiliate-product-highlights'),
 				},
 			],
 			filterBy: {
@@ -63,7 +73,7 @@ export default function ItemsListDataViews( { itemSelection, setItemSelection })
 		},
 		{
 			id: 'product_name',
-			label: 'Product Name',
+			label: __('Product Name', 'affiliate-product-highlights'),
 			enableHiding: false,
 			render: ( { item } ) => (
 				<ExternalLink target="_blank" href={item.product_url}>{item.product_name}</ExternalLink>
@@ -77,31 +87,38 @@ export default function ItemsListDataViews( { itemSelection, setItemSelection })
 			id: 'product_url',
 			label: 'Link',
 			render: ( { item } ) => (
-				<ExternalLink target="_blank" href={item.product_url}>View</ExternalLink>
+				<ExternalLink target="_blank" href={item.product_url}>{__('View', 'affiliate-product-highlights')}</ExternalLink>
 			),
 			enableSorting: false,
 		},
 		{
 			id: 'product_price',
-			label: 'Price',
+			label: __('Price', 'affiliate-product-highlights'),
 			// enableHiding: true,
 		},
 		{
 			id: 'product_description',
-			label: 'Description',
+			label: __('Description', 'affiliate-product-highlights'),
 			enableSorting: false,
 		},
 		{
 			id: 'feed',
-			label: 'Feed',
+			label: __('Feed', 'affiliate-product-highlights'),
 			render: ({item}) => (
 				<a target="_blank" href={ item.feed_url }>{item.feed_name}</a>
 			),
 			enableSorting: false,
+			elements: feeds?.map(feed => ({
+				label: feed.title.rendered,
+				value: feed.id,
+			})),
+			filterBy: {
+				operators: ['is']
+			}
 		},
 		{
 			id: 'image_url',
-			label: 'Product image',
+			label: __('Product image', 'affiliate-product-highlights'),
 			enableSorting: false,
 			render: ( { item } ) => (
 				<img alt={ item.product_name } src={ item.image_url } width="50" height="50" />
@@ -192,11 +209,9 @@ export default function ItemsListDataViews( { itemSelection, setItemSelection })
 			callback: ( selectedItems ) => {
 				const itemstoAdd = {};
 				selectedItems.forEach( ( item ) => {
-					// console.log( `Image to upload: ${ item.id }` );
 					itemstoAdd[item.id] = true;
 				});
 				setItemSelection({...itemSelection, ...itemstoAdd});
-				console.log(itemSelection);
 			},
 		},
 		{
@@ -221,7 +236,6 @@ export default function ItemsListDataViews( { itemSelection, setItemSelection })
 			supportsBulk: false,
 			callback: ([ item ]) => {
 				navigator.clipboard.writeText('[phft-link product_id=' + item.id + ']');
-				console.log(item);
 			},
 		}
 	];
@@ -268,7 +282,7 @@ export default function ItemsListDataViews( { itemSelection, setItemSelection })
 			isLoading={ isLoading }
 			paginationInfo={ paginationInfo }
 			selection={ selection }
-			onChangeSelection={( items ) => { setSelection(items); console.log(items); }}
+			onChangeSelection={( items ) => { setSelection(items); }}
 		/>
 	);
 };

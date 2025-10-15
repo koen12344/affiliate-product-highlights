@@ -73,6 +73,9 @@ class FeedPostType implements PostTypeInterface {
 		];
 	}
 
+	public function show_in_rest(): bool {
+		return true;
+	}
 	public function can_export(): bool {
 		return false;
 	}

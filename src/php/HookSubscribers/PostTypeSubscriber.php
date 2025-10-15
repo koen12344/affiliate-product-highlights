@@ -40,6 +40,7 @@ class PostTypeSubscriber implements SubscriberInterface {
 					'show_in_menu' => $post_type->show_in_menu(),
 					'supports' => $post_type->supports(),
 					'can_export' => $post_type->can_export(),
+					'show_in_rest' => $post_type->show_in_rest(),
 				]
 			);
 		}

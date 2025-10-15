@@ -73,4 +73,8 @@ class SelectionsPostType implements PostTypeInterface {
 	public function can_export(): bool {
 		return true;
 	}
+
+	public function show_in_rest(): bool {
+		return false;
+	}
 }

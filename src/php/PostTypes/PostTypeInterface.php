@@ -31,4 +31,6 @@ interface PostTypeInterface {
 
 	public function can_export(): bool;
 
+	public function show_in_rest(): bool;
+
 }

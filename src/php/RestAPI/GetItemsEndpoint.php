@@ -53,6 +53,9 @@ class GetItemsEndpoint implements EndpointInterface {
 		$filters = $request->get_param('filters');
 		if(!empty($filters)) {
 			foreach ($filters as $filter) {
+				if(empty($filter['value'])){
+					continue;
+				}
 				switch($filter['field']) {
 					case 'in_selection':
 						$include = wp_validate_boolean($filter['value']);
@@ -69,6 +72,11 @@ class GetItemsEndpoint implements EndpointInterface {
 						$in_import = intval($filter['value']);
 						$where_parts[] = "p.in_latest_import=%d";
 						$params[] = $in_import;
+						break;
+					case 'feed':
+						$feed_id = intval($filter['value']);
+						$where_parts[] = "p.feed_id=%d";
+						$params[] = $feed_id;
 				}
 			}
 		}
