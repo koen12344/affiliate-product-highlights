@@ -150,7 +150,7 @@ class GetItemsEndpoint implements EndpointInterface {
 			$result->product_price = numfmt_format_currency( $fmt, $result->product_price, $result->product_currency );
 			$result->feed_name     = $feeds_by_id[ $result->feed_id ]->post_title ?? '';
 			$result->feed_url      = get_edit_post_link( $result->feed_id, null );
-			$result->product_description = wp_trim_words(wp_strip_all_tags( $result->product_description ), 15);
+			$result->product_description = html_entity_decode(wp_trim_words(wp_strip_all_tags( $result->product_description ), 15),ENT_QUOTES | ENT_HTML5, 'UTF-8');
 			$result->in_selection = array_key_exists($result->id, $selection);
 		}
 
