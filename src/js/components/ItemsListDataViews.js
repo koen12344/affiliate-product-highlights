@@ -38,11 +38,11 @@ export default function ItemsListDataViews( { itemSelection, setItemSelection })
 			elements: [
 				{
 					value: true,
-					label: "Yes"
+					label: __('Yes', 'affiliate-product-highlights'),
 				},
 				{
 					value: false,
-					label: "No"
+					label: __('No', 'affiliate-product-highlights'),
 				},
 			],
 			filterBy: {
