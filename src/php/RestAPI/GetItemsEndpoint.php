@@ -42,14 +42,12 @@ class GetItemsEndpoint implements EndpointInterface {
 		$params = [];
 
 		if ( ! empty( $search_term ) ) {
-//			$where_clause = $this->wpdb->prepare(
-//				" WHERE product_name LIKE %s",
-//				'%' . $search_term . '%'
-//			);
-
-			$where_parts[] = "product_name LIKE %s";
+			$where_parts[] = "(product_name LIKE %s OR product_ean LIKE %s OR sku LIKE %s)";
+			$params[] = '%' . $search_term . '%';
+			$params[] = '%' . $search_term . '%';
 			$params[] = '%' . $search_term . '%';
 		}
+
 		$filters = $request->get_param('filters');
 		if(!empty($filters)) {
 			foreach ($filters as $filter) {
