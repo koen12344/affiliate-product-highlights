@@ -66,12 +66,14 @@ class GetItemsEndpoint implements EndpointInterface {
 							$where_parts[] = "p.id " . ( !$include ? "NOT " : "" ) . "IN (" . $placeholders . ")";
 
 							$params = array_merge( $params, $ids );
+						}else{
+							$where_parts[] = $include ? '1 = 0' : '1 = 1'; //little hack to prevent mysql error and return no results, or all results if there are no products in the selection
 						}
 						break;
 					case 'in_latest_import':
-						$in_import = intval($filter['value']);
+						$in_import = wp_validate_boolean($filter['value']);
 						$where_parts[] = "p.in_latest_import=%d";
-						$params[] = $in_import;
+						$params[] = $in_import ? 1 : 0;
 						break;
 					case 'feed':
 						$feed_id = intval($filter['value']);

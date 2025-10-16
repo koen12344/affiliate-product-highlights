@@ -59,11 +59,11 @@ export default function ItemsListDataViews( { itemSelection, setItemSelection })
 			),
 			elements: [
 				{
-					value: 1,
+					value: true,
 					label: __('Yes', 'affiliate-product-highlights'),
 				},
 				{
-					value: 0,
+					value: false,
 					label: __('No', 'affiliate-product-highlights'),
 				},
 			],
