@@ -1,11 +1,11 @@
 # Affiliate Product Highlights #
-**Contributors:** koen12344  
+**Contributors:** [koen12344](https://profiles.wordpress.org/koen12344/)  
 **Donate link:** https://koenreus.com  
 **Tags:** tradetracker, adtraction, affiliate, feed, products  
 **Requires at least:** 5.1  
 **Tested up to:** 6.6.1  
-**Requires PHP:** 7.0  
-**Stable tag:** 0.2.0  
+**Requires PHP:** 8.0  
+**Stable tag:** 0.4.0  
 **License:** GPLv2 or later  
 **License URI:** https://www.gnu.org/licenses/gpl-2.0.html  
 
@@ -83,6 +83,19 @@ Colors can be adjusted by overriding the default CSS variables:
 
 
 ## Changelog ##
+
+### 0.4.0 ###
+* Added: Function to clear product thumbnail cache (#16)
+* Added: Allow filtering product selections by feed (#7)
+* Improved: Retain selection view settings in user memory (#5)
+* Improved: Make "Selections" primary menu item (#4)
+* Improved: Allow searching products by EAN/SKU in selection creator (#21)
+* Improved: Do not show products that are no longer available in dynamic shortcodes (#8)
+* Fix: Incorrect thumbnail cropping on non-square product images (#13)
+* Fix: Descriptions showing html characters in selection creator (#19)
+* Fix: Selection showing all products when filtering by Selected = Yes, despite none being selected (#18)
+* Fix: Fatal error when a selection with no products is referenced (#12)
+* Fix: Not all products being imported from TradeTracker feeds (#10)
 
 ### 0.2.0 ###
 * Added: Uninstall function
