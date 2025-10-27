@@ -18,7 +18,7 @@ class Plugin {
 
 	const DOMAIN = 'affiliate-product-highlights';
 
-	const VERSION = '0.4.1';
+	const VERSION = '0.4.2';
 
 	const REST_NAMESPACE = 'phft/v1';
 

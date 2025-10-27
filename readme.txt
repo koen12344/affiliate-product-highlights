@@ -5,7 +5,7 @@ Tags: tradetracker, adtraction, affiliate, feed, products
 Requires at least: 5.1
 Tested up to: 6.6.1
 Requires PHP: 8.0
-Stable tag: 0.4.1
+Stable tag: 0.4.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -79,6 +79,9 @@ Colors can be adjusted by overriding the default CSS variables:
 2. Making a selection of specific products
 
 == Changelog ==
+
+= 0.4.2 =
+* Fix: Github updater (#25)
 
 = 0.4.1 =
 * Fix: Duplicated products when images URLs in feed are changed

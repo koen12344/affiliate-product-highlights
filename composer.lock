@@ -4,14 +4,14 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "424072dbad22048d1fd6be2da615ba06",
+    "content-hash": "4d5defa8ff85df66c7dd7cf2f33dc4ac",
     "packages": [
         {
             "name": "deliciousbrains/wp-background-processing",
             "version": "dev-multisite-fix",
             "source": {
                 "type": "git",
-                "url": "https://github.com/koen12344/multisite-background-processing.git",
+                "url": "git@github.com:koen12344/multisite-background-processing.git",
                 "reference": "c2cd0568285853d4ac6e4d09e05451c00c37d632"
             },
             "dist": {
@@ -49,29 +49,25 @@
                 }
             ],
             "description": "WP Background Processing can be used to fire off non-blocking asynchronous requests or as a background processing tool, allowing you to queue tasks.",
-            "support": {
-                "source": "https://github.com/koen12344/multisite-background-processing/tree/multisite-fix"
-            },
             "time": "2025-01-02T14:56:18+00:00"
         },
         {
             "name": "koen12344/github-plugin-updater",
-            "version": "dev-main",
+            "version": "v1.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/koen12344/github-plugin-updater.git",
-                "reference": "2d59638a75b8258983cc595b6f7f239a6a10c19d"
+                "reference": "5bba59bebb98ea3a2e1d2e753f0c35556ce8a2d4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/koen12344/github-plugin-updater/zipball/2d59638a75b8258983cc595b6f7f239a6a10c19d",
-                "reference": "2d59638a75b8258983cc595b6f7f239a6a10c19d",
+                "url": "https://api.github.com/repos/koen12344/github-plugin-updater/zipball/5bba59bebb98ea3a2e1d2e753f0c35556ce8a2d4",
+                "reference": "5bba59bebb98ea3a2e1d2e753f0c35556ce8a2d4",
                 "shasum": ""
             },
             "require": {
                 "ext-json": "*"
             },
-            "default-branch": true,
             "type": "library",
             "autoload": {
                 "psr-4": {
@@ -91,9 +87,9 @@
             "description": "Modern and lightweight GitHub plugin updater library",
             "support": {
                 "issues": "https://github.com/koen12344/github-plugin-updater/issues",
-                "source": "https://github.com/koen12344/github-plugin-updater/tree/main"
+                "source": "https://github.com/koen12344/github-plugin-updater/tree/v1.0.0"
             },
-            "time": "2024-12-24T13:57:48+00:00"
+            "time": "2025-10-27T18:22:10+00:00"
         },
         {
             "name": "psr/container",
@@ -203,13 +199,12 @@
     "aliases": [],
     "minimum-stability": "dev",
     "stability-flags": {
-        "deliciousbrains/wp-background-processing": 20,
-        "koen12344/github-plugin-updater": 20
+        "deliciousbrains/wp-background-processing": 20
     },
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
-        "php": ">=7.0",
+        "php": ">=8.0",
         "ext-simplexml": "*",
         "ext-xmlreader": "*",
         "ext-mbstring": "*",
