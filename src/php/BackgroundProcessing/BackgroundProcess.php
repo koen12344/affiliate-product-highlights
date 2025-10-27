@@ -31,8 +31,10 @@ class BackgroundProcess extends \Koen12344_APH_Vendor_WP_Background_Process {
 				return $this->split_feed($item);
 			}elseif($item['action'] === 'import_chunk'){
 				return $this->import_chunk($item);
-			}elseif($item['action'] === 'update_in_latest_import'){
-				return $this->update_in_latest_import($item);
+			}elseif($item['action'] === 'update_in_latest_import') {
+				return $this->update_in_latest_import( $item );
+			}elseif($item['action'] === 'delete_images_chunk'){
+				return $this->delete_images_chunk($item);
 			}
 		}catch(\Throwable $t){
 			$this->logger->error($t->getMessage(), ['feed_id' => $item['feed_id'], 'action' => $item['action']]);
@@ -399,14 +401,52 @@ class BackgroundProcess extends \Koen12344_APH_Vendor_WP_Background_Process {
 
 		global $wpdb;
 
-		$table = $wpdb->prefix . 'phft_products';
+		$products_table = $wpdb->prefix . 'phft_products';
 
 		$query = $wpdb->prepare(
-			"UPDATE {$table} SET in_latest_import=0 WHERE imported_at < %s AND feed_id=%d",
+			"UPDATE {$products_table} SET in_latest_import=0 WHERE imported_at < %s AND feed_id=%d",
 			$last_import_timestamp,
 			$item['feed_id']
 		);
 		$wpdb->query($query);
+
+		$images_table = $wpdb->prefix . 'phft_images';
+
+		$selected_unimported_images = $wpdb->prepare(
+			"SELECT i.id, i.wp_media_id FROM {$images_table} i JOIN {$products_table} p ON p.id = i.product_id WHERE p.imported_at >= %s AND p.feed_id=%d AND i.imported_at < %s",
+			$last_import_timestamp,
+			$item['feed_id'],
+			$last_import_timestamp
+		);
+		$items_to_delete = $wpdb->get_results($selected_unimported_images, OBJECT_K);
+		if(empty($items_to_delete)){
+			return false;
+		}
+
+		$media_to_delete = array_unique(array_column($items_to_delete, 'wp_media_id'));
+		if(!empty($media_to_delete)){
+			$this->push_to_queue([
+				'action'        => 'delete_images_chunk',
+				'media_to_delete' => $media_to_delete,
+			]);
+		}
+
+		$ids = implode(',', array_keys($items_to_delete));
+		$wpdb->query("DELETE FROM {$images_table} WHERE id IN ($ids)");
+
+		return false;
+	}
+
+	private function delete_images_chunk( $item ) {
+		$media_to_delete = array_splice($item['media_to_delete'],0, 20);
+		foreach($media_to_delete as $media_id){
+			if($media_id){
+				wp_delete_attachment($media_id, true);
+			}
+		};
+		if(!empty($item['media_to_delete'])){
+			return $item;
+		}
 		return false;
 	}
 }

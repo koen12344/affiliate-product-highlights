@@ -61,7 +61,7 @@ class GetItemsEndpoint implements EndpointInterface {
 						if(!empty($ids)) {
 							$placeholders = implode( ',', array_fill( 0, count( $ids ), '%d' ) );
 
-							$where_parts[] = "p.id " . ( !$include ? "NOT " : "" ) . "IN (" . $placeholders . ")";
+							$where_parts[] = "id " . ( !$include ? "NOT " : "" ) . "IN (" . $placeholders . ")";
 
 							$params = array_merge( $params, $ids );
 						}else{
@@ -70,12 +70,12 @@ class GetItemsEndpoint implements EndpointInterface {
 						break;
 					case 'in_latest_import':
 						$in_import = wp_validate_boolean($filter['value']);
-						$where_parts[] = "p.in_latest_import=%d";
+						$where_parts[] = "in_latest_import=%d";
 						$params[] = $in_import ? 1 : 0;
 						break;
 					case 'feed':
 						$feed_id = intval($filter['value']);
-						$where_parts[] = "p.feed_id=%d";
+						$where_parts[] = "feed_id=%d";
 						$params[] = $feed_id;
 				}
 			}
@@ -88,7 +88,7 @@ class GetItemsEndpoint implements EndpointInterface {
 
 
 		// Total count query
-		$count_query = "SELECT COUNT(*) FROM {$this->wpdb->prefix}phft_products p $where_clause";
+		$count_query = "SELECT COUNT(*) FROM {$this->wpdb->prefix}phft_products $where_clause";
 		$total_items = (int) $this->wpdb->get_var($this->wpdb->prepare( $count_query, $params ));
 
 		// Pagination
@@ -110,14 +110,13 @@ class GetItemsEndpoint implements EndpointInterface {
 			];
 			$direction = strtoupper($order);
 			$direction = in_array( $direction, [ 'ASC', 'DESC' ], true ) ? $direction : 'ASC';
-			$order_by_query = "ORDER BY p.".($fields[$orderby] ?? 'product_name')." {$direction}";
+			$order_by_query = "ORDER BY ".($fields[$orderby] ?? 'product_name')." {$direction}";
 		}
 
 		// Main data query
 		$data_query = "
-		SELECT p.*, i.image_url, i.wp_media_id, i.id AS image_id
-		FROM {$this->wpdb->prefix}phft_products p
-		LEFT JOIN {$this->wpdb->prefix}phft_images i ON p.id = i.product_id
+		SELECT *
+		FROM {$this->wpdb->prefix}phft_products
 		$where_clause
 		$order_by_query
 		LIMIT %d OFFSET %d
@@ -131,14 +130,25 @@ class GetItemsEndpoint implements EndpointInterface {
 		$locale = get_locale();
 		$fmt = numfmt_create( $locale, NumberFormatter::CURRENCY );
 
-		$feed_ids = array_map( function ( $item ) {
-			return $item->feed_id;
-		}, $results );
-		$unique_feed_ids = array_unique( $feed_ids );
+		$feed_ids = array_unique( array_column($results, 'feed_id') );
+
+		$product_ids = implode(',', array_map('intval', array_column($results, 'id')));
+		$images_query = "SELECT product_id, image_url FROM {$this->wpdb->prefix}phft_images WHERE product_id IN ({$product_ids})";
+
+		$images = $this->wpdb->get_results($images_query);
+
+		$images_by_id = [];
+		foreach($images as $image){
+			//So we only get the first image
+			if(!isset($images_by_id[$image->product_id])){
+				$images_by_id[$image->product_id] = $image->image_url;
+			}
+		}
 
 		$feeds = get_posts( [
-			'post__in' => $unique_feed_ids,
+			'post__in' => $feed_ids,
 			'post_type' => 'phft-feeds',
+			'numberposts' => -1,
 		] );
 
 		$feeds_by_id = [];
@@ -146,18 +156,20 @@ class GetItemsEndpoint implements EndpointInterface {
 			$feeds_by_id[ $feed->ID ] = $feed;
 		}
 
-		foreach ( $results as $result ) {
-			$result->product_price = numfmt_format_currency( $fmt, $result->product_price, $result->product_currency );
-			$result->feed_name     = $feeds_by_id[ $result->feed_id ]->post_title ?? '';
-			$result->feed_url      = get_edit_post_link( $result->feed_id, null );
-			$result->product_description = html_entity_decode(wp_trim_words(wp_strip_all_tags( $result->product_description ), 15),ENT_QUOTES | ENT_HTML5, 'UTF-8');
-			$result->in_selection = array_key_exists($result->id, $selection);
-		}
+		$products = array_map(function($product) use ($fmt, $selection, $images_by_id, $feeds_by_id){
+			$product->product_price = numfmt_format_currency( $fmt, $product->product_price, $product->product_currency );
+			$product->feed_name     = $feeds_by_id[ $product->feed_id ]->post_title ?? '';
+			$product->feed_url      = get_edit_post_link( $product->feed_id, null );
+			$product->product_description = html_entity_decode(wp_trim_words(wp_strip_all_tags( $product->product_description ), 15),ENT_QUOTES | ENT_HTML5, 'UTF-8');
+			$product->in_selection = array_key_exists($product->id, $selection);
+			$product->image_url = $images_by_id[$product->id] ?? null;
+			return $product;
+		}, $results);
 
 		$total_pages = (int) ceil( $total_items / $per_page );
 
 		return rest_ensure_response( [
-			'items' => $results,
+			'items' => $products,
 			'paginationInfo' => [
 				'totalPages' => $total_pages,
 				'totalItems' => $total_items,

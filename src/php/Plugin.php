@@ -280,7 +280,7 @@ class Plugin {
 		if(!is_null($atts['product_ids'])){
 			$product_ids = explode(',', $atts['product_ids']);
 			$placeholders = implode(',', array_fill(0, count($product_ids), '%d'));
-			$where_parts[] = "p.id IN ({$placeholders})";
+			$where_parts[] = "id IN ({$placeholders})";
 			$params = array_merge($params, $product_ids);
 		}
 
@@ -297,7 +297,7 @@ class Plugin {
 			$where_clause = ' WHERE ' . implode( ' AND ', $where_parts );
 		}
 
-		$query_string = "SELECT p.*, i.image_url, i.wp_media_id, i.id AS image_id FROM {$wpdb->prefix}phft_products p LEFT JOIN {$wpdb->prefix}phft_images i ON p.id = i.product_id $where_clause";
+		$query_string = "SELECT * FROM {$wpdb->prefix}phft_products $where_clause";
 		if(!is_null($atts['random'])){
 			$query_string .= " ORDER BY RAND()";
 		}
@@ -310,22 +310,30 @@ class Plugin {
 			$params
 		);
 
-		$results = $wpdb->get_results($query);
+		$results = $wpdb->get_results($query, OBJECT_K);
 
 		if(!$results){
 			return $wpdb->print_error();
 		}
 
-		$products = [];
-		foreach($results as $result){
-			if (!isset($products[$result->id])) {
-				$products[$result->id] = $result;
-				$products[$result->id]->images = [];
-			}
-			if (!is_null($result->image_url)) {
-				$products[$result->id]->images[] = $this->maybe_sideload_image($result->image_id, $result->wp_media_id, $result->image_url);
+		$product_ids = implode(',', array_map('intval', array_column($results, 'id')));
+		$images_query = "SELECT * FROM {$wpdb->prefix}phft_images WHERE product_id IN ({$product_ids})";
+		$images = $wpdb->get_results($images_query);
+		$images_by_id = [];
+		foreach($images as $image){
+			//So we only get the first image
+			if(!isset($images_by_id[$image->product_id])){
+				$images_by_id[$image->product_id] = $image;
 			}
 		}
+
+		$products = array_map(function($product) use ( $images_by_id ) {
+			$product->images = [];
+			if (isset($images_by_id[$product->id])) {
+				$product->images[] = $this->maybe_sideload_image($images_by_id[$product->id]->id, $images_by_id[$product->id]->wp_media_id, $images_by_id[$product->id]->image_url);
+			}
+			return $product;
+		}, $results);
 
 		if($atts['limit'] > 1){
 			$output = '<div class="phft-products-multiple">';
@@ -450,9 +458,5 @@ class Plugin {
 		wp_enqueue_style( 'phft-metabox-style', $this->container->get('plugin_url') . 'build/style-metabox.css', array( 'wp-components' ) );
 	}
 
-
-	public function render_admin_page(){
-		echo "hi";
-	}
 
 }
