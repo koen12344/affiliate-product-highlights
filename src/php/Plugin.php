@@ -11,7 +11,7 @@ use Koen12344\AffiliateProductHighlights\Configuration\WordPressConfiguration;
 use Koen12344\AffiliateProductHighlights\DependencyInjection\Container;
 use Koen12344\AffiliateProductHighlights\Logger\Logger;
 use Koen12344\AffiliateProductHighlights\PostTypes\FeedPostType;
-use Koen12344\APH_Vendor\Koen12344\GithubPluginUpdater\Version_1_0_0\Updater;
+use Koen12344\APH_Vendor\Koen12344\GithubPluginUpdater\Updater;
 use NumberFormatter;
 
 class Plugin {

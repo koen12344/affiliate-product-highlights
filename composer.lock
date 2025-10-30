@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "4d5defa8ff85df66c7dd7cf2f33dc4ac",
+    "content-hash": "821471c4e88b6069644e576f4126d5d1",
     "packages": [
         {
             "name": "deliciousbrains/wp-background-processing",
@@ -53,16 +53,16 @@
         },
         {
             "name": "koen12344/github-plugin-updater",
-            "version": "v1.0.0",
+            "version": "v2.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/koen12344/github-plugin-updater.git",
-                "reference": "5bba59bebb98ea3a2e1d2e753f0c35556ce8a2d4"
+                "reference": "ab6776e1ff0ccc343e7dab2a7f74e62bd5bd502f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/koen12344/github-plugin-updater/zipball/5bba59bebb98ea3a2e1d2e753f0c35556ce8a2d4",
-                "reference": "5bba59bebb98ea3a2e1d2e753f0c35556ce8a2d4",
+                "url": "https://api.github.com/repos/koen12344/github-plugin-updater/zipball/ab6776e1ff0ccc343e7dab2a7f74e62bd5bd502f",
+                "reference": "ab6776e1ff0ccc343e7dab2a7f74e62bd5bd502f",
                 "shasum": ""
             },
             "require": {
@@ -87,9 +87,9 @@
             "description": "Modern and lightweight GitHub plugin updater library",
             "support": {
                 "issues": "https://github.com/koen12344/github-plugin-updater/issues",
-                "source": "https://github.com/koen12344/github-plugin-updater/tree/v1.0.0"
+                "source": "https://github.com/koen12344/github-plugin-updater/tree/v2.0.0"
             },
-            "time": "2025-10-27T18:22:10+00:00"
+            "time": "2025-10-30T15:33:06+00:00"
         },
         {
             "name": "psr/container",

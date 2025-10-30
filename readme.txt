@@ -3,7 +3,7 @@ Contributors: koen12344
 Donate link: https://koenreus.com
 Tags: tradetracker, adtraction, affiliate, feed, products
 Requires at least: 5.1
-Tested up to: 6.6.1
+Tested up to: 6.8.3
 Requires PHP: 8.0
 Stable tag: 0.4.2
 License: GPLv2 or later

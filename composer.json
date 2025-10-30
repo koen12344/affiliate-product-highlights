@@ -29,7 +29,7 @@
       "ext-dom": "*",
       "ext-intl": "*",
         "psr/container": "^2.0",
-        "koen12344/github-plugin-updater": "1.0.0",
+        "koen12344/github-plugin-updater": "^2.0.0",
         "psr/log": "^3.0"
     },
     "scripts": {
