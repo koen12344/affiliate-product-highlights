@@ -7,7 +7,7 @@
  * Author URI:      https://koenreus.com
  * Text Domain:     affiliate-product-highlights
  * Domain Path:     /languages
- * Version:         0.4.3
+ * Version:         0.4.4
  * License:         GPLv2 or later
  *
  * @package         Affiliate_Product_Highlights

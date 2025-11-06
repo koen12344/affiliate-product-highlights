@@ -5,7 +5,7 @@ Tags: tradetracker, adtraction, affiliate, feed, products
 Requires at least: 5.1
 Tested up to: 6.8
 Requires PHP: 8.0
-Stable tag: 0.4.3
+Stable tag: 0.4.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -79,6 +79,10 @@ Colors can be adjusted by overriding the default CSS variables:
 2. Making a selection of specific products
 
 == Changelog ==
+
+= 0.4.4 =
+* Added: Dutch translations
+* Fix: Translations not loaded on product selection metabox
 
 = 0.4.3 =
 * Improved: Various improvements to pass WP Plugin Check

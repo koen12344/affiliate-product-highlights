@@ -1,0 +1,272 @@
+# Copyright (C) 2025 Koen Reus
+# This file is distributed under the GPLv2 or later.
+msgid ""
+msgstr ""
+"Project-Id-Version: Affiliate Product Highlights 0.4.3\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/affiliate-product-"
+"highlights\n"
+"POT-Creation-Date: 2025-11-06T15:35:56+00:00\n"
+"PO-Revision-Date: 2025-11-06 16:47+0100\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: nl_NL\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 3.4.4\n"
+"X-Domain: affiliate-product-highlights\n"
+
+#. Plugin Name of the plugin
+#: affiliate-product-highlights.php src/php/Admin/AdminPage.php:16
+msgid "Affiliate Product Highlights"
+msgstr "Uitgelichte affiliate producten"
+
+#. Plugin URI of the plugin
+#. Author URI of the plugin
+#: affiliate-product-highlights.php
+msgid "https://koenreus.com"
+msgstr "https://koenreus.com"
+
+#. Description of the plugin
+#: affiliate-product-highlights.php
+msgid ""
+"Plugin to display products from various affiliate network product feeds in "
+"WordPress"
+msgstr ""
+"Plugin om producten uit feeds van diverse affiliate netwerken uit te lichten"
+
+#. Author of the plugin
+#: affiliate-product-highlights.php
+msgid "Koen Reus"
+msgstr "Koen Reus"
+
+#: src/php/Admin/AdminPage.php:20
+msgid "Settings"
+msgstr "Instellingen"
+
+#: src/php/Admin/AdminPage.php:34
+msgid "Slack Settings"
+msgstr "Slack Instellingen"
+
+#: src/php/Admin/AdminPage.php:55
+msgid "Slack Webhook Configuration"
+msgstr "Slack Webhook Configuratie"
+
+#: src/php/Admin/AdminPage.php:62
+msgid "Slack Webhook URL"
+msgstr "Slack Webhook URL"
+
+#: src/php/Admin/AdminPage.php:73
+msgid "Misc"
+msgstr "Divers"
+
+#: src/php/BackgroundProcessing/BackgroundProcess.php:88
+msgid "Invalid feed URL"
+msgstr "Ongeldige feed URL"
+
+#. translators: %s is error message
+#: src/php/BackgroundProcessing/BackgroundProcess.php:107
+#, php-format
+msgid "Unable to download the feed: %s"
+msgstr "Niet gelukt om de feed te downloaden: %s"
+
+#: src/php/BackgroundProcessing/BackgroundProcess.php:122
+msgid "Unable to open the file"
+msgstr "Niet gelukt om het bestand te openen"
+
+#: src/php/BackgroundProcessing/BackgroundProcess.php:216
+#: src/php/BackgroundProcessing/BackgroundProcess.php:295
+msgid "Unable to open the temp file"
+msgstr "Niet gelukt om het tijdelijke bestand te openen"
+
+#: src/php/BackgroundProcessing/BackgroundProcess.php:284
+msgid "The affiliate network this feed belongs to is unrecognized"
+msgstr "Het affiliatenetwerk waar deze feed toe behoort is niet herkend"
+
+#. translators: %1$s is product name, %2$s is the URL of the page where the click originated
+#: src/php/HookSubscribers/ExternalRedirectSubscriber.php:44
+#, php-format
+msgid ""
+"Detected outgoing click on item that is no longer available in feed: %1$s, "
+"referring URL: %2$s"
+msgstr ""
+"Uitgaande klik gedetecteerd naar een item dat niet langer in een feed "
+"beschikbaar is: %1$s, afkomstig van URL: %2$s"
+
+#: src/php/HookSubscribers/FeedCustomColumnSubscriber.php:17
+msgid "Imported Items"
+msgstr "Geïmporteerde Items"
+
+#: src/php/HookSubscribers/FeedCustomColumnSubscriber.php:18
+msgid "No longer in feed"
+msgstr "Niet langer in feed"
+
+#: src/php/HookSubscribers/FeedCustomColumnSubscriber.php:19
+msgid "Last Import"
+msgstr "Laatste Import"
+
+#: src/php/HookSubscribers/SelectionCustomColumnSubscriber.php:17
+msgid "Items no longer in feed"
+msgstr "Items niet langer in feed"
+
+#: src/php/Metabox/FeedMetabox.php:16
+msgid "Feed settings"
+msgstr "Feed instellingen"
+
+#. translators: %s is error message
+#: src/php/Metabox/FeedMetabox.php:28
+#, php-format
+msgid "Last error: %s"
+msgstr "Laatste error: %s"
+
+#: src/php/Metabox/FeedMetabox.php:32
+msgid "Feed Url:"
+msgstr "Feed Url:"
+
+#: src/php/Metabox/SelectionMetabox.php:14
+msgid "Item selection"
+msgstr "Item selectie"
+
+#: src/php/Plugin.php:268
+msgid "The product selection doesn't contain any items"
+msgstr "De productselectie bevat geen items"
+
+#: src/php/Plugin.php:383 src/php/PostTypes/FeedPostType.php:29
+#: src/php/PostTypes/SelectionsPostType.php:27 build/metabox.js:22
+msgid "View"
+msgstr "Bekijken"
+
+#: src/php/PostTypes/FeedPostType.php:22
+msgid "Feeds"
+msgstr "Feeds"
+
+#: src/php/PostTypes/FeedPostType.php:23 build/metabox.js:22
+msgid "Feed"
+msgstr "Feed"
+
+#: src/php/PostTypes/FeedPostType.php:24
+#: src/php/PostTypes/SelectionsPostType.php:22
+msgid "New"
+msgstr "Nieuw"
+
+#: src/php/PostTypes/FeedPostType.php:25
+msgid "Add new feed"
+msgstr "Voeg nieuwe feed toe"
+
+#: src/php/PostTypes/FeedPostType.php:26
+#: src/php/PostTypes/SelectionsPostType.php:24
+msgid "Edit"
+msgstr "Bewerk"
+
+#: src/php/PostTypes/FeedPostType.php:27
+msgid "Edit feed"
+msgstr "Bewerk feed"
+
+#: src/php/PostTypes/FeedPostType.php:28
+msgid "New feed"
+msgstr "Nieuwe feed"
+
+#: src/php/PostTypes/FeedPostType.php:30
+msgid "View feed"
+msgstr "Bekijk feed"
+
+#: src/php/PostTypes/FeedPostType.php:31
+msgid "Find feed"
+msgstr "Vind feed"
+
+#: src/php/PostTypes/FeedPostType.php:32
+msgid "No feeds found"
+msgstr "Geen feeds gevonden"
+
+#: src/php/PostTypes/FeedPostType.php:33
+msgid "No feeds found in the trash"
+msgstr "Geen feeds gevonden in de prullenbak"
+
+#: src/php/PostTypes/SelectionsPostType.php:20
+msgid "Selections"
+msgstr "Selecties"
+
+#: src/php/PostTypes/SelectionsPostType.php:21
+msgid "Selection"
+msgstr "Selectie"
+
+#: src/php/PostTypes/SelectionsPostType.php:23
+msgid "Add new selection"
+msgstr "Nieuwe selectie toevoegen"
+
+#: src/php/PostTypes/SelectionsPostType.php:25
+msgid "Edit selection"
+msgstr "Bewerk selectie"
+
+#: src/php/PostTypes/SelectionsPostType.php:26
+msgid "New selection"
+msgstr "Nieuwe selectie"
+
+#: src/php/PostTypes/SelectionsPostType.php:28
+msgid "View selection"
+msgstr "Bekijk selectie"
+
+#: src/php/PostTypes/SelectionsPostType.php:29
+msgid "Find selection"
+msgstr "Vind selectie"
+
+#: src/php/PostTypes/SelectionsPostType.php:30
+msgid "No selections found"
+msgstr "Geen selecties gevonden"
+
+#: src/php/PostTypes/SelectionsPostType.php:31
+msgid "No selections found in the trash"
+msgstr "Geen selecties gevonden in de prullenbak"
+
+#: build/admin.js:1
+msgid "Clearing..."
+msgstr "Wissen..."
+
+#: build/admin.js:1
+msgid "Clear product thumbnail cache"
+msgstr "Product thumbnail cache wissen"
+
+#. translators: %s: field label
+#: build/metabox.js:22
+msgid "Yes"
+msgstr "Ja"
+
+#: build/metabox.js:22
+msgid "No"
+msgstr "Nee"
+
+#: build/metabox.js:22
+msgid "In latest import"
+msgstr "In laatste import"
+
+#: build/metabox.js:22
+msgid "Product Name"
+msgstr "Product Naam"
+
+#: build/metabox.js:22
+msgid "Price"
+msgstr "Prijs"
+
+#: build/metabox.js:22
+msgid "Description"
+msgstr "Omschrijving"
+
+#: build/metabox.js:22
+msgid "Product image"
+msgstr "Product afbeelding"
+
+#: build/metabox.js:22
+msgid "Add to selection"
+msgstr "Voeg toe aan selectie"
+
+#: build/metabox.js:22
+msgid "Remove from selection"
+msgstr "Verwijder uit selectie"
+
+#: build/metabox.js:22
+msgid "Copy single product link shortcode"
+msgstr "Kopieer shortcode voor productlink"
+
+#: build/metabox.js:22
+msgid "Shortcode"
+msgstr "Shortcode"

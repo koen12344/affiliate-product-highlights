@@ -18,7 +18,7 @@ class Plugin {
 
 	const DOMAIN = 'affiliate-product-highlights';
 
-	const VERSION = '0.4.2';
+	const VERSION = '0.4.4';
 
 	const REST_NAMESPACE = 'phft/v1';
 
@@ -464,6 +464,8 @@ class Plugin {
 			'selection_id' => get_the_ID(),
 			'userView' => get_user_meta(get_current_user_id(), 'phft_selection_view', true),
 		]);
+		wp_set_script_translations('phft-metabox', 'affiliate-product-highlights', $this->container->get('plugin_path').'languages');
+
 		wp_enqueue_script('phft-metabox');
 
 		wp_enqueue_style( 'phft-metabox-style', $this->container->get('plugin_url') . 'build/style-metabox.css', array( 'wp-components' ), $script_assets['version'] );

@@ -10,3 +10,4 @@ node_modules/
 /build/
 /vendor/
 /vendor-prefixed/
+/languages/*.json
