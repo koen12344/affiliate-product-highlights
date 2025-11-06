@@ -72,11 +72,6 @@ class Plugin {
 
 		add_shortcode('phft-link', [$this, 'product_link_shortcode']);
 
-		add_action('init', function(){
-			add_rewrite_rule('^phft/([^/]+)/?$', 'index.php?phft_product=$matches[1]', 'top');
-			add_rewrite_tag('%phft_product%', '([^/]+)');
-		});
-
 		add_image_size('phft-logo', 100, 30 );
 		add_image_size('phft-product-thumb', 0, 150 );
 	}
@@ -126,7 +121,6 @@ class Plugin {
     		wp_media_id bigint(20) UNSIGNED NOT NULL,
     		imported_at datetime NOT NULL,
     		PRIMARY KEY  (id),
-    		FOREIGN KEY (product_id) REFERENCES $products_table(id) ON DELETE CASCADE,
     		KEY image_url_idx (image_url)
 		) $charset_collate;";
 
@@ -220,7 +214,7 @@ class Plugin {
 	}
 
 	public function enqueue_styles() {
-		wp_register_style('phft-style', plugins_url('../../css/front.css', __FILE__));
+		wp_register_style('phft-style', plugins_url('../../css/front.css', __FILE__), [], self::VERSION);
 		wp_enqueue_style('phft-style');
 	}
 
@@ -256,12 +250,12 @@ class Plugin {
 		$this->enqueue_styles();
 
 		$atts = shortcode_atts([
-			'limit'=> 6,
-			'product_ids' => null,
-			'feed_id' => null,
-			'search' => null,
-			'random' => null,
-			'selection' => null,
+			'limit'         => 6,
+			'product_ids'   => null,
+			'feed_id'       => null,
+			'search'        => null,
+			'random'        => null,
+			'selection'     => null,
 		], $atts, 'product-highlights');
 
 
@@ -271,7 +265,7 @@ class Plugin {
 		if(!is_null($atts['selection'])){
 			$item_selection = get_post_meta((int)$atts['selection'], '_phft_item_selection', true);
 			if(!is_array($item_selection) || empty($item_selection)){
-				return esc_html__("The product selection doesn't contain any items", 'affiliate-product-highlights');
+				return esc_html__('The product selection doesn\'t contain any items', 'affiliate-product-highlights');
 			}
 			$ids = array_keys($item_selection);
 			$atts['product_ids'] = implode(',', $ids);
@@ -297,43 +291,58 @@ class Plugin {
 			$where_clause = ' WHERE ' . implode( ' AND ', $where_parts );
 		}
 
-		$query_string = "SELECT * FROM {$wpdb->prefix}phft_products $where_clause";
+		$limit = "";
 		if(!is_null($atts['random'])){
-			$query_string .= " ORDER BY RAND()";
+			$limit .= " ORDER BY RAND()";
 		}
 
-		$query_string .= " LIMIT %d";
+		$limit .= " LIMIT %d";
 		$params[] = $atts['limit'];
 
-		$query = $wpdb->prepare(
-			$query_string,
-			$params
-		);
+		$cache_key = 'phft_'.md5($where_clause.$limit);
 
-		$results = $wpdb->get_results($query, OBJECT_K);
+		$products = wp_cache_get($cache_key, 'phft');
 
-		if(!$results){
-			return $wpdb->print_error();
-		}
+		if(!$products){
+			$results = $wpdb->get_results($wpdb->prepare(
+				"SELECT * FROM {$wpdb->prefix}phft_products $where_clause $limit",
+				$params
+			), OBJECT_K);
 
-		$product_ids = implode(',', array_map('intval', array_column($results, 'id')));
-		$images_query = "SELECT * FROM {$wpdb->prefix}phft_images WHERE product_id IN ({$product_ids})";
-		$images = $wpdb->get_results($images_query);
-		$images_by_id = [];
-		foreach($images as $image){
-			//So we only get the first image
-			if(!isset($images_by_id[$image->product_id])){
-				$images_by_id[$image->product_id] = $image;
+			if(!$results){
+				return $wpdb->print_error();
 			}
-		}
 
-		$products = array_map(function($product) use ( $images_by_id ) {
-			$product->images = [];
-			if (isset($images_by_id[$product->id])) {
-				$product->images[] = $this->maybe_sideload_image($images_by_id[$product->id]->id, $images_by_id[$product->id]->wp_media_id, $images_by_id[$product->id]->image_url);
+			$product_ids = wp_parse_id_list(array_column($results, 'id'));
+			$placeholders = implode(',', array_fill(0, count($product_ids), '%d'));
+			$images = $wpdb->get_results($wpdb->prepare("SELECT * FROM {$wpdb->prefix}phft_images WHERE product_id IN ({$placeholders})", $product_ids));
+
+	//		$images_query = "SELECT * FROM {$wpdb->prefix}phft_images WHERE product_id IN ({$product_ids})";
+	//		$images = $wpdb->get_results($images_query);
+			/*
+			 * 			$product_ids = explode(',', $atts['product_ids']);
+				$placeholders = implode(',', array_fill(0, count($product_ids), '%d'));
+			 */
+
+
+
+			$images_by_id = [];
+			foreach($images as $image){
+				//So we only get the first image
+				if(!isset($images_by_id[$image->product_id])){
+					$images_by_id[$image->product_id] = $image;
+				}
 			}
-			return $product;
-		}, $results);
+
+			$products = array_map(function($product) use ( $images_by_id ) {
+				$product->images = [];
+				if (isset($images_by_id[$product->id])) {
+					$product->images[] = $this->maybe_sideload_image($images_by_id[$product->id]->id, $images_by_id[$product->id]->wp_media_id, $images_by_id[$product->id]->image_url);
+				}
+				return $product;
+			}, $results);
+			wp_cache_set($cache_key, $products, 'phft', 3600*24);
+		}
 
 		if($atts['limit'] > 1){
 			$output = '<div class="phft-products-multiple">';
@@ -371,7 +380,7 @@ class Plugin {
 		}
 		$output .= '<div class="phft-product-description">'. mb_strimwidth(wp_strip_all_tags($product->product_description), 0, 160, '...').'</div>';
 		$output .= '<div class="phft-product-price">'.numfmt_format_currency($fmt, $product->product_price, $product->product_currency).($has_sale ? '<span class="phft-original-price">'.numfmt_format_currency($fmt, $product->product_original_price, $product->product_currency).'</span>':'').'</div>';
-		$output .= '<a class="phft-button-link" target="_blank" rel="nofollow noopener sponsored" href="'.$product_url.'">'.esc_html__('View').'</a>';
+		$output .= '<a class="phft-button-link" target="_blank" rel="nofollow noopener sponsored" href="'.$product_url.'">'.esc_html__('View', 'affiliate-product-highlights').'</a>';
 		$output .= '</div>';
 
 		return $output;
@@ -399,13 +408,14 @@ class Plugin {
 	}
 
 	public function save_feed_metabox($post_id, $post, $update){
-		if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) {
+		if (!isset($_POST['phft_feed_metabox_nonce']) || !wp_verify_nonce(sanitize_key($_POST['phft_feed_metabox_nonce']), 'phft_save_feed_metabox') || ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) ) {
 			return;
 		}
 
+
 		if(!empty($_REQUEST['_phft_feed_url'])){
-			$xml_url = sanitize_url($_REQUEST['_phft_feed_url']);
-			update_post_meta($post_id, '_phft_feed_url', $xml_url);
+			$feed_url = sanitize_url(wp_unslash($_REQUEST['_phft_feed_url']));
+			update_post_meta($post_id, '_phft_feed_url', $feed_url);
 
 			$this->background_process->push_to_queue([
 				'action'    => 'download_feed',
@@ -433,6 +443,7 @@ class Plugin {
 		}
 
 		$wpdb->query($wpdb->prepare("DELETE FROM {$wpdb->prefix}phft_products WHERE feed_id = %d", $post_id));
+		$wpdb->query($wpdb->prepare("DELETE FROM {$wpdb->prefix}phft_images WHERE feed_id = %d", $post_id));
 	}
 
 
@@ -455,7 +466,7 @@ class Plugin {
 		]);
 		wp_enqueue_script('phft-metabox');
 
-		wp_enqueue_style( 'phft-metabox-style', $this->container->get('plugin_url') . 'build/style-metabox.css', array( 'wp-components' ) );
+		wp_enqueue_style( 'phft-metabox-style', $this->container->get('plugin_url') . 'build/style-metabox.css', array( 'wp-components' ), $script_assets['version'] );
 	}
 
 

@@ -6,7 +6,7 @@
         "psr-4": {
             "Koen12344\\AffiliateProductHighlights\\": "src/php/"
         },
-      "classmap": ["aph-vendor"]
+      "classmap": ["vendor-prefixed"]
     },
     "authors": [
         {
@@ -45,7 +45,7 @@
     },
     "extra": {
       "strauss": {
-        "target_directory": "aph-vendor",
+        "target_directory": "vendor-prefixed",
         "namespace_prefix": "Koen12344\\APH_Vendor\\",
         "classmap_prefix": "Koen12344_APH_Vendor_",
         "constant_prefix": "APH_Vendor_",

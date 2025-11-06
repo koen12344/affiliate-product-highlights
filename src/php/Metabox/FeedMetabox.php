@@ -17,17 +17,18 @@ class FeedMetabox extends PostTypeMetabox {
 	}
 
 	public function render(WP_Post $post) {
-
+		wp_nonce_field('phft_save_feed_metabox', 'phft_feed_metabox_nonce');
 		$last_error = get_post_meta($post->ID, '_phft_last_error', true);
 		$feed_url = get_post_meta($post->ID, '_phft_feed_url', true);
 
 		$value = $feed_url ?: '';
 
 		if(!empty($last_error)){
-			echo sprintf(__('Last error: %s', 'affiliate-product-highlights'), $last_error);
+			/* translators: %s is error message */
+			echo esc_html(sprintf(__('Last error: %s', 'affiliate-product-highlights'), $last_error));
 			echo "<br /><br />";
 		}
 
-		echo "Feed Url: <input type='text' name='_phft_feed_url' value='{$value}' />";
+		echo esc_html__("Feed Url:", 'affiliate-product-highlights')."&nbsp;<input type='text' name='_phft_feed_url' value='" . esc_attr($value) . "' />";
 	}
 }

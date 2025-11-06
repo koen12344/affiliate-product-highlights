@@ -30,7 +30,7 @@ class SelectionCustomColumnSubscriber implements SubscriberInterface{
 
 			$placeholders = implode(',', array_fill(0, count($ids), '%d'));
 
-			echo $wpdb->get_var( $wpdb->prepare(
+			echo (int)$wpdb->get_var( $wpdb->prepare(
 				"SELECT COUNT(*) FROM {$wpdb->prefix}phft_products WHERE id IN ({$placeholders}) AND in_latest_import=0",
 				$ids
 			));

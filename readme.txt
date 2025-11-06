@@ -3,9 +3,9 @@ Contributors: koen12344
 Donate link: https://koenreus.com
 Tags: tradetracker, adtraction, affiliate, feed, products
 Requires at least: 5.1
-Tested up to: 6.8.3
+Tested up to: 6.8
 Requires PHP: 8.0
-Stable tag: 0.4.2
+Stable tag: 0.4.3
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -80,8 +80,13 @@ Colors can be adjusted by overriding the default CSS variables:
 
 == Changelog ==
 
+= 0.4.3 =
+* Improved: Various improvements to pass WP Plugin Check
+* Fix #29: Products with ASCII characters in slug not properly redirected
+* Fix: Images not loading for some feeds in the selection creator
+
 = 0.4.2 =
-* Fix: Github updater (#25)
+* Fix #25: GitHub updater not working
 
 = 0.4.1 =
 * Fix: Duplicated products when images URLs in feed are changed

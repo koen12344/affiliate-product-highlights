@@ -9,4 +9,4 @@ node_modules/
 *.zip
 /build/
 /vendor/
-/aph-vendor/
+/vendor-prefixed/

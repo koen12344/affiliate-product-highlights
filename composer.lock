@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "821471c4e88b6069644e576f4126d5d1",
+    "content-hash": "37dc1cd6691ca6a0fb84bab99dcfb104",
     "packages": [
         {
             "name": "deliciousbrains/wp-background-processing",
@@ -12,12 +12,12 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:koen12344/multisite-background-processing.git",
-                "reference": "c2cd0568285853d4ac6e4d09e05451c00c37d632"
+                "reference": "8885a919631d4df3a45751e306b785178fe0be74"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/koen12344/multisite-background-processing/zipball/c2cd0568285853d4ac6e4d09e05451c00c37d632",
-                "reference": "c2cd0568285853d4ac6e4d09e05451c00c37d632",
+                "url": "https://api.github.com/repos/koen12344/multisite-background-processing/zipball/8885a919631d4df3a45751e306b785178fe0be74",
+                "reference": "8885a919631d4df3a45751e306b785178fe0be74",
                 "shasum": ""
             },
             "require": {
@@ -49,7 +49,7 @@
                 }
             ],
             "description": "WP Background Processing can be used to fire off non-blocking asynchronous requests or as a background processing tool, allowing you to queue tasks.",
-            "time": "2025-01-02T14:56:18+00:00"
+            "time": "2025-11-03T13:34:44+00:00"
         },
         {
             "name": "koen12344/github-plugin-updater",

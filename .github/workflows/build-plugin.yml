@@ -68,7 +68,7 @@ jobs:
       - name: Composer install
         working-directory: ./affiliate-product-highlights
         run: |
-          mkdir aph-vendor
+          mkdir vendor-prefixed
           composer install --no-dev --classmap-authoritative --prefer-dist
           composer dump-autoload -a --ignore-platform-reqs
 

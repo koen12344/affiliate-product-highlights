@@ -41,7 +41,7 @@ class Container implements ContainerInterface, ArrayAccess {
 
 	public function get($id){
 		if(!array_key_exists($id, $this->values)){
-			throw new InvalidArgumentException(sprintf('Container doesn\'t have a value stored for the "%s" key.', $id));
+			throw new InvalidArgumentException(esc_html(sprintf('Container doesn\'t have a value stored for the "%s" key.', $id)));
 		}elseif(!$this->is_locked()){
 			$this->lock();
 		}

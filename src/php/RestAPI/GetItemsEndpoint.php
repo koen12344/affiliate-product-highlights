@@ -15,7 +15,7 @@ class GetItemsEndpoint implements EndpointInterface {
 	private $wpdb;
 
 	public function __construct(wpdb $wpdb) {
-		$this->wpdb = $wpdb;
+		$wpdb = $wpdb;
 	}
 
 	public function get_arguments(): array {
@@ -30,13 +30,14 @@ class GetItemsEndpoint implements EndpointInterface {
 	}
 
 	public function respond( WP_REST_Request $request ) {
+		global $wpdb;
 		$search_term_raw = $request->get_param('search');
 
 		$json_params = $request->get_json_params();
 
 		$selection = $json_params['selection'];
 
-		$search_term = $this->wpdb->esc_like( $search_term_raw );
+		$search_term = $wpdb->esc_like( $search_term_raw );
 
 		$where_parts = [];
 		$params = [];
@@ -57,7 +58,7 @@ class GetItemsEndpoint implements EndpointInterface {
 				switch($filter['field']) {
 					case 'in_selection':
 						$include = wp_validate_boolean($filter['value']);
-						$ids = array_map('intval', array_keys($selection));
+						$ids = wp_parse_id_list(array_keys($selection));
 						if(!empty($ids)) {
 							$placeholders = implode( ',', array_fill( 0, count( $ids ), '%d' ) );
 
@@ -86,16 +87,13 @@ class GetItemsEndpoint implements EndpointInterface {
 			$where_clause = ' WHERE ' . implode( ' AND ', $where_parts );
 		}
 
-
 		// Total count query
-		$count_query = "SELECT COUNT(*) FROM {$this->wpdb->prefix}phft_products $where_clause";
-		$total_items = (int) $this->wpdb->get_var($this->wpdb->prepare( $count_query, $params ));
+		$total_items = (int) $wpdb->get_var($wpdb->prepare( "SELECT COUNT(*) FROM {$wpdb->prefix}phft_products $where_clause", $params ));
 
 		// Pagination
 		$per_page = max( 1, (int) $request->get_param('per_page') );
 		$page = max( 1, (int) $request->get_param('page') );
 		$offset = ( $page - 1 ) * $per_page;
-
 
 		$order = $request->get_param('order') ? $request->get_param('order') : 'asc';
 		$orderby = $request->get_param('orderby');
@@ -113,18 +111,15 @@ class GetItemsEndpoint implements EndpointInterface {
 			$order_by_query = "ORDER BY ".($fields[$orderby] ?? 'product_name')." {$direction}";
 		}
 
-		// Main data query
-		$data_query = "
-		SELECT *
-		FROM {$this->wpdb->prefix}phft_products
-		$where_clause
-		$order_by_query
-		LIMIT %d OFFSET %d
-	";
 		$params[] = $per_page;
 		$params[] = $offset;
-		$prepared_query = $this->wpdb->prepare( $data_query, $params );
-		$results = $this->wpdb->get_results( $prepared_query );
+		$results = $wpdb->get_results( $wpdb->prepare( "
+			SELECT *
+			FROM {$wpdb->prefix}phft_products
+			$where_clause
+			$order_by_query
+			LIMIT %d OFFSET %d
+		", $params ) );
 
 		// Format and augment results
 		$locale = get_locale();
@@ -132,10 +127,9 @@ class GetItemsEndpoint implements EndpointInterface {
 
 		$feed_ids = array_unique( array_column($results, 'feed_id') );
 
-		$product_ids = implode(',', array_map('intval', array_column($results, 'id')));
-		$images_query = "SELECT product_id, image_url FROM {$this->wpdb->prefix}phft_images WHERE product_id IN ({$product_ids})";
+		$product_ids = implode(',', wp_parse_id_list(array_column($results, 'id')));
 
-		$images = $this->wpdb->get_results($images_query);
+		$images = $wpdb->get_results("SELECT product_id, image_url FROM {$wpdb->prefix}phft_images WHERE product_id IN ({$product_ids})");
 
 		$images_by_id = [];
 		foreach($images as $image){

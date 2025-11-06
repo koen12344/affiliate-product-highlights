@@ -23,18 +23,18 @@ class FeedCustomColumnSubscriber implements SubscriberInterface{
 	public function show_custom_column($column, $post_id) {
 		global $wpdb;
 		if ($column === 'imported_items') {
-			echo $wpdb->get_var( $wpdb->prepare(
+			echo (int)$wpdb->get_var( $wpdb->prepare(
 				"SELECT COUNT(*) FROM {$wpdb->prefix}phft_products WHERE feed_id = %d",
 				$post_id
 			));
 		}elseif($column === 'no_longer_in_feed'){
-			echo $wpdb->get_var( $wpdb->prepare(
+			echo (int)$wpdb->get_var( $wpdb->prepare(
 				"SELECT COUNT(*) FROM {$wpdb->prefix}phft_products WHERE feed_id = %d AND in_latest_import=0",
 				$post_id
 			));
 		}elseif($column === 'last_import'){
 			$last_import = get_post_meta($post_id, '_phft_last_import', true);
-			echo $last_import;
+			echo esc_html($last_import);
 		}
 	}
 }

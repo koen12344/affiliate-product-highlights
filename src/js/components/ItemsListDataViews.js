@@ -121,7 +121,7 @@ export default function ItemsListDataViews( { itemSelection, setItemSelection })
 			label: __('Product image', 'affiliate-product-highlights'),
 			enableSorting: false,
 			render: ( { item } ) => (
-				<img alt={ item.product_name } src={ item.image_url } width="50" height="50" />
+				<img alt={ item.product_name } src={ item.image_url } loading="lazy" referrerPolicy="no-referrer" width="50" height="50" />
 			),
 		}
 	];

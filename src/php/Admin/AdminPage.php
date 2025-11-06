@@ -52,17 +52,17 @@ class AdminPage {
 
 		add_settings_section(
 			'phft_slack_settings_section',
-			'Slack Webhook Configuration',
+			__('Slack Webhook Configuration', 'affiliate-product-highlights'),
 			null,
 			'phft-settings'
 		);
 
 		add_settings_field(
 			'phft_slack_webhook_url',
-			'Slack Webhook URL',
+			__('Slack Webhook URL', 'affiliate-product-highlights'),
 			function () {
 				$value = esc_url(get_option('phft_slack_webhook_url', ''));
-				echo "<input type='url' name='phft_slack_webhook_url' value='$value' style='width: 100%; max-width: 400px;' />";
+				echo "<input type='url' name='phft_slack_webhook_url' value='". esc_attr($value)."' style='width: 100%; max-width: 400px;' />";
 			},
 			'phft-settings',
 			'phft_slack_settings_section'
@@ -70,7 +70,7 @@ class AdminPage {
 
 		add_settings_section(
 			'phft_misc_section',
-			'Misc',
+			__('Misc', 'affiliate-product-highlights'),
 			[$this, 'clear_thumbnail_cache'],
 			'phft-settings'
 		);

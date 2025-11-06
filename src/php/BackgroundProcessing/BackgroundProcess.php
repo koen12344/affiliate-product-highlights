@@ -66,21 +66,25 @@ class BackgroundProcess extends \Koen12344_APH_Vendor_WP_Background_Process {
 				'imported_at' => current_time('mysql', true),
 			];
 
-			$existing_image = $wpdb->get_row($wpdb->prepare(
-				"SELECT * FROM $image_table WHERE product_id = %d AND image_url = %s",
+			$image_id = $wpdb->get_var($wpdb->prepare(
+				"SELECT id FROM {$image_table} WHERE product_id = %d AND image_url = %s",
 				$product_id,
 				(string)$image
 			));
-			if($existing_image){
-				$wpdb->update($image_table, $image_data, ['id' => $existing_image->id]);
+			if($image_id){
+				$wpdb->update($image_table, $image_data, ['id' => (int)$image_id]);
 			}else{
 				$wpdb->insert($image_table, $image_data);
 			}
 		}
 	}
 
+	/**
+	 * @throws Exception
+	 */
 	public function download_xml_file($url) {
 		if (filter_var($url, FILTER_VALIDATE_URL) === false) {
+			// phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped  -- Exception message is escaped on output when rendered.
 			throw new InvalidArgumentException(__('Invalid feed URL', 'affiliate-product-highlights'));
 		}
 
@@ -89,11 +93,6 @@ class BackgroundProcess extends \Koen12344_APH_Vendor_WP_Background_Process {
 		}
 
 		$tmp_file = \wp_tempnam();
-		$handle = fopen($tmp_file, 'w');
-
-		if ($handle === false) {
-			throw new Exception(__('Unable to to get write access to store temporary file.', 'affiliate-product-highlights'));
-		}
 
 		$http = new WP_Http();
 		$response = $http->request($url, [
@@ -103,20 +102,23 @@ class BackgroundProcess extends \Koen12344_APH_Vendor_WP_Background_Process {
 		]);
 
 		if (is_wp_error($response)) {
-			@fclose($handle);
-			@unlink($tmp_file);
-			throw new Exception(sprintf(__('Unable to download the feed: %s', 'affiliate-product-highlights'), $response->get_error_message()));
+			wp_delete_file($tmp_file);
+			// translators: %s is error message
+			throw new Exception(sprintf(__('Unable to download the feed: %s', 'affiliate-product-highlights'), $response->get_error_message())); // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped  -- Exception message is escaped on output when rendered.
 		}
 
-		fclose($handle);
 		return $tmp_file;
 	}
 
+	/**
+	 * @throws Exception
+	 */
 	public function import_xml($file, int $feed_id, $feed_type) {
 		global $wpdb;
 
 		$reader = new XMLReader();
 		if(!$reader->open($file)){
+			// phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped  -- Exception message is escaped on output when rendered.
 			throw new Exception(__('Unable to open the file', 'affiliate-product-highlights'));
 		}
 
@@ -198,6 +200,9 @@ class BackgroundProcess extends \Koen12344_APH_Vendor_WP_Background_Process {
 		$reader->close();
 	}
 
+	/**
+	 * @throws Exception
+	 */
 	private function split_feed($item){
 		$temp_file = $item['temp_file'];
 
@@ -207,6 +212,7 @@ class BackgroundProcess extends \Koen12344_APH_Vendor_WP_Background_Process {
 
 		$reader = new XMLReader();
 		if(!$reader->open($temp_file)){
+			// phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped -- Exception message is escaped on output when rendered.
 			throw new Exception(__('Unable to open the temp file', 'affiliate-product-highlights'));
 		}
 		$product_counter = 0;
@@ -260,17 +266,22 @@ class BackgroundProcess extends \Koen12344_APH_Vendor_WP_Background_Process {
 
 		$reader->close();
 
-		@unlink($temp_file);
+		wp_delete_file($temp_file);
 
 		return false;
 	}
+
+	/**
+	 * @throws Exception
+	 */
 	private function download_feed($item){
 
 		$xml_url = get_post_meta($item['feed_id'], '_phft_feed_url', true);
 
 		$network = $this->get_affiliate_network($xml_url);
 		if(!$network){
-			throw new InvalidArgumentException(__('The affiliate network this feed belongs to is unrecognized'));
+			// phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped -- Exception message is escaped on output when rendered.
+			throw new InvalidArgumentException(__('The affiliate network this feed belongs to is unrecognized', 'affiliate-product-highlights'));
 		}
 
 		update_post_meta($item['feed_id'], '_phft_last_import', current_time('mysql', true));
@@ -280,10 +291,9 @@ class BackgroundProcess extends \Koen12344_APH_Vendor_WP_Background_Process {
 
 		$reader = new XMLReader();
 		if(!$reader->open($temp_file)){
+			// phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped -- Exception message is escaped on output when rendered.
 			throw new Exception(__('Unable to open the temp file', 'affiliate-product-highlights'));
 		}
-
-
 
 		$item['action'] = 'split_feed';
 		$item['feed_type'] = $network;
@@ -296,13 +306,13 @@ class BackgroundProcess extends \Koen12344_APH_Vendor_WP_Background_Process {
 		$chunk_file = $item['chunk_file'];
 		$this->import_xml($chunk_file, $item['feed_id'], $item['feed_type']);
 
-		@unlink($chunk_file);
+		wp_delete_file($chunk_file);
 
 		return false;
 	}
 
 	private function get_affiliate_network($url) {
-	    $parsed_url = parse_url($url);
+	    $parsed_url = wp_parse_url($url);
 	    $host = $parsed_url['host'];
 
 
@@ -403,22 +413,21 @@ class BackgroundProcess extends \Koen12344_APH_Vendor_WP_Background_Process {
 
 		$products_table = $wpdb->prefix . 'phft_products';
 
-		$query = $wpdb->prepare(
+		$wpdb->query($wpdb->prepare(
 			"UPDATE {$products_table} SET in_latest_import=0 WHERE imported_at < %s AND feed_id=%d",
 			$last_import_timestamp,
 			$item['feed_id']
-		);
-		$wpdb->query($query);
+		));
 
 		$images_table = $wpdb->prefix . 'phft_images';
 
-		$selected_unimported_images = $wpdb->prepare(
+		$items_to_delete = $wpdb->get_results($wpdb->prepare(
 			"SELECT i.id, i.wp_media_id FROM {$images_table} i JOIN {$products_table} p ON p.id = i.product_id WHERE p.imported_at >= %s AND p.feed_id=%d AND i.imported_at < %s",
 			$last_import_timestamp,
 			$item['feed_id'],
 			$last_import_timestamp
-		);
-		$items_to_delete = $wpdb->get_results($selected_unimported_images, OBJECT_K);
+		), OBJECT_K);
+
 		if(empty($items_to_delete)){
 			return false;
 		}
