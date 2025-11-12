@@ -1,7 +1,7 @@
 import {DataViews} from "@wordpress/dataviews";
 import {useEffect, useMemo, useRef, useState} from "@wordpress/element";
 import {ExternalLink, Icon} from "@wordpress/components";
-import {__} from "@wordpress/i18n";
+import {getLocaleData, __} from "@wordpress/i18n";
 import apiFetch from "@wordpress/api-fetch";
 import {addQueryArgs} from "@wordpress/url";
 import {check, notFound, copy } from "@wordpress/icons";
@@ -10,7 +10,14 @@ import { useSelect } from '@wordpress/data';
 import { store as coreDataStore } from '@wordpress/core-data';
 
 const { userView } = psfg_localize_metabox;
-
+const localeData = getLocaleData();
+const locale = localeData[""]?.lang || 'en-US';
+const formatprice = (price, currency) => {
+	return new Intl.NumberFormat(locale, {
+		style: 'currency',
+		currency: currency,
+	}).format(parseFloat(price));
+}
 export default function ItemsListDataViews( { itemSelection, setItemSelection }){
 
 	const [items, setItems] = useState([]);
@@ -25,11 +32,10 @@ export default function ItemsListDataViews( { itemSelection, setItemSelection })
 		[]
 	);
 
-
 	const fields = [
 		{
 			id: 'in_selection',
-			label: 'In selection',
+			label: __('In selection', 'affiliate-product-highlights'),
 			// getValue: ({ item }) => !!selection[item.id],
 			render: ( { item } ) => (
 				!!itemSelection[item.id] && <Icon icon={ check } />
@@ -94,7 +100,29 @@ export default function ItemsListDataViews( { itemSelection, setItemSelection })
 		{
 			id: 'product_price',
 			label: __('Price', 'affiliate-product-highlights'),
-			// enableHiding: true,
+			render: ( { item } ) => {
+				const on_sale = parseFloat(item.product_original_price) > parseFloat(item.product_price);
+
+				return (
+					<>
+						{ formatprice(item.product_price, item.product_currency) }
+						{on_sale && <>&nbsp;<span className='phft-original-price'>{ formatprice(item.product_original_price, item.product_currency) }</span></>}
+					</>
+				);
+			},
+			elements: [
+				{
+					value: 'on_sale',
+					label: __('On sale', 'affiliate-product-highlights'),
+				},
+				{
+					value: 'not_on_sale',
+					label: __('Not on sale', 'affiliate-product-highlights'),
+				},
+			],
+			filterBy: {
+				operators: ['is']
+			},
 		},
 		{
 			id: 'product_description',
@@ -147,7 +175,7 @@ export default function ItemsListDataViews( { itemSelection, setItemSelection })
 		titleField: 'product_name',
 		mediaField: 'image_url',
 		descriptionField: 'product_description',
-		fields: [ 'in_selection', 'status' ],
+		fields: [ 'in_selection' ],
 		layout: {},
 		...userView,
 	} );
@@ -161,7 +189,7 @@ export default function ItemsListDataViews( { itemSelection, setItemSelection })
 		}
 
 		const { type, perPage, fields, sort } = view;
-
+		console.log(view);
 		apiFetch({
 			path: addQueryArgs('/phft/v1/view'),
 			method:'POST',
@@ -231,7 +259,7 @@ export default function ItemsListDataViews( { itemSelection, setItemSelection })
 		{
 			id: 'copy-link-to-clipboard',
 			label: __('Copy single product link shortcode', 'affiliate-product-highlights' ),
-			isPrimary: true,
+			isPrimary: false,
 			icon: copy,
 			supportsBulk: false,
 			callback: ([ item ]) => {

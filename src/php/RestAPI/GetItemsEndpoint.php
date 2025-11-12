@@ -78,6 +78,14 @@ class GetItemsEndpoint implements EndpointInterface {
 						$feed_id = intval($filter['value']);
 						$where_parts[] = "feed_id=%d";
 						$params[] = $feed_id;
+						break;
+					case 'product_price':
+						if($filter['value'] === 'on_sale'){
+							$where_parts[] = "product_original_price > product_price";
+						}elseif($filter['value'] === 'not_on_sale'){
+							$where_parts[] = "product_original_price <= product_price";
+						}
+
 				}
 			}
 		}
@@ -151,7 +159,7 @@ class GetItemsEndpoint implements EndpointInterface {
 		}
 
 		$products = array_map(function($product) use ($fmt, $selection, $images_by_id, $feeds_by_id){
-			$product->product_price = numfmt_format_currency( $fmt, $product->product_price, $product->product_currency );
+//			$product->product_price = numfmt_format_currency( $fmt, $product->product_price, $product->product_currency );
 			$product->feed_name     = $feeds_by_id[ $product->feed_id ]->post_title ?? '';
 			$product->feed_url      = get_edit_post_link( $product->feed_id, null );
 			$product->product_description = html_entity_decode(wp_trim_words(wp_strip_all_tags( $product->product_description ), 15),ENT_QUOTES | ENT_HTML5, 'UTF-8');

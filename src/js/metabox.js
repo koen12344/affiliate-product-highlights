@@ -1,15 +1,9 @@
-import {render} from "@wordpress/element";
-
 import './metabox.scss';
+
+import {createRoot} from "@wordpress/element";
 import SelectionMetabox from "./components/SelectionMetabox";
 
-window.addEventListener(
-	'load',
-	function () {
-		render(
-			<SelectionMetabox />,
-			document.getElementById( 'phft_selection_metabox-inner' )
-		);
-	},
-	false
-);
+
+const container = document.getElementById( 'phft_selection_metabox-inner' );
+const root = createRoot(container);
+root.render(<SelectionMetabox />);

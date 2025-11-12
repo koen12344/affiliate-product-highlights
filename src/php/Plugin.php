@@ -18,7 +18,7 @@ class Plugin {
 
 	const DOMAIN = 'affiliate-product-highlights';
 
-	const VERSION = '0.4.4';
+	const VERSION = '0.4.5';
 
 	const REST_NAMESPACE = 'phft/v1';
 
@@ -299,15 +299,18 @@ class Plugin {
 		$limit .= " LIMIT %d";
 		$params[] = $atts['limit'];
 
-		$cache_key = 'phft_'.md5($where_clause.$limit);
+		$prepared = $wpdb->prepare(
+			"SELECT * FROM {$wpdb->prefix}phft_products $where_clause $limit",
+			$params
+		);
+
+		$cache_key = 'phft_'.md5($prepared);
 
 		$products = wp_cache_get($cache_key, 'phft');
 
 		if(!$products){
-			$results = $wpdb->get_results($wpdb->prepare(
-				"SELECT * FROM {$wpdb->prefix}phft_products $where_clause $limit",
-				$params
-			), OBJECT_K);
+			// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared  -- The query is prepared, but also used as md5 hashed key to fetch from the database
+			$results = $wpdb->get_results($prepared, OBJECT_K);
 
 			if(!$results){
 				return $wpdb->print_error();
@@ -468,7 +471,7 @@ class Plugin {
 
 		wp_enqueue_script('phft-metabox');
 
-		wp_enqueue_style( 'phft-metabox-style', $this->container->get('plugin_url') . 'build/style-metabox.css', array( 'wp-components' ), $script_assets['version'] );
+		wp_enqueue_style( 'phft-metabox-style', $this->container->get('plugin_url') . 'build/metabox.css', array( 'wp-components' ), $script_assets['version'] );
 	}
 
 

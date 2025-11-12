@@ -364,7 +364,8 @@ class BackgroundProcess extends \Koen12344_APH_Vendor_WP_Background_Process {
 			$context = maybe_unserialize($log->context);
 
 			$attachments[] = [
-				"title" => sprintf("Action: %s", $log->action),
+				// translators: %s is the type of action for the log entry
+				"title" => sprintf(__("Action: %s", 'affiliate-product-highlights'), $log->action),
 				"title_link" => !empty($context->feed_id) ? get_edit_post_link((int)$context->feed_id, '') : null,
 				'text'  => $log->message,
 				'color' => 'bad'

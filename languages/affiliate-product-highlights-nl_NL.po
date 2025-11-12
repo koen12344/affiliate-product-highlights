@@ -5,8 +5,8 @@ msgstr ""
 "Project-Id-Version: Affiliate Product Highlights 0.4.3\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/affiliate-product-"
 "highlights\n"
-"POT-Creation-Date: 2025-11-06T15:35:56+00:00\n"
-"PO-Revision-Date: 2025-11-06 16:47+0100\n"
+"POT-Creation-Date: 2025-11-12T11:58:42+00:00\n"
+"PO-Revision-Date: 2025-11-12 12:59+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: nl_NL\n"
@@ -83,8 +83,14 @@ msgstr "Niet gelukt om het tijdelijke bestand te openen"
 msgid "The affiliate network this feed belongs to is unrecognized"
 msgstr "Het affiliatenetwerk waar deze feed toe behoort is niet herkend"
 
+#. translators: %s is the type of action for the log entry
+#: src/php/BackgroundProcessing/BackgroundProcess.php:368
+#, php-format
+msgid "Action: %s"
+msgstr "Actie: %s"
+
 #. translators: %1$s is product name, %2$s is the URL of the page where the click originated
-#: src/php/HookSubscribers/ExternalRedirectSubscriber.php:44
+#: src/php/HookSubscribers/ExternalRedirectSubscriber.php:47
 #, php-format
 msgid ""
 "Detected outgoing click on item that is no longer available in feed: %1$s, "
@@ -92,6 +98,19 @@ msgid ""
 msgstr ""
 "Uitgaande klik gedetecteerd naar een item dat niet langer in een feed "
 "beschikbaar is: %1$s, afkomstig van URL: %2$s"
+
+#. translators: %1$s is product name, %2$s is the URL of the page where the click originated
+#: src/php/HookSubscribers/ExternalRedirectSubscriber.php:47
+msgid "Unknown"
+msgstr "Onbekend"
+
+#: src/php/HookSubscribers/ExternalRedirectSubscriber.php:53
+msgid "Product not found."
+msgstr "Product niet gevonden."
+
+#: src/php/HookSubscribers/ExternalRedirectSubscriber.php:54
+msgid "Not Found"
+msgstr "Niet Gevonden"
 
 #: src/php/HookSubscribers/FeedCustomColumnSubscriber.php:17
 msgid "Imported Items"
@@ -131,8 +150,8 @@ msgstr "Item selectie"
 msgid "The product selection doesn't contain any items"
 msgstr "De productselectie bevat geen items"
 
-#: src/php/Plugin.php:383 src/php/PostTypes/FeedPostType.php:29
-#: src/php/PostTypes/SelectionsPostType.php:27 build/metabox.js:22
+#: src/php/Plugin.php:386 src/php/PostTypes/FeedPostType.php:29
+#: src/php/PostTypes/SelectionsPostType.php:27 build/metabox.js:115
 msgid "View"
 msgstr "Bekijken"
 
@@ -140,7 +159,7 @@ msgstr "Bekijken"
 msgid "Feeds"
 msgstr "Feeds"
 
-#: src/php/PostTypes/FeedPostType.php:23 build/metabox.js:22
+#: src/php/PostTypes/FeedPostType.php:23 build/metabox.js:115
 msgid "Feed"
 msgstr "Feed"
 
@@ -227,46 +246,58 @@ msgid "Clear product thumbnail cache"
 msgstr "Product thumbnail cache wissen"
 
 #. translators: %s: field label
-#: build/metabox.js:22
+#: build/metabox.js:115
+msgid "In selection"
+msgstr "In selectie"
+
+#: build/metabox.js:115
 msgid "Yes"
 msgstr "Ja"
 
-#: build/metabox.js:22
+#: build/metabox.js:115
 msgid "No"
 msgstr "Nee"
 
-#: build/metabox.js:22
+#: build/metabox.js:115
 msgid "In latest import"
 msgstr "In laatste import"
 
-#: build/metabox.js:22
+#: build/metabox.js:115
 msgid "Product Name"
 msgstr "Product Naam"
 
-#: build/metabox.js:22
+#: build/metabox.js:115
 msgid "Price"
 msgstr "Prijs"
 
-#: build/metabox.js:22
+#: build/metabox.js:115
+msgid "On sale"
+msgstr "In de aanbieding"
+
+#: build/metabox.js:115
+msgid "Not on sale"
+msgstr "Niet in de aanbieding"
+
+#: build/metabox.js:115
 msgid "Description"
 msgstr "Omschrijving"
 
-#: build/metabox.js:22
+#: build/metabox.js:115
 msgid "Product image"
 msgstr "Product afbeelding"
 
-#: build/metabox.js:22
+#: build/metabox.js:115
 msgid "Add to selection"
 msgstr "Voeg toe aan selectie"
 
-#: build/metabox.js:22
+#: build/metabox.js:115
 msgid "Remove from selection"
 msgstr "Verwijder uit selectie"
 
-#: build/metabox.js:22
+#: build/metabox.js:115
 msgid "Copy single product link shortcode"
 msgstr "Kopieer shortcode voor productlink"
 
-#: build/metabox.js:22
+#: build/metabox.js:115
 msgid "Shortcode"
 msgstr "Shortcode"

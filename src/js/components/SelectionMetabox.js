@@ -1,9 +1,8 @@
-import ItemsList from "./ItemsList";
 import {useEffect, useState} from "@wordpress/element";
 import apiFetch from '@wordpress/api-fetch';
-import {SearchControl, TextControl} from "@wordpress/components";
+import {TextControl} from "@wordpress/components";
 import {addQueryArgs} from "@wordpress/url";
-import {useDebounce, usePrevious, useCopyToClipboard} from "@wordpress/compose";
+import {useDebounce, usePrevious} from "@wordpress/compose";
 import {__} from "@wordpress/i18n";
 import ItemsListDataViews from "./ItemsListDataViews";
 

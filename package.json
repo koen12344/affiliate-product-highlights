@@ -9,7 +9,8 @@
     "i18n-pot": "wp i18n make-pot . languages/affiliate-product-highlights.pot --exclude=src/js",
     "i18n-json": "wp i18n make-json languages --no-purge",
     "start": "wp-scripts start src/js/metabox.js src/js/admin.js",
-    "build": "wp-scripts build src/js/metabox.js src/js/admin.js"
+    "build": "wp-scripts build src/js/metabox.js src/js/admin.js",
+    "packages-update": "wp-scripts packages-update"
   },
   "devDependencies": {
     "grunt": "1.5.3",
@@ -17,16 +18,16 @@
     "grunt-wp-readme-to-markdown": "^2.1.0"
   },
   "dependencies": {
-    "@wordpress/api-fetch": "^6.45.0",
-    "@wordpress/components": "^25.14.0",
-    "@wordpress/compose": "^6.25.0",
-    "@wordpress/core-data": "^7.32.0",
-    "@wordpress/data": "^10.32.0",
-    "@wordpress/dataviews": "^4.18.0",
-    "@wordpress/element": "^5.25.0",
-    "@wordpress/i18n": "^5.4.0",
-    "@wordpress/icons": "^10.23.0",
-    "@wordpress/scripts": "^27.0.0",
-    "@wordpress/url": "^3.49.0"
+    "@wordpress/api-fetch": "^7.34.0",
+    "@wordpress/components": "^30.7.0",
+    "@wordpress/compose": "^7.34.0",
+    "@wordpress/core-data": "^7.34.0",
+    "@wordpress/data": "^10.34.0",
+    "@wordpress/dataviews": "^10.2.0",
+    "@wordpress/element": "^6.34.0",
+    "@wordpress/i18n": "^6.7.0",
+    "@wordpress/icons": "^11.1.0",
+    "@wordpress/scripts": "^30.27.0",
+    "@wordpress/url": "^4.34.0"
   }
 }

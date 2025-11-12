@@ -2,14 +2,14 @@
 # This file is distributed under the GPLv2 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Affiliate Product Highlights 0.4.3\n"
+"Project-Id-Version: Affiliate Product Highlights 0.4.5\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/affiliate-product-highlights\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2025-11-06T15:35:56+00:00\n"
+"POT-Creation-Date: 2025-11-12T11:58:42+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: affiliate-product-highlights\n"
@@ -79,10 +79,29 @@ msgstr ""
 msgid "The affiliate network this feed belongs to is unrecognized"
 msgstr ""
 
+#. translators: %s is the type of action for the log entry
+#: src/php/BackgroundProcessing/BackgroundProcess.php:368
+#, php-format
+msgid "Action: %s"
+msgstr ""
+
 #. translators: %1$s is product name, %2$s is the URL of the page where the click originated
-#: src/php/HookSubscribers/ExternalRedirectSubscriber.php:44
+#: src/php/HookSubscribers/ExternalRedirectSubscriber.php:47
 #, php-format
 msgid "Detected outgoing click on item that is no longer available in feed: %1$s, referring URL: %2$s"
+msgstr ""
+
+#. translators: %1$s is product name, %2$s is the URL of the page where the click originated
+#: src/php/HookSubscribers/ExternalRedirectSubscriber.php:47
+msgid "Unknown"
+msgstr ""
+
+#: src/php/HookSubscribers/ExternalRedirectSubscriber.php:53
+msgid "Product not found."
+msgstr ""
+
+#: src/php/HookSubscribers/ExternalRedirectSubscriber.php:54
+msgid "Not Found"
 msgstr ""
 
 #: src/php/HookSubscribers/FeedCustomColumnSubscriber.php:17
@@ -123,10 +142,10 @@ msgstr ""
 msgid "The product selection doesn't contain any items"
 msgstr ""
 
-#: src/php/Plugin.php:383
+#: src/php/Plugin.php:386
 #: src/php/PostTypes/FeedPostType.php:29
 #: src/php/PostTypes/SelectionsPostType.php:27
-#: build/metabox.js:22
+#: build/metabox.js:115
 msgid "View"
 msgstr ""
 
@@ -135,7 +154,7 @@ msgid "Feeds"
 msgstr ""
 
 #: src/php/PostTypes/FeedPostType.php:23
-#: build/metabox.js:22
+#: build/metabox.js:115
 msgid "Feed"
 msgstr ""
 
@@ -222,46 +241,58 @@ msgid "Clear product thumbnail cache"
 msgstr ""
 
 #. translators: %s: field label
-#: build/metabox.js:22
+#: build/metabox.js:115
+msgid "In selection"
+msgstr ""
+
+#: build/metabox.js:115
 msgid "Yes"
 msgstr ""
 
-#: build/metabox.js:22
+#: build/metabox.js:115
 msgid "No"
 msgstr ""
 
-#: build/metabox.js:22
+#: build/metabox.js:115
 msgid "In latest import"
 msgstr ""
 
-#: build/metabox.js:22
+#: build/metabox.js:115
 msgid "Product Name"
 msgstr ""
 
-#: build/metabox.js:22
+#: build/metabox.js:115
 msgid "Price"
 msgstr ""
 
-#: build/metabox.js:22
+#: build/metabox.js:115
+msgid "On sale"
+msgstr ""
+
+#: build/metabox.js:115
+msgid "Not on sale"
+msgstr ""
+
+#: build/metabox.js:115
 msgid "Description"
 msgstr ""
 
-#: build/metabox.js:22
+#: build/metabox.js:115
 msgid "Product image"
 msgstr ""
 
-#: build/metabox.js:22
+#: build/metabox.js:115
 msgid "Add to selection"
 msgstr ""
 
-#: build/metabox.js:22
+#: build/metabox.js:115
 msgid "Remove from selection"
 msgstr ""
 
-#: build/metabox.js:22
+#: build/metabox.js:115
 msgid "Copy single product link shortcode"
 msgstr ""
 
-#: build/metabox.js:22
+#: build/metabox.js:115
 msgid "Shortcode"
 msgstr ""
