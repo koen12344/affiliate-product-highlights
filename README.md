@@ -2,10 +2,10 @@
 **Contributors:** [koen12344](https://profiles.wordpress.org/koen12344/)  
 **Donate link:** https://koenreus.com  
 **Tags:** tradetracker, adtraction, affiliate, feed, products  
-**Requires at least:** 5.1  
-**Tested up to:** 6.6.1  
+**Requires at least:** 6.0  
+**Tested up to:** 6.9  
 **Requires PHP:** 8.0  
-**Stable tag:** 0.4.2  
+**Stable tag:** 0.4.5  
 **License:** GPLv2 or later  
 **License URI:** https://www.gnu.org/licenses/gpl-2.0.html  
 
@@ -84,24 +84,40 @@ Colors can be adjusted by overriding the default CSS variables:
 
 ## Changelog ##
 
+### 0.4.5 ###
+* Added: Allow filtering by whether products are on sale
+* Improved: [#28] Display discounted price in selection creator
+* Improved: Show 404 error page when redirecting to product that doesn't exist
+* Fix: Incorrect cache key causing wrong selection to be displayed
+* Fix: [#30] Selection creator fields getting duplicated when changing order
+
+### 0.4.4 ###
+* Added: Dutch translations
+* Fix: Translations not loaded on product selection metabox
+
+### 0.4.3 ###
+* Improved: Various improvements to pass WP Plugin Check
+* Fix: [#29] Products with ASCII characters in slug not properly redirected
+* Fix: Images not loading for some feeds in the selection creator
+
 ### 0.4.2 ###
-* Fix: Github updater (#25)
+* Fix: [#25] GitHub updater not working
 
 ### 0.4.1 ###
 * Fix: Duplicated products when images URLs in feed are changed
 
 ### 0.4.0 ###
-* Added: Function to clear product thumbnail cache (#16)
-* Added: Allow filtering product selections by feed (#7)
-* Improved: Retain selection view settings in user memory (#5)
-* Improved: Make "Selections" primary menu item (#4)
-* Improved: Allow searching products by EAN/SKU in selection creator (#21)
-* Improved: Do not show products that are no longer available in dynamic shortcodes (#8)
-* Fix: Incorrect thumbnail cropping on non-square product images (#13)
-* Fix: Descriptions showing html characters in selection creator (#19)
-* Fix: Selection showing all products when filtering by Selected = Yes, despite none being selected (#18)
-* Fix: Fatal error when a selection with no products is referenced (#12)
-* Fix: Not all products being imported from TradeTracker feeds (#10)
+* Added: [#16] Function to clear product thumbnail cache
+* Added: [#7] Allow filtering product selections by feed
+* Improved: [#5] Retain selection view settings in user memory
+* Improved: [#4] Make "Selections" primary menu item
+* Improved: [#21] Allow searching products by EAN/SKU in selection creator
+* Improved: [#8] Do not show products that are no longer available in dynamic shortcodes
+* Fix: [#13] Incorrect thumbnail cropping on non-square product images
+* Fix: [#19] Descriptions showing html characters in selection creator
+* Fix: [#18] Selection showing all products when filtering by Selected = Yes, despite none being selected
+* Fix: [#12] Fatal error when a selection with no products is referenced
+* Fix: [#10] Not all products being imported from TradeTracker feeds
 
 ### 0.2.0 ###
 * Added: Uninstall function
