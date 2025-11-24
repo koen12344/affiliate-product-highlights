@@ -1,6 +1,6 @@
 <?php
 
-namespace Koen12344\AffiliateProductHighlights\DependencyInjection;
+namespace Koen12344\ProductFrame\DependencyInjection;
 
 /**
  * A container configuration object configures a dependency injection container during the build process.

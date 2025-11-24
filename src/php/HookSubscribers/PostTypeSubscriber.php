@@ -1,9 +1,9 @@
 <?php
 
-namespace Koen12344\AffiliateProductHighlights\HookSubscribers;
+namespace Koen12344\ProductFrame\HookSubscribers;
 
-use Koen12344\AffiliateProductHighlights\EventManagement\SubscriberInterface;
-use Koen12344\AffiliateProductHighlights\PostTypes\PostTypeInterface;
+use Koen12344\ProductFrame\EventManagement\SubscriberInterface;
+use Koen12344\ProductFrame\PostTypes\PostTypeInterface;
 
 class PostTypeSubscriber implements SubscriberInterface {
 

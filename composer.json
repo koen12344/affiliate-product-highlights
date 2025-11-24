@@ -1,10 +1,10 @@
 {
-    "name": "koen12344/affiliate-product-highlights",
+    "name": "koen12344/productframe",
     "description": "Plugin to display products from various affiliate network product feeds in WordPress",
     "type": "project",
     "autoload": {
         "psr-4": {
-            "Koen12344\\AffiliateProductHighlights\\": "src/php/"
+            "Koen12344\\ProductFrame\\": "src/php/"
         },
       "classmap": ["vendor-prefixed"]
     },

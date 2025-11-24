@@ -1,10 +1,10 @@
 <?php
 
-namespace Koen12344\AffiliateProductHighlights\PostTypes;
+namespace Koen12344\ProductFrame\PostTypes;
 
 class FeedPostType implements PostTypeInterface {
 
-	const FEED_POST_TYPE = 'phft-feeds';
+	const FEED_POST_TYPE = 'prfr-feeds';
 	/**
 	 * @var string
 	 */
@@ -19,18 +19,18 @@ class FeedPostType implements PostTypeInterface {
 
 	public function get_labels(): array {
 		return [
-			'name' => __('Feeds', 'affiliate-product-highlights'),
-			'singular_name' => __('Feed', 'affiliate-product-highlights'),
-			'add_new' => __('New', 'affiliate-product-highlights'),
-			'add_new_item' => __('Add new feed', 'affiliate-product-highlights'),
-			'edit' => __('Edit', 'affiliate-product-highlights'),
-			'edit_item' => __('Edit feed', 'affiliate-product-highlights'),
-			'new_item' => __('New feed', 'affiliate-product-highlights'),
-			'view' => __('View', 'affiliate-product-highlights'),
-			'view_item' => __('View feed', 'affiliate-product-highlights'),
-			'search_items' => __('Find feed', 'affiliate-product-highlights'),
-			'not_found' => __('No feeds found', 'affiliate-product-highlights'),
-			'not_found_in_trash' => __('No feeds found in the trash', 'affiliate-product-highlights'),
+			'name' => __('Feeds', 'productframe'),
+			'singular_name' => __('Feed', 'productframe'),
+			'add_new' => __('New', 'productframe'),
+			'add_new_item' => __('Add new feed', 'productframe'),
+			'edit' => __('Edit', 'productframe'),
+			'edit_item' => __('Edit feed', 'productframe'),
+			'new_item' => __('New feed', 'productframe'),
+			'view' => __('View', 'productframe'),
+			'view_item' => __('View feed', 'productframe'),
+			'search_items' => __('Find feed', 'productframe'),
+			'not_found' => __('No feeds found', 'productframe'),
+			'not_found_in_trash' => __('No feeds found in the trash', 'productframe'),
 		];
 	}
 

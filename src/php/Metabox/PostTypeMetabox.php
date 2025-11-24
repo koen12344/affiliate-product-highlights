@@ -1,6 +1,6 @@
 <?php
 
-namespace Koen12344\AffiliateProductHighlights\Metabox;
+namespace Koen12344\ProductFrame\Metabox;
 
 abstract class PostTypeMetabox implements MetaboxInterface {
 

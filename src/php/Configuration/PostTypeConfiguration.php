@@ -1,11 +1,11 @@
 <?php
 
-namespace Koen12344\AffiliateProductHighlights\Configuration;
+namespace Koen12344\ProductFrame\Configuration;
 
-use Koen12344\AffiliateProductHighlights\DependencyInjection\Container;
-use Koen12344\AffiliateProductHighlights\DependencyInjection\ContainerConfigurationInterface;
-use Koen12344\AffiliateProductHighlights\PostTypes\FeedPostType;
-use Koen12344\AffiliateProductHighlights\PostTypes\SelectionsPostType;
+use Koen12344\ProductFrame\DependencyInjection\Container;
+use Koen12344\ProductFrame\DependencyInjection\ContainerConfigurationInterface;
+use Koen12344\ProductFrame\PostTypes\FeedPostType;
+use Koen12344\ProductFrame\PostTypes\SelectionsPostType;
 
 class PostTypeConfiguration implements ContainerConfigurationInterface {
 

@@ -1,9 +1,10 @@
 <?php
 
-namespace Koen12344\AffiliateProductHighlights\HookSubscribers;
+namespace Koen12344\ProductFrame\HookSubscribers;
 
-use Koen12344\AffiliateProductHighlights\EventManagement\SubscriberInterface;
-use Koen12344\AffiliateProductHighlights\Metabox\MetaboxInterface;
+use Koen12344\ProductFrame\EventManagement\SubscriberInterface;
+use Koen12344\ProductFrame\Metabox\HasScriptMetaboxInterface;
+use Koen12344\ProductFrame\Metabox\MetaboxInterface;
 
 class MetaboxSubscriber implements SubscriberInterface {
 
@@ -21,7 +22,8 @@ class MetaboxSubscriber implements SubscriberInterface {
 
 	public static function get_subscribed_hooks(): array {
 		return [
-			'add_meta_boxes'  => 'register_meta_boxes'
+			'add_meta_boxes'  => 'register_meta_boxes',
+			'admin_enqueue_scripts' => 'enqueue_scripts',
 		];
 	}
 
@@ -37,6 +39,18 @@ class MetaboxSubscriber implements SubscriberInterface {
 	public function register_meta_boxes(){
 		foreach($this->metaboxes as $metabox){
 			$this->register_meta_box($metabox);
+		}
+	}
+
+	public function enqueue_scripts($hook){
+		if(!in_array($hook, [ 'post.php', 'post-new.php' ] )){
+			return;
+		}
+
+		foreach($this->metaboxes as $metabox){
+			if($metabox instanceof HasScriptMetaboxInterface){
+				$metabox->enqueue_scripts($hook);
+			}
 		}
 	}
 }

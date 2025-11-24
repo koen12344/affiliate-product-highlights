@@ -1,6 +1,6 @@
 <?php
 
-namespace Koen12344\AffiliateProductHighlights\EventManagement;
+namespace Koen12344\ProductFrame\EventManagement;
 
 interface SubscriberInterface {
 	/**

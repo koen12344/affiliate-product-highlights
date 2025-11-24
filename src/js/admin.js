@@ -1,16 +1,11 @@
 import {createRoot} from "@wordpress/element";
 import ClearThumbCacheButton from "./components/ClearThumbCacheButton";
 import './admin.scss';
+import domReady from '@wordpress/dom-ready';
 
-// window.addEventListener(
-// 	'load',
-// 	function () {
-//
-//
-// 	},
-// 	false
-// );
+domReady( () => {
+	const container = document.getElementById( 'prfr-clear-thumbnail-cache' );
+	const root = createRoot(container);
+	root.render(<ClearThumbCacheButton />);
+});
 
-const container = document.getElementById( 'phft-clear-thumbnail-cache' );
-const root = createRoot(container);
-root.render(<ClearThumbCacheButton />);

@@ -1,32 +1,23 @@
 <?php
 
-namespace Koen12344\AffiliateProductHighlights;
-use Koen12344\AffiliateProductHighlights\BackgroundProcessing\BackgroundProcess;
-use Koen12344\AffiliateProductHighlights\Configuration\AdminConfiguration;
-use Koen12344\AffiliateProductHighlights\Configuration\EventManagementConfiguration;
-use Koen12344\AffiliateProductHighlights\Configuration\MetaboxConfiguration;
-use Koen12344\AffiliateProductHighlights\Configuration\PostTypeConfiguration;
-use Koen12344\AffiliateProductHighlights\Configuration\RestApiConfiguration;
-use Koen12344\AffiliateProductHighlights\Configuration\WordPressConfiguration;
-use Koen12344\AffiliateProductHighlights\DependencyInjection\Container;
-use Koen12344\AffiliateProductHighlights\Logger\Logger;
-use Koen12344\AffiliateProductHighlights\PostTypes\FeedPostType;
+namespace Koen12344\ProductFrame;
+use Koen12344\ProductFrame\DependencyInjection\Container;
 use Koen12344\APH_Vendor\Koen12344\GithubPluginUpdater\Updater;
-use NumberFormatter;
 
 class Plugin {
 
-	const DOMAIN = 'affiliate-product-highlights';
+	const DOMAIN = 'productframe';
 
-	const VERSION = '0.4.5';
+	const VERSION = '0.5.0';
 
-	const REST_NAMESPACE = 'phft/v1';
+	const REST_NAMESPACE = 'prfr/v1';
+
+	const DASHICON = '<svg width="20" height="20" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 282.056 282.056"><path fill="#9ea3a8" d="M138.717,105.974c-9.179,9.179-4.771,25.236-6.146,26.612c-1.204,1.205-17.024-3.441-26.615,6.15 c-9.328,9.329-9.251,24.639-0.434,34.452c4.98,5.543,10.682,7.854,16.701,9.09c12.023,2.471,50.354-0.965,54.744-5.355 c4.484-4.484,7.795-42.563,5.294-54.682c-1.248-6.041-3.546-11.722-9.091-16.701C163.355,96.723,148.047,96.646,138.717,105.974 "/> <path fill="#9ea3a8" d="M279.619,149.718L137.304,7.403c-3.247-3.248-9.66-5.764-14.249-5.59L8.659,0C4.071,0.176,0.175,4.072,0,8.66 l1.813,114.397c-0.175,4.588,2.342,11,5.59,14.248l142.315,142.316c3.247,3.246,8.562,3.246,11.81,0l118.094-118.094 C282.867,158.279,282.867,152.965,279.619,149.718z M17.243,34.171c-4.674-4.674-4.674-12.252,0-16.926 c4.676-4.676,12.252-4.676,16.927,0c4.675,4.674,4.675,12.252,0,16.926C29.495,38.845,21.919,38.844,17.243,34.171z M253.432,161.91l-91.523,91.521c-3.246,3.248-8.562,3.248-11.81,0L32.049,135.383c-3.248-3.248-3.248-8.563,0-11.811 l91.523-91.521c3.248-3.248,8.561-3.248,11.809,0L253.432,150.1C256.68,153.348,256.68,158.662,253.432,161.91z"/></svg>';
 
 	private $container;
 
 	private $loaded;
 
-	private $background_process;
 
 	public function __construct($file){
 		$this->loaded = false;
@@ -39,41 +30,21 @@ class Plugin {
 			'plugin_url'            => plugin_dir_url($file),
 			'plugin_version'        => self::VERSION,
 			'plugin_rest_namespace' => self::REST_NAMESPACE,
+			'plugin_dashicon'       => self::DASHICON,
 		]);
-
-		$this->container->register('Logger', function($container) {
-			global $wpdb;
-			return new Logger($wpdb);
-		});
-
-		$this->container->register('BackgroundProcess', function($container){
-			return new BackgroundProcess($this->container->get('Logger'));
-		});
 
 		$updater = new Updater(
 			new \WP_Http(),
 			$file,
 			'koen12344',
-			'affiliate-product-highlights',
+			'productframe',
 			self::VERSION
 		);
 		$updater->register();
 
 
-		add_action("save_post_phft-feeds", [$this, 'save_feed_metabox'], 10, 3);
-
-		add_action("before_delete_post", [$this, 'delete_feed'], 10 ,2);
-
-		add_action('phft_update_feeds', [$this, 'update_feeds']);
-
-		add_action('admin_enqueue_scripts', [$this, 'enqueue_metabox_script']);
-
-		add_shortcode('product-highlights', [$this, 'display_products_shortcode']);
-
-		add_shortcode('phft-link', [$this, 'product_link_shortcode']);
-
-		add_image_size('phft-logo', 100, 30 );
-		add_image_size('phft-product-thumb', 0, 150 );
+		add_image_size('prfr-logo', 100, 30 );
+		add_image_size('prfr-product-thumb', 0, 150 );
 	}
 
 	public static function activate(){
@@ -81,11 +52,11 @@ class Plugin {
 
 		global $wpdb;
 
-		$products_table = $wpdb->prefix . 'phft_products';
+		$products_table = $wpdb->prefix . 'prfr_products';
 
-		$images_table = $wpdb->prefix.'phft_images';
+		$images_table = $wpdb->prefix.'prfr_images';
 
-		$logs_table = $wpdb->prefix.'phft_logs';
+		$logs_table = $wpdb->prefix.'prfr_logs';
 
 		$charset_collate = $wpdb->get_charset_collate();
 
@@ -139,8 +110,8 @@ class Plugin {
 
 		dbDelta($sql);
 
-		if(!wp_next_scheduled('phft_update_feeds')){
-			wp_schedule_event(time(), 'daily', 'phft_update_feeds');
+		if(!wp_next_scheduled('prfr_update_feeds')){
+			wp_schedule_event(time(), 'daily', 'prfr_update_feeds');
 		}
 
 
@@ -154,14 +125,14 @@ class Plugin {
 		global $wpdb;
 
 		//Delete all sideloaded media
-		$wp_media = $wpdb->get_results("SELECT wp_media_id FROM {$wpdb->prefix}phft_images WHERE wp_media_id > 0");
+		$wp_media = $wpdb->get_results("SELECT wp_media_id FROM {$wpdb->prefix}prfr_images WHERE wp_media_id > 0");
 		if($wp_media){
 			foreach($wp_media as $media){
 				wp_delete_attachment($media->wp_media_id, true);
 			}
 		}
 
-		$wpdb->query("DROP TABLE IF EXISTS {$wpdb->prefix}phft_images,{$wpdb->prefix}phft_products");
+		$wpdb->query("DROP TABLE IF EXISTS {$wpdb->prefix}prfr_images,{$wpdb->prefix}prfr_products,{$wpdb->prefix}prfr_logs");
 	}
 
 	public function is_loaded(): bool {
@@ -174,305 +145,22 @@ class Plugin {
 		}
 
 		$this->container->configure([
-			AdminConfiguration::class,
-			MetaboxConfiguration::class,
-			PostTypeConfiguration::class,
-			EventManagementConfiguration::class,
-			WordPressConfiguration::class,
-			RestApiConfiguration::class,
+			Configuration\AdminConfiguration::class,
+			Configuration\MetaboxConfiguration::class,
+			Configuration\PostTypeConfiguration::class,
+			Configuration\EventManagementConfiguration::class,
+			Configuration\WordPressConfiguration::class,
+			Configuration\RestApiConfiguration::class,
+			Configuration\BackgroundProcessConfiguration::class,
+			Configuration\LoggerConfiguration::class,
+			Configuration\ShortcodeConfiguration::class,
 		]);
 
 		foreach($this->container['subscribers'] as $subscriber){
 			$this->container['service.event_manager']->add_subscriber($subscriber);
 		}
 
-		$this->background_process = $this->container['BackgroundProcess'];
-
 		$this->loaded = true;
 	}
-
-
-
-	// ---
-
-	public function update_feeds(){
-		$feeds = get_posts([
-			'post_type' => FeedPostType::FEED_POST_TYPE,
-			'post_status' => 'publish',
-			'numberposts'   => -1,
-			'fields'        => 'ids'
-		]);
-		foreach($feeds as $feed_id){
-			$this->background_process->push_to_queue([
-				'action'    => 'download_feed',
-				'feed_id'   => $feed_id,
-			]);
-		}
-
-		$this->background_process->save()->dispatch();
-		update_option('phft_is_daily_update', true);
-	}
-
-	public function enqueue_styles() {
-		wp_register_style('phft-style', plugins_url('../../css/front.css', __FILE__), [], self::VERSION);
-		wp_enqueue_style('phft-style');
-	}
-
-
-	public function maybe_sideload_image($image_id, $wp_media_id, $url){
-		global $wpdb;
-		if(!$wp_media_id || !wp_get_attachment_image_url($wp_media_id)){
-			require_once(ABSPATH . 'wp-admin/includes/media.php');
-			require_once(ABSPATH . 'wp-admin/includes/file.php');
-			require_once(ABSPATH . 'wp-admin/includes/image.php');
-
-			$wp_media_id = media_sideload_image($url.'#.jpg', 0, null, 'id');
-
-			if(is_wp_error($wp_media_id)){
-				return $url;
-			}
-			$image_data = [
-				'wp_media_id' => (int)$wp_media_id
-			];
-			$wpdb->update($wpdb->prefix . 'phft_images', $image_data, [
-				'id' => $image_id,
-			]);
-		}
-		return wp_get_attachment_image_url($wp_media_id, 'phft-product-thumb');
-	}
-
-
-
-
-	public function display_products_shortcode($atts){
-		global $wpdb;
-
-		$this->enqueue_styles();
-
-		$atts = shortcode_atts([
-			'limit'         => 6,
-			'product_ids'   => null,
-			'feed_id'       => null,
-			'search'        => null,
-			'random'        => null,
-			'selection'     => null,
-		], $atts, 'product-highlights');
-
-
-		$params = [];
-		$where_parts = [];
-
-		if(!is_null($atts['selection'])){
-			$item_selection = get_post_meta((int)$atts['selection'], '_phft_item_selection', true);
-			if(!is_array($item_selection) || empty($item_selection)){
-				return esc_html__('The product selection doesn\'t contain any items', 'affiliate-product-highlights');
-			}
-			$ids = array_keys($item_selection);
-			$atts['product_ids'] = implode(',', $ids);
-		}
-
-		if(!is_null($atts['product_ids'])){
-			$product_ids = explode(',', $atts['product_ids']);
-			$placeholders = implode(',', array_fill(0, count($product_ids), '%d'));
-			$where_parts[] = "id IN ({$placeholders})";
-			$params = array_merge($params, $product_ids);
-		}
-
-		if(!is_null($atts['search'])){
-			$search_term = $wpdb->esc_like($atts['search']);
-			$where_parts[] = "product_name LIKE '%".esc_sql($search_term)."%'";
-			$where_parts[] = "in_latest_import=1";
-		}
-
-
-
-		$where_clause = '';
-		if ( ! empty( $where_parts ) ) {
-			$where_clause = ' WHERE ' . implode( ' AND ', $where_parts );
-		}
-
-		$limit = "";
-		if(!is_null($atts['random'])){
-			$limit .= " ORDER BY RAND()";
-		}
-
-		$limit .= " LIMIT %d";
-		$params[] = $atts['limit'];
-
-		$prepared = $wpdb->prepare(
-			"SELECT * FROM {$wpdb->prefix}phft_products $where_clause $limit",
-			$params
-		);
-
-		$cache_key = 'phft_'.md5($prepared);
-
-		$products = wp_cache_get($cache_key, 'phft');
-
-		if(!$products){
-			// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared  -- The query is prepared, but also used as md5 hashed key to fetch from the database
-			$results = $wpdb->get_results($prepared, OBJECT_K);
-
-			if(!$results){
-				return $wpdb->print_error();
-			}
-
-			$product_ids = wp_parse_id_list(array_column($results, 'id'));
-			$placeholders = implode(',', array_fill(0, count($product_ids), '%d'));
-			$images = $wpdb->get_results($wpdb->prepare("SELECT * FROM {$wpdb->prefix}phft_images WHERE product_id IN ({$placeholders})", $product_ids));
-
-	//		$images_query = "SELECT * FROM {$wpdb->prefix}phft_images WHERE product_id IN ({$product_ids})";
-	//		$images = $wpdb->get_results($images_query);
-			/*
-			 * 			$product_ids = explode(',', $atts['product_ids']);
-				$placeholders = implode(',', array_fill(0, count($product_ids), '%d'));
-			 */
-
-
-
-			$images_by_id = [];
-			foreach($images as $image){
-				//So we only get the first image
-				if(!isset($images_by_id[$image->product_id])){
-					$images_by_id[$image->product_id] = $image;
-				}
-			}
-
-			$products = array_map(function($product) use ( $images_by_id ) {
-				$product->images = [];
-				if (isset($images_by_id[$product->id])) {
-					$product->images[] = $this->maybe_sideload_image($images_by_id[$product->id]->id, $images_by_id[$product->id]->wp_media_id, $images_by_id[$product->id]->image_url);
-				}
-				return $product;
-			}, $results);
-			wp_cache_set($cache_key, $products, 'phft', 3600*24);
-		}
-
-		if($atts['limit'] > 1){
-			$output = '<div class="phft-products-multiple">';
-			foreach($products as $product){
-				$output .= $this->draw_product($product);
-			}
-			$output .= '</div>';
-			return $output;
-		}
-
-		$output = '<div class="phft-products-single">';
-		$output .= $this->draw_product(reset($products));
-		$output .= '</div>';
-
-		return $output;
-
-	}
-
-	public function draw_product($product){
-		$locale = get_locale();
-		$fmt = numfmt_create( $locale, NumberFormatter::CURRENCY );
-		$product_url = esc_url(trailingslashit(home_url('/phft/' . urlencode($product->slug))));
-
-		$has_sale = $product->product_original_price > $product->product_price;
-
-
-
-		$output = '<div class="phft-product'.($has_sale ? ' phft-sale-product' : '').'">';
-		$output .= get_the_post_thumbnail($product->feed_id, 'phft-logo');
-		$output .= '<a target="_blank" rel="nofollow noopener sponsored" href="'.$product_url.'"><h3>'.mb_strimwidth(esc_html($product->product_name), 0, 70, '...').'</h3></a>';
-		if (!empty($product->images)) {
-			$output .= '<div class="phft-product-image">';
-			$output .= '<a target="_blank" rel="nofollow noopener sponsored" href="'.$product_url.'"><img src="' . esc_url($product->images[0]) . '" alt="' . esc_attr($product->product_name) . '"></a>';
-			$output .= '</div>';
-		}
-		$output .= '<div class="phft-product-description">'. mb_strimwidth(wp_strip_all_tags($product->product_description), 0, 160, '...').'</div>';
-		$output .= '<div class="phft-product-price">'.numfmt_format_currency($fmt, $product->product_price, $product->product_currency).($has_sale ? '<span class="phft-original-price">'.numfmt_format_currency($fmt, $product->product_original_price, $product->product_currency).'</span>':'').'</div>';
-		$output .= '<a class="phft-button-link" target="_blank" rel="nofollow noopener sponsored" href="'.$product_url.'">'.esc_html__('View', 'affiliate-product-highlights').'</a>';
-		$output .= '</div>';
-
-		return $output;
-	}
-
-
-	public function product_link_shortcode($atts, $content){
-		global $wpdb;
-
-		$atts = shortcode_atts([
-			'product_id' => null,
-		], $atts, 'phft-link');
-
-		if($atts['product_id'] === null){
-			return $content;
-		}
-
-		$product_id = $atts['product_id'];
-
-		$product = $wpdb->get_row($wpdb->prepare("SELECT * FROM {$wpdb->prefix}phft_products WHERE id = %d", $product_id));
-
-		$product_url = esc_url(trailingslashit(home_url('/phft/' . urlencode($product->slug))));
-
-		return '<a target="_blank" rel="nofollow noopener sponsored" href="'.$product_url.'">'.$content.'</a>';
-	}
-
-	public function save_feed_metabox($post_id, $post, $update){
-		if (!isset($_POST['phft_feed_metabox_nonce']) || !wp_verify_nonce(sanitize_key($_POST['phft_feed_metabox_nonce']), 'phft_save_feed_metabox') || ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) ) {
-			return;
-		}
-
-
-		if(!empty($_REQUEST['_phft_feed_url'])){
-			$feed_url = sanitize_url(wp_unslash($_REQUEST['_phft_feed_url']));
-			update_post_meta($post_id, '_phft_feed_url', $feed_url);
-
-			$this->background_process->push_to_queue([
-				'action'    => 'download_feed',
-				'feed_id'   => $post_id,
-			]);
-
-			$this->background_process->save()->dispatch();
-		}
-
-	}
-
-	public function delete_feed($post_id, \WP_Post $post){
-		if($post->post_type !== FeedPostType::FEED_POST_TYPE){
-			return;
-		}
-
-		global $wpdb;
-
-		$wp_media = $wpdb->get_results($wpdb->prepare("SELECT wp_media_id FROM {$wpdb->prefix}phft_images WHERE feed_id = %d AND wp_media_id > 0", $post_id));
-
-		if($wp_media){
-			foreach($wp_media as $media){
-				wp_delete_attachment($media->wp_media_id, true);
-			}
-		}
-
-		$wpdb->query($wpdb->prepare("DELETE FROM {$wpdb->prefix}phft_products WHERE feed_id = %d", $post_id));
-		$wpdb->query($wpdb->prepare("DELETE FROM {$wpdb->prefix}phft_images WHERE feed_id = %d", $post_id));
-	}
-
-
-
-	public function enqueue_metabox_script($hook){
-		if(!in_array($hook, [ 'post.php', 'post-new.php' ] )){
-			return;
-		}
-
-		$screen = get_current_screen();
-		if(!is_object($screen) || $screen->post_type != 'phft-selections'){
-			return;
-		}
-		$script_assets = require( $this->container->get('plugin_path') . 'build/metabox.asset.php');
-
-		wp_register_script('phft-metabox', $this->container->get('plugin_url').'build/metabox.js', $script_assets['dependencies'], $script_assets['version'], true);
-		wp_localize_script('phft-metabox', 'psfg_localize_metabox', [
-			'selection_id' => get_the_ID(),
-			'userView' => get_user_meta(get_current_user_id(), 'phft_selection_view', true),
-		]);
-		wp_set_script_translations('phft-metabox', 'affiliate-product-highlights', $this->container->get('plugin_path').'languages');
-
-		wp_enqueue_script('phft-metabox');
-
-		wp_enqueue_style( 'phft-metabox-style', $this->container->get('plugin_url') . 'build/metabox.css', array( 'wp-components' ), $script_assets['version'] );
-	}
-
 
 }

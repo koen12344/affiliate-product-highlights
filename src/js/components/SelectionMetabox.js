@@ -21,7 +21,7 @@ export default function SelectionMetabox(){
 	const [isSaving, setSaving] = useState(false);
 
 	const loadItems = () => {
-		apiFetch({path: addQueryArgs('/phft/v1/items', {
+		apiFetch({path: addQueryArgs('/prfr/v1/items', {
 				'search': searchTerm,
 			})
 		})
@@ -32,7 +32,7 @@ export default function SelectionMetabox(){
 
 	const saveSelection = () => {
 		setSaving(true);
-		apiFetch({path:'/phft/v1/selection', method:'POST', data: {'selection_id': selection_id, 'selection': selection}}).finally(()=> setSaving(false));
+		apiFetch({path:'/prfr/v1/selection', method:'POST', data: {'selection_id': selection_id, 'selection': selection}}).finally(()=> setSaving(false));
 	}
 
 	const debouncedFetchData  = useDebounce(loadItems, 500);
@@ -58,7 +58,7 @@ export default function SelectionMetabox(){
 
 	useEffect(() => {
 		setSaving(true);
-		apiFetch({path:addQueryArgs('/phft/v1/selection', {'selection_id': selection_id})}).then((data) =>{
+		apiFetch({path:addQueryArgs('/prfr/v1/selection', {'selection_id': selection_id})}).then((data) =>{
 			setSelection({...selection, ...data});
 		}).finally(() => setSaving(false));
 	}, []);
@@ -73,8 +73,8 @@ export default function SelectionMetabox(){
 			<ItemsListDataViews itemSelection={ selection } setItemSelection={ setSelection }/>
 			<br />
 			<TextControl
-				label={__('Shortcode', 'affiliate-product-highlights')}
-				value={"[product-highlights selection=" + selection_id + "]"}
+				label={__('Shortcode', 'productframe')}
+				value={"[productframe selection=" + selection_id + "]"}
 				disabled={true}
 			/>
 		</>

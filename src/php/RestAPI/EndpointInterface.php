@@ -1,6 +1,6 @@
 <?php
 
-namespace Koen12344\AffiliateProductHighlights\RestAPI;
+namespace Koen12344\ProductFrame\RestAPI;
 
 use WP_REST_Request;
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace Koen12344\AffiliateProductHighlights\RestAPI;
+namespace Koen12344\ProductFrame\RestAPI;
 
 use WP_REST_Request;
 
@@ -30,7 +30,7 @@ class SaveSelectionEndpoint implements EndpointInterface {
 
 		$selection = $request->get_param('selection');
 
-		update_post_meta($selection_id, '_phft_item_selection', $selection);
+		update_post_meta($selection_id, '_prfr_item_selection', $selection);
 
 		return rest_ensure_response(true);
 	}

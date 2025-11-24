@@ -1,6 +1,6 @@
 <?php
 
-namespace Koen12344\AffiliateProductHighlights\RestAPI;
+namespace Koen12344\ProductFrame\RestAPI;
 
 use WP_REST_Request;
 
@@ -21,7 +21,7 @@ class SaveViewEndpoint implements EndpointInterface {
 	public function respond( WP_REST_Request $request ) {
 		$view = $request->get_param('view');
 
-		update_user_meta(get_current_user_id(), 'phft_selection_view', $view);
+		update_user_meta(get_current_user_id(), 'prfr_selection_view', $view);
 
 		return rest_ensure_response(true);
 	}

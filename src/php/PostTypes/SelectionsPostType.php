@@ -1,10 +1,10 @@
 <?php
 
-namespace Koen12344\AffiliateProductHighlights\PostTypes;
+namespace Koen12344\ProductFrame\PostTypes;
 
 class SelectionsPostType implements PostTypeInterface {
 
-	const SELECTIONS_POST_TYPE = 'phft-selections';
+	const SELECTIONS_POST_TYPE = 'prfr-selections';
 	private $plugin_domain;
 
 	public function __toString() {
@@ -17,18 +17,18 @@ class SelectionsPostType implements PostTypeInterface {
 
 	public function get_labels(): array {
 		return [
-			'name' => __('Selections', 'affiliate-product-highlights'),
-			'singular_name' => __('Selection', 'affiliate-product-highlights'),
-			'add_new' => __('New', 'affiliate-product-highlights'),
-			'add_new_item' => __('Add new selection', 'affiliate-product-highlights'),
-			'edit' => __('Edit', 'affiliate-product-highlights'),
-			'edit_item' => __('Edit selection', 'affiliate-product-highlights'),
-			'new_item' => __('New selection', 'affiliate-product-highlights'),
-			'view' => __('View', 'affiliate-product-highlights'),
-			'view_item' => __('View selection', 'affiliate-product-highlights'),
-			'search_items' => __('Find selection', 'affiliate-product-highlights'),
-			'not_found' => __('No selections found', 'affiliate-product-highlights'),
-			'not_found_in_trash' => __('No selections found in the trash', 'affiliate-product-highlights')
+			'name' => __('Selections', 'productframe'),
+			'singular_name' => __('Selection', 'productframe'),
+			'add_new' => __('New', 'productframe'),
+			'add_new_item' => __('Add new selection', 'productframe'),
+			'edit' => __('Edit', 'productframe'),
+			'edit_item' => __('Edit selection', 'productframe'),
+			'new_item' => __('New selection', 'productframe'),
+			'view' => __('View', 'productframe'),
+			'view_item' => __('View selection', 'productframe'),
+			'search_items' => __('Find selection', 'productframe'),
+			'not_found' => __('No selections found', 'productframe'),
+			'not_found_in_trash' => __('No selections found in the trash', 'productframe')
 		];
 	}
 

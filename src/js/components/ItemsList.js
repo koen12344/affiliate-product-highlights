@@ -28,9 +28,9 @@ export default function ItemsList({ items, isSaving, selection, setSelection }){
 			<tr>
 				<th className="manage-column column-cb check-column"></th>
 				<th>ID</th>
-				<th>{__("Title", 'affiliate-product-highlights')}</th>
-				<th>{__('Price', 'affiliate-product-highlights')}</th>
-				<th>{__('Feed', 'affiliate-product-highlights')}</th>
+				<th>{__("Title", 'productframe')}</th>
+				<th>{__('Price', 'productframe')}</th>
+				<th>{__('Feed', 'productframe')}</th>
 			</tr>
 			</thead>
 			<tbody>

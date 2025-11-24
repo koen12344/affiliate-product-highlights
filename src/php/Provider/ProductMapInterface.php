@@ -1,6 +1,6 @@
 <?php
 
-namespace Koen12344\AffiliateProductHighlights\Provider;
+namespace Koen12344\ProductFrame\Provider;
 
 use SimpleXMLElement;
 

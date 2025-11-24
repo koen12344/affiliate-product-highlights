@@ -1,6 +1,6 @@
 <?php
 
-namespace Koen12344\AffiliateProductHighlights\RestAPI;
+namespace Koen12344\ProductFrame\RestAPI;
 
 use NumberFormatter;
 use WP_REST_Request;
@@ -96,7 +96,7 @@ class GetItemsEndpoint implements EndpointInterface {
 		}
 
 		// Total count query
-		$total_items = (int) $wpdb->get_var($wpdb->prepare( "SELECT COUNT(*) FROM {$wpdb->prefix}phft_products $where_clause", $params ));
+		$total_items = (int) $wpdb->get_var($wpdb->prepare( "SELECT COUNT(*) FROM {$wpdb->prefix}prfr_products $where_clause", $params ));
 
 		// Pagination
 		$per_page = max( 1, (int) $request->get_param('per_page') );
@@ -123,7 +123,7 @@ class GetItemsEndpoint implements EndpointInterface {
 		$params[] = $offset;
 		$results = $wpdb->get_results( $wpdb->prepare( "
 			SELECT *
-			FROM {$wpdb->prefix}phft_products
+			FROM {$wpdb->prefix}prfr_products
 			$where_clause
 			$order_by_query
 			LIMIT %d OFFSET %d
@@ -137,7 +137,7 @@ class GetItemsEndpoint implements EndpointInterface {
 
 		$product_ids = implode(',', wp_parse_id_list(array_column($results, 'id')));
 
-		$images = $wpdb->get_results("SELECT product_id, image_url FROM {$wpdb->prefix}phft_images WHERE product_id IN ({$product_ids})");
+		$images = $wpdb->get_results("SELECT product_id, image_url FROM {$wpdb->prefix}prfr_images WHERE product_id IN ({$product_ids})");
 
 		$images_by_id = [];
 		foreach($images as $image){
@@ -149,7 +149,7 @@ class GetItemsEndpoint implements EndpointInterface {
 
 		$feeds = get_posts( [
 			'post__in' => $feed_ids,
-			'post_type' => 'phft-feeds',
+			'post_type' => 'prfr-feeds',
 			'numberposts' => -1,
 		] );
 

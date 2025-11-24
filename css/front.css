@@ -1,11 +1,11 @@
 :root {
-	--phft-button-text-color: #fff;
-	--phft-button-background-color: #611431;
-	--phft-button-hover-color: #363636;
-	--phft-product-border-color: #eee;
+	--prfr-button-text-color: #fff;
+	--prfr-button-background-color: #611431;
+	--prfr-button-hover-color: #363636;
+	--prfr-product-border-color: #eee;
 }
 
-.phft-products-multiple {
+.prfr-products-multiple {
 	padding-top:15px;
 	padding-bottom:15px;
 	display: grid;
@@ -13,16 +13,16 @@
 	grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
 }
 
-.phft-product {
+.prfr-product {
 	box-sizing: border-box;
 	padding: 1rem;
-	border: 1px solid var(--phft-product-border-color);
+	border: 1px solid var(--prfr-product-border-color);
 	flex-direction: column;
 	display: flex;
 }
 
 
-	.phft-product h3{
+	.prfr-product h3{
 		font-size: 18px;
 		margin-bottom: 10px;
 		display: -webkit-box; /* Enables the clamping behavior */
@@ -34,18 +34,18 @@
 		line-height: 1.5em; /* Adjust line spacing to match the height */
 	}
 
-	.phft-product .phft-product-image img {
+	.prfr-product .prfr-product-image img {
 		display:block;
 		margin:0 auto;
 		padding:10px 0;
 	}
 
-	.phft-product .phft-product-description{
+	.prfr-product .prfr-product-description{
 		font-size:16px;
 
 	}
 
-	.phft-product .phft-product-price{
+	.prfr-product .prfr-product-price{
 		width:100%;
 		text-align:center;
 		padding:10px 0;
@@ -53,30 +53,30 @@
 		font-size:20px;
 		margin-top: auto;
 	}
-	.phft-product.phft-sale-product .phft-product-price{
+	.prfr-product.prfr-sale-product .prfr-product-price{
 		color:#f16a52;
 	}
 
-	.phft-product .phft-product-price .phft-original-price {
+	.prfr-product .prfr-product-price .prfr-original-price {
 		font-size:14px;
 		text-decoration: line-through;
 		margin-left:5px;
 		color:initial;
 	}
-	.phft-product .phft-product-price .phft-original-price::before {
+	.prfr-product .prfr-product-price .prfr-original-price::before {
 		content: "/";
 	}
 
-	.phft-product .phft-button-link{
+	.prfr-product .prfr-button-link{
 		display:block;
 		width:100%;
 		padding: 5px 0;
-		background-color:var(--phft-button-background-color);
-		color:var(--phft-button-text-color) !important;
+		background-color:var(--prfr-button-background-color);
+		color:var(--prfr-button-text-color) !important;
 		border-radius: 5px;
 		text-align: center;
 		text-decoration: none;
 	}
-		.phft-product .phft-button-link:hover{
-			background-color:var(--phft-button-hover-color);
+		.prfr-product .prfr-button-link:hover{
+			background-color:var(--prfr-button-hover-color);
 		}

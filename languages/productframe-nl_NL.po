@@ -2,297 +2,309 @@
 # This file is distributed under the GPLv2 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Affiliate Product Highlights 0.4.5\n"
-"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/affiliate-product-highlights\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
+"Project-Id-Version: ProductFrame 0.4.3\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/productframe\n"
+"POT-Creation-Date: 2025-11-24T16:39:39+00:00\n"
+"PO-Revision-Date: 2025-11-24 17:40+0100\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: nl_NL\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2025-11-12T11:58:42+00:00\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"X-Generator: WP-CLI 2.12.0\n"
-"X-Domain: affiliate-product-highlights\n"
+"X-Generator: Poedit 3.4.4\n"
+"X-Domain: productframe\n"
 
 #. Plugin Name of the plugin
-#: affiliate-product-highlights.php
-#: src/php/Admin/AdminPage.php:16
-msgid "Affiliate Product Highlights"
-msgstr ""
+#: productframe.php
+msgid "ProductFrame – Curated products from affiliate feeds"
+msgstr "ProductFrame – Uitgelichte producten uit affiliate feeds"
 
 #. Plugin URI of the plugin
-#. Author URI of the plugin
-#: affiliate-product-highlights.php
-msgid "https://koenreus.com"
-msgstr ""
+#: productframe.php
+msgid "https://github.com/koen12344/productframe"
+msgstr "https://github.com/koen12344/productframe"
 
 #. Description of the plugin
-#: affiliate-product-highlights.php
-msgid "Plugin to display products from various affiliate network product feeds in WordPress"
+#: productframe.php
+msgid ""
+"Plugin to display products from various affiliate network product feeds in "
+"WordPress"
 msgstr ""
+"Plugin om producten uit feeds van diverse affiliate netwerken uit te lichten"
 
 #. Author of the plugin
-#: affiliate-product-highlights.php
+#: productframe.php
 msgid "Koen Reus"
-msgstr ""
+msgstr "Koen Reus"
+
+#. Author URI of the plugin
+#: productframe.php
+msgid "https://koenreus.com"
+msgstr "https://koenreus.com"
+
+#: src/php/Admin/AdminPage.php:16
+msgid "ProductFrame"
+msgstr "ProductFrame"
 
 #: src/php/Admin/AdminPage.php:20
 msgid "Settings"
-msgstr ""
+msgstr "Instellingen"
 
 #: src/php/Admin/AdminPage.php:34
 msgid "Slack Settings"
-msgstr ""
+msgstr "Slack Instellingen"
 
 #: src/php/Admin/AdminPage.php:55
 msgid "Slack Webhook Configuration"
-msgstr ""
+msgstr "Slack Webhook Configuratie"
 
 #: src/php/Admin/AdminPage.php:62
 msgid "Slack Webhook URL"
-msgstr ""
+msgstr "Slack Webhook URL"
 
 #: src/php/Admin/AdminPage.php:73
 msgid "Misc"
-msgstr ""
+msgstr "Divers"
 
 #: src/php/BackgroundProcessing/BackgroundProcess.php:88
 msgid "Invalid feed URL"
-msgstr ""
+msgstr "Ongeldige feed URL"
 
 #. translators: %s is error message
 #: src/php/BackgroundProcessing/BackgroundProcess.php:107
 #, php-format
 msgid "Unable to download the feed: %s"
-msgstr ""
+msgstr "Niet gelukt om de feed te downloaden: %s"
 
 #: src/php/BackgroundProcessing/BackgroundProcess.php:122
 msgid "Unable to open the file"
-msgstr ""
+msgstr "Niet gelukt om het bestand te openen"
 
 #: src/php/BackgroundProcessing/BackgroundProcess.php:216
 #: src/php/BackgroundProcessing/BackgroundProcess.php:295
 msgid "Unable to open the temp file"
-msgstr ""
+msgstr "Niet gelukt om het tijdelijke bestand te openen"
 
 #: src/php/BackgroundProcessing/BackgroundProcess.php:284
 msgid "The affiliate network this feed belongs to is unrecognized"
-msgstr ""
+msgstr "Het affiliatenetwerk waar deze feed toe behoort is niet herkend"
 
 #. translators: %s is the type of action for the log entry
 #: src/php/BackgroundProcessing/BackgroundProcess.php:368
 #, php-format
 msgid "Action: %s"
-msgstr ""
+msgstr "Actie: %s"
 
 #. translators: %1$s is product name, %2$s is the URL of the page where the click originated
-#: src/php/HookSubscribers/ExternalRedirectSubscriber.php:47
+#: src/php/HookSubscribers/ExternalRedirectSubscriber.php:48
 #, php-format
-msgid "Detected outgoing click on item that is no longer available in feed: %1$s, referring URL: %2$s"
+msgid ""
+"Detected outgoing click on item that is no longer available in feed: %1$s, "
+"referring URL: %2$s"
 msgstr ""
+"Uitgaande klik gedetecteerd naar een item dat niet langer in een feed "
+"beschikbaar is: %1$s, afkomstig van URL: %2$s"
 
 #. translators: %1$s is product name, %2$s is the URL of the page where the click originated
-#: src/php/HookSubscribers/ExternalRedirectSubscriber.php:47
+#: src/php/HookSubscribers/ExternalRedirectSubscriber.php:48
 msgid "Unknown"
-msgstr ""
-
-#: src/php/HookSubscribers/ExternalRedirectSubscriber.php:53
-msgid "Product not found."
-msgstr ""
+msgstr "Onbekend"
 
 #: src/php/HookSubscribers/ExternalRedirectSubscriber.php:54
+msgid "Product not found."
+msgstr "Product niet gevonden."
+
+#: src/php/HookSubscribers/ExternalRedirectSubscriber.php:55
 msgid "Not Found"
-msgstr ""
+msgstr "Niet Gevonden"
 
 #: src/php/HookSubscribers/FeedCustomColumnSubscriber.php:17
 msgid "Imported Items"
-msgstr ""
+msgstr "Geïmporteerde Items"
 
 #: src/php/HookSubscribers/FeedCustomColumnSubscriber.php:18
 msgid "No longer in feed"
-msgstr ""
+msgstr "Niet langer in feed"
 
 #: src/php/HookSubscribers/FeedCustomColumnSubscriber.php:19
 msgid "Last Import"
-msgstr ""
+msgstr "Laatste Import"
 
 #: src/php/HookSubscribers/SelectionCustomColumnSubscriber.php:17
 msgid "Items no longer in feed"
-msgstr ""
+msgstr "Items niet langer in feed"
 
-#: src/php/Metabox/FeedMetabox.php:16
+#: src/php/Metabox/FeedMetabox.php:17
 msgid "Feed settings"
-msgstr ""
+msgstr "Feed instellingen"
 
 #. translators: %s is error message
-#: src/php/Metabox/FeedMetabox.php:28
+#: src/php/Metabox/FeedMetabox.php:29
 #, php-format
 msgid "Last error: %s"
-msgstr ""
+msgstr "Laatste error: %s"
 
-#: src/php/Metabox/FeedMetabox.php:32
+#: src/php/Metabox/FeedMetabox.php:33
 msgid "Feed Url:"
-msgstr ""
+msgstr "Feed Url:"
 
-#: src/php/Metabox/SelectionMetabox.php:14
+#: src/php/Metabox/SelectionMetabox.php:23
 msgid "Item selection"
-msgstr ""
+msgstr "Item selectie"
 
-#: src/php/Plugin.php:268
+#: src/php/Plugin.php:237
 msgid "The product selection doesn't contain any items"
-msgstr ""
+msgstr "De productselectie bevat geen items"
 
-#: src/php/Plugin.php:386
-#: src/php/PostTypes/FeedPostType.php:29
-#: src/php/PostTypes/SelectionsPostType.php:27
-#: build/metabox.js:115
+#: src/php/Plugin.php:355 src/php/PostTypes/FeedPostType.php:29
+#: src/php/PostTypes/SelectionsPostType.php:27 build/metabox.js:103
 msgid "View"
-msgstr ""
+msgstr "Bekijken"
 
 #: src/php/PostTypes/FeedPostType.php:22
 msgid "Feeds"
-msgstr ""
+msgstr "Feeds"
 
-#: src/php/PostTypes/FeedPostType.php:23
-#: build/metabox.js:115
+#: src/php/PostTypes/FeedPostType.php:23 build/metabox.js:103
 msgid "Feed"
-msgstr ""
+msgstr "Feed"
 
 #: src/php/PostTypes/FeedPostType.php:24
 #: src/php/PostTypes/SelectionsPostType.php:22
 msgid "New"
-msgstr ""
+msgstr "Nieuw"
 
 #: src/php/PostTypes/FeedPostType.php:25
 msgid "Add new feed"
-msgstr ""
+msgstr "Voeg nieuwe feed toe"
 
 #: src/php/PostTypes/FeedPostType.php:26
 #: src/php/PostTypes/SelectionsPostType.php:24
 msgid "Edit"
-msgstr ""
+msgstr "Bewerk"
 
 #: src/php/PostTypes/FeedPostType.php:27
 msgid "Edit feed"
-msgstr ""
+msgstr "Bewerk feed"
 
 #: src/php/PostTypes/FeedPostType.php:28
 msgid "New feed"
-msgstr ""
+msgstr "Nieuwe feed"
 
 #: src/php/PostTypes/FeedPostType.php:30
 msgid "View feed"
-msgstr ""
+msgstr "Bekijk feed"
 
 #: src/php/PostTypes/FeedPostType.php:31
 msgid "Find feed"
-msgstr ""
+msgstr "Vind feed"
 
 #: src/php/PostTypes/FeedPostType.php:32
 msgid "No feeds found"
-msgstr ""
+msgstr "Geen feeds gevonden"
 
 #: src/php/PostTypes/FeedPostType.php:33
 msgid "No feeds found in the trash"
-msgstr ""
+msgstr "Geen feeds gevonden in de prullenbak"
 
 #: src/php/PostTypes/SelectionsPostType.php:20
 msgid "Selections"
-msgstr ""
+msgstr "Selecties"
 
 #: src/php/PostTypes/SelectionsPostType.php:21
 msgid "Selection"
-msgstr ""
+msgstr "Selectie"
 
 #: src/php/PostTypes/SelectionsPostType.php:23
 msgid "Add new selection"
-msgstr ""
+msgstr "Nieuwe selectie toevoegen"
 
 #: src/php/PostTypes/SelectionsPostType.php:25
 msgid "Edit selection"
-msgstr ""
+msgstr "Bewerk selectie"
 
 #: src/php/PostTypes/SelectionsPostType.php:26
 msgid "New selection"
-msgstr ""
+msgstr "Nieuwe selectie"
 
 #: src/php/PostTypes/SelectionsPostType.php:28
 msgid "View selection"
-msgstr ""
+msgstr "Bekijk selectie"
 
 #: src/php/PostTypes/SelectionsPostType.php:29
 msgid "Find selection"
-msgstr ""
+msgstr "Vind selectie"
 
 #: src/php/PostTypes/SelectionsPostType.php:30
 msgid "No selections found"
-msgstr ""
+msgstr "Geen selecties gevonden"
 
 #: src/php/PostTypes/SelectionsPostType.php:31
 msgid "No selections found in the trash"
-msgstr ""
+msgstr "Geen selecties gevonden in de prullenbak"
 
 #: build/admin.js:1
 msgid "Clearing..."
-msgstr ""
+msgstr "Wissen..."
 
 #: build/admin.js:1
 msgid "Clear product thumbnail cache"
-msgstr ""
+msgstr "Product thumbnail cache wissen"
 
-#. translators: %s: field label
-#: build/metabox.js:115
+#. translators: 1: Current page number, 2: Total number of pages.
+#: build/metabox.js:103
 msgid "In selection"
-msgstr ""
+msgstr "In selectie"
 
-#: build/metabox.js:115
+#: build/metabox.js:103
 msgid "Yes"
-msgstr ""
+msgstr "Ja"
 
-#: build/metabox.js:115
+#: build/metabox.js:103
 msgid "No"
-msgstr ""
+msgstr "Nee"
 
-#: build/metabox.js:115
+#: build/metabox.js:103
 msgid "In latest import"
-msgstr ""
+msgstr "In laatste import"
 
-#: build/metabox.js:115
+#: build/metabox.js:103
 msgid "Product Name"
-msgstr ""
+msgstr "Product Naam"
 
-#: build/metabox.js:115
+#: build/metabox.js:103
 msgid "Price"
-msgstr ""
+msgstr "Prijs"
 
-#: build/metabox.js:115
+#: build/metabox.js:103
 msgid "On sale"
-msgstr ""
+msgstr "In de aanbieding"
 
-#: build/metabox.js:115
+#: build/metabox.js:103
 msgid "Not on sale"
-msgstr ""
+msgstr "Niet in de aanbieding"
 
-#: build/metabox.js:115
+#: build/metabox.js:103
 msgid "Description"
-msgstr ""
+msgstr "Omschrijving"
 
-#: build/metabox.js:115
+#: build/metabox.js:103
 msgid "Product image"
-msgstr ""
+msgstr "Product afbeelding"
 
-#: build/metabox.js:115
+#: build/metabox.js:103
 msgid "Add to selection"
-msgstr ""
+msgstr "Voeg toe aan selectie"
 
-#: build/metabox.js:115
+#: build/metabox.js:103
 msgid "Remove from selection"
-msgstr ""
+msgstr "Verwijder uit selectie"
 
-#: build/metabox.js:115
+#: build/metabox.js:103
 msgid "Copy single product link shortcode"
-msgstr ""
+msgstr "Kopieer shortcode voor productlink"
 
-#: build/metabox.js:115
+#: build/metabox.js:103
 msgid "Shortcode"
-msgstr ""
+msgstr "Shortcode"

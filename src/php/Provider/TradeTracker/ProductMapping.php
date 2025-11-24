@@ -1,8 +1,8 @@
 <?php
 
-namespace Koen12344\AffiliateProductHighlights\Provider\TradeTracker;
+namespace Koen12344\ProductFrame\Provider\TradeTracker;
 
-use Koen12344\AffiliateProductHighlights\Provider\ProductMapInterface;
+use Koen12344\ProductFrame\Provider\ProductMapInterface;
 use SimpleXMLElement;
 
 class ProductMapping implements ProductMapInterface {

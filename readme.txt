@@ -1,11 +1,11 @@
-=== Affiliate Product Highlights ===
+=== ProductFrame – Curated products from affiliate feeds ===
 Contributors: koen12344
 Donate link: https://koenreus.com
 Tags: tradetracker, adtraction, affiliate, feed, products
 Requires at least: 6.0
 Tested up to: 6.9
 Requires PHP: 8.0
-Stable tag: 0.4.5
+Stable tag: 0.5.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -13,7 +13,7 @@ A beautiful way to display products from affiliate network product feeds on your
 
 == Description ==
 
-With the **Affiliate Product Highlights** plugin for WordPress you can create beautiful in-content sections showing relevant
+With the **ProductFrame** plugin for WordPress you can create beautiful in-content sections showing relevant
 products from product feeds of various affiliate networks.
 
 Networks currently supported:
@@ -34,42 +34,59 @@ See the plugin in action [here](https://projectplatenspelers.nl/).
 
 == Installation ==
 
-1. Download [the latest version](https://github.com/koen12344/affiliate-product-highlights/releases/latest)
+1. Download [the latest version](https://github.com/koen12344/productframe/releases/latest)
 1. Upload the plugin through 'Plugins' > 'Add New' > 'Upload plugin' in your WordPress Dashboard
-1. Add one or more affiliate product feeds through 'Affiliate Product Highlights' > 'Feeds'
-1. Place the [product-highlights] shortcode wherever you want to display your affiliate products using attributes below
+1. Add one or more affiliate product feeds through 'ProductFrame' > 'Feeds'
+1. Place the [productframe] shortcode wherever you want to display your affiliate products using attributes below
 
-### Supported shortcode attributes
+### [productframe] shortcode
 
-* `selection`: An ID of a selection of products generated through 'Affiliate Product Highlights' > 'Selections'
+Displays a selection of products based on the supplied attributes
+
+#### Supported shortcode attributes
+
+* `selection`: An ID of a selection of products generated through 'ProductFrame' > 'Selections'
 * `limit`: The amount of products that should be displayed (default: 6)
-* `product_ids`: Display specific product IDs. Separated by a comma, e.g. 123,323,312 (currently no easy way to get these IDs apart from going into PHPMyAdmin)
-* `search`: Show only products containing this word or sentence in their title (may be inefficient with a lot of products in the database)
+* `product_ids`: Display specific product IDs. Separated by a comma, e.g. 123,323,312
+* `search`: Show only products containing this word or sentence in their title
 * `random`: Randomize the results
 
 #### Examples
 
-* `[product-highlights selection=107]`: Show products from the selection with ID 107
-* `[product-highlights selection=107 limit=1 random=1]`: Show a single random product from the selection with ID 107
-* `[product-highlights product_ids="2304,2306,2307,665"]`: Show products with specific IDs
+* `[productframe selection=107]`: Show products from the selection with ID 107
+* `[productframe selection=107 limit=1 random=1]`: Show a single random product from the selection with ID 107
+* `[productframe product_ids="2304,2306,2307,665"]`: Show products with specific IDs
+
+### [prfr-link] shortcode
+
+Generates an anchor link to a specific product
+
+#### Supported shortcode attributes
+
+* `product_id`: The ID of the product that should be linked
+
+#### Examples
+
+* `[prfr-link product_id=67]`: Generate a link to product ID 67, anchor text will be the product title
+* `[prfr-link product_id=67]Custom anchor[/prfr-link]`: Generate a link to product ID 67, anchor text will be `Custom anchor`
 
 ### Styling
 
 The plugin comes with minimal styling that can be easily adjusted with some custom CSS.
 
-* `phft-products-multiple` (div): Wrapper class around all products (if the `limit` parameter is higher than 1)
-* `phft-product` (div): Product wrapper class
-* `phft-product-image` (div): Product image wrapper (contains a > img)
-* `phft-product-description` (div)
-* `phft-product-price` (div)
-* `phft-button-link` (a): The call-to-action button
+* `prfr-products-multiple` (div): Wrapper class around all products (if the `limit` parameter is higher than 1)
+* `prfr-product` (div): Product wrapper class
+* `prfr-product-image` (div): Product image wrapper (contains a > img)
+* `prfr-product-description` (div)
+* `prfr-product-price` (div)
+* `prfr-button-link` (a): The call-to-action button
 
 Colors can be adjusted by overriding the default CSS variables:
 
-* `--phft-button-text-color`: Button text color (default: #fff)
-* `--phft-button-background-color`: Button background color (default: #611431)
-* `--phft-button-hover-color`: Button hover color (default: #363636)
-* `--phft-product-border-color`: Color for the border around the individual products
+* `--prfr-button-text-color`: Button text color (default: #fff)
+* `--prfr-button-background-color`: Button background color (default: #611431)
+* `--prfr-button-hover-color`: Button hover color (default: #363636)
+* `--prfr-product-border-color`: Color for the border around the individual products
 
 == Frequently Asked Questions ==
 
@@ -79,6 +96,10 @@ Colors can be adjusted by overriding the default CSS variables:
 2. Making a selection of specific products
 
 == Changelog ==
+
+= 0.5.0 =
+* Change: Renamed plugin to "ProductFrame"
+* Improved: Link shortcode returns product name when no anchor text is supplied
 
 = 0.4.5 =
 * Added: Allow filtering by whether products are on sale

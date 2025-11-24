@@ -1,12 +1,12 @@
 <?php
 
-namespace Koen12344\AffiliateProductHighlights\BackgroundProcessing;
+namespace Koen12344\ProductFrame\BackgroundProcessing;
 
 use Exception;
 use InvalidArgumentException;
-use Koen12344\AffiliateProductHighlights\Provider\AdTraction\ProductMapping as AdtractionProductMapping;
-use Koen12344\AffiliateProductHighlights\Provider\Daisycon\ProductMapping as DaisyconProductMapping;
-use Koen12344\AffiliateProductHighlights\Provider\TradeTracker\ProductMapping as TradeTrackerProductMapping;
+use Koen12344\ProductFrame\Provider\AdTraction\ProductMapping as AdtractionProductMapping;
+use Koen12344\ProductFrame\Provider\Daisycon\ProductMapping as DaisyconProductMapping;
+use Koen12344\ProductFrame\Provider\TradeTracker\ProductMapping as TradeTrackerProductMapping;
 use Psr\Log\LoggerInterface;
 use SimpleXMLElement;
 use WP_Http;
@@ -17,8 +17,6 @@ class BackgroundProcess extends \Koen12344_APH_Vendor_WP_Background_Process {
 	private LoggerInterface $logger;
 
 	public function __construct(LoggerInterface $logger) {
-
-
 		parent::__construct();
 		$this->logger = $logger;
 	}
@@ -39,10 +37,7 @@ class BackgroundProcess extends \Koen12344_APH_Vendor_WP_Background_Process {
 		}catch(\Throwable $t){
 			$this->logger->error($t->getMessage(), ['feed_id' => $item['feed_id'], 'action' => $item['action']]);
 
-
-
-
-			update_post_meta($item['feed_id'], '_phft_last_error', $t->getMessage());
+			update_post_meta($item['feed_id'], '_prfr_last_error', $t->getMessage());
 		}
 
 		return false;
@@ -57,7 +52,7 @@ class BackgroundProcess extends \Koen12344_APH_Vendor_WP_Background_Process {
 		image_url varchar(255) NOT NULL,
 		imported_at DATETIME NOT NULL,
 		 */
-		$image_table = $wpdb->prefix.'phft_images';
+		$image_table = $wpdb->prefix.'prfr_images';
 		foreach($images as $image){
 			$image_data = [
 				'feed_id'   => $feed_id,
@@ -85,7 +80,7 @@ class BackgroundProcess extends \Koen12344_APH_Vendor_WP_Background_Process {
 	public function download_xml_file($url) {
 		if (filter_var($url, FILTER_VALIDATE_URL) === false) {
 			// phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped  -- Exception message is escaped on output when rendered.
-			throw new InvalidArgumentException(__('Invalid feed URL', 'affiliate-product-highlights'));
+			throw new InvalidArgumentException(__('Invalid feed URL', 'productframe'));
 		}
 
 		if(!function_exists('wp_tempnam')){
@@ -104,7 +99,7 @@ class BackgroundProcess extends \Koen12344_APH_Vendor_WP_Background_Process {
 		if (is_wp_error($response)) {
 			wp_delete_file($tmp_file);
 			// translators: %s is error message
-			throw new Exception(sprintf(__('Unable to download the feed: %s', 'affiliate-product-highlights'), $response->get_error_message())); // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped  -- Exception message is escaped on output when rendered.
+			throw new Exception(sprintf(__('Unable to download the feed: %s', 'productframe'), $response->get_error_message())); // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped  -- Exception message is escaped on output when rendered.
 		}
 
 		return $tmp_file;
@@ -119,7 +114,7 @@ class BackgroundProcess extends \Koen12344_APH_Vendor_WP_Background_Process {
 		$reader = new XMLReader();
 		if(!$reader->open($file)){
 			// phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped  -- Exception message is escaped on output when rendered.
-			throw new Exception(__('Unable to open the file', 'affiliate-product-highlights'));
+			throw new Exception(__('Unable to open the file', 'productframe'));
 		}
 
 		while ($reader->read()) {
@@ -128,7 +123,7 @@ class BackgroundProcess extends \Koen12344_APH_Vendor_WP_Background_Process {
 
 				if($feed_type == 'tradetracker'){
 					$existing_product = $wpdb->get_row($wpdb->prepare(
-						"SELECT * FROM " . $wpdb->prefix . 'phft_products' . " WHERE product_id = %d AND campaign_id = %d AND feed_id = %d",
+						"SELECT * FROM " . $wpdb->prefix . 'prfr_products' . " WHERE product_id = %d AND campaign_id = %d AND feed_id = %d",
 						(int)$product['ID'],
 						(int)$product->campaignID,
 						$feed_id
@@ -136,14 +131,14 @@ class BackgroundProcess extends \Koen12344_APH_Vendor_WP_Background_Process {
 					$mapped_product = new TradeTrackerProductMapping($product);
 				}elseif($feed_type == 'adtraction'){
 					$existing_product = $wpdb->get_row($wpdb->prepare(
-						"SELECT * FROM " . $wpdb->prefix . 'phft_products' . " WHERE sku = %s AND feed_id = %d",
+						"SELECT * FROM " . $wpdb->prefix . 'prfr_products' . " WHERE sku = %s AND feed_id = %d",
 						(string)$product->SKU,
 						$feed_id
 					));
 					$mapped_product = new AdtractionProductMapping($product);
 				}elseif($feed_type == 'daisycon'){
 					$existing_product = $wpdb->get_row($wpdb->prepare(
-						"SELECT * FROM " . $wpdb->prefix . 'phft_products' . " WHERE sku = %s AND feed_id = %d",
+						"SELECT * FROM " . $wpdb->prefix . 'prfr_products' . " WHERE sku = %s AND feed_id = %d",
 						(string)$product->sku,
 						$feed_id
 					));
@@ -162,7 +157,7 @@ class BackgroundProcess extends \Koen12344_APH_Vendor_WP_Background_Process {
 				$product_data = array_merge($product_data, $mapped_product->get_product_mapping());
 
 				if ($existing_product) {
-					$wpdb->update($wpdb->prefix . 'phft_products', $product_data, [
+					$wpdb->update($wpdb->prefix . 'prfr_products', $product_data, [
 						'id' => $existing_product->id,
 					]);
 
@@ -173,7 +168,7 @@ class BackgroundProcess extends \Koen12344_APH_Vendor_WP_Background_Process {
 					$suffix = 1;
 
 					while($suffix <= 20){ //Try 20 times then bail
-						$result = @$wpdb->insert($wpdb->prefix . 'phft_products', $product_data);
+						$result = @$wpdb->insert($wpdb->prefix . 'prfr_products', $product_data);
 						if($result) {
 							break;
 						}
@@ -213,7 +208,7 @@ class BackgroundProcess extends \Koen12344_APH_Vendor_WP_Background_Process {
 		$reader = new XMLReader();
 		if(!$reader->open($temp_file)){
 			// phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped -- Exception message is escaped on output when rendered.
-			throw new Exception(__('Unable to open the temp file', 'affiliate-product-highlights'));
+			throw new Exception(__('Unable to open the temp file', 'productframe'));
 		}
 		$product_counter = 0;
 
@@ -276,15 +271,15 @@ class BackgroundProcess extends \Koen12344_APH_Vendor_WP_Background_Process {
 	 */
 	private function download_feed($item){
 
-		$xml_url = get_post_meta($item['feed_id'], '_phft_feed_url', true);
+		$xml_url = get_post_meta($item['feed_id'], '_prfr_feed_url', true);
 
 		$network = $this->get_affiliate_network($xml_url);
 		if(!$network){
 			// phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped -- Exception message is escaped on output when rendered.
-			throw new InvalidArgumentException(__('The affiliate network this feed belongs to is unrecognized', 'affiliate-product-highlights'));
+			throw new InvalidArgumentException(__('The affiliate network this feed belongs to is unrecognized', 'productframe'));
 		}
 
-		update_post_meta($item['feed_id'], '_phft_last_import', current_time('mysql', true));
+		update_post_meta($item['feed_id'], '_prfr_last_import', current_time('mysql', true));
 
 
 		$temp_file = $this->download_xml_file($xml_url);
@@ -292,7 +287,7 @@ class BackgroundProcess extends \Koen12344_APH_Vendor_WP_Background_Process {
 		$reader = new XMLReader();
 		if(!$reader->open($temp_file)){
 			// phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped -- Exception message is escaped on output when rendered.
-			throw new Exception(__('Unable to open the temp file', 'affiliate-product-highlights'));
+			throw new Exception(__('Unable to open the temp file', 'productframe'));
 		}
 
 		$item['action'] = 'split_feed';
@@ -336,24 +331,24 @@ class BackgroundProcess extends \Koen12344_APH_Vendor_WP_Background_Process {
 		parent::complete();
 
 		//lockout to prevent daily report from being triggered when saving a feed
-		$is_daily_update = get_option('phft_is_daily_update', false);
+		$is_daily_update = get_option('prfr_is_daily_update', false);
 		if(!$is_daily_update){
 			return;
 		}
-		delete_option('phft_is_daily_update');
+		delete_option('prfr_is_daily_update');
 
 		$this->send_slack_report();
 	}
 
 	private function send_slack_report(){
-		$webhook_url = get_option("phft_slack_webhook_url");
+		$webhook_url = get_option('prfr_slack_webhook_url');
 		if(empty($webhook_url) || !filter_var($webhook_url, FILTER_VALIDATE_URL)){
 			return;
 		}
 
 
 		global $wpdb;
-		$table = $wpdb->prefix . 'phft_logs';
+		$table = $wpdb->prefix . 'prfr_logs';
 		$logs = $wpdb->get_results( "SELECT * FROM $table" );
 
 		$attachments = [];
@@ -365,7 +360,7 @@ class BackgroundProcess extends \Koen12344_APH_Vendor_WP_Background_Process {
 
 			$attachments[] = [
 				// translators: %s is the type of action for the log entry
-				"title" => sprintf(__("Action: %s", 'affiliate-product-highlights'), $log->action),
+				"title" => sprintf(__("Action: %s", 'productframe'), $log->action),
 				"title_link" => !empty($context->feed_id) ? get_edit_post_link((int)$context->feed_id, '') : null,
 				'text'  => $log->message,
 				'color' => 'bad'
@@ -408,11 +403,11 @@ class BackgroundProcess extends \Koen12344_APH_Vendor_WP_Background_Process {
 	}
 
 	private function update_in_latest_import( $item ) {
-		$last_import_timestamp = get_post_meta($item['feed_id'], '_phft_last_import', true);
+		$last_import_timestamp = get_post_meta($item['feed_id'], '_prfr_last_import', true);
 
 		global $wpdb;
 
-		$products_table = $wpdb->prefix . 'phft_products';
+		$products_table = $wpdb->prefix . 'prfr_products';
 
 		$wpdb->query($wpdb->prepare(
 			"UPDATE {$products_table} SET in_latest_import=0 WHERE imported_at < %s AND feed_id=%d",
@@ -420,7 +415,7 @@ class BackgroundProcess extends \Koen12344_APH_Vendor_WP_Background_Process {
 			$item['feed_id']
 		));
 
-		$images_table = $wpdb->prefix . 'phft_images';
+		$images_table = $wpdb->prefix . 'prfr_images';
 
 		$items_to_delete = $wpdb->get_results($wpdb->prepare(
 			"SELECT i.id, i.wp_media_id FROM {$images_table} i JOIN {$products_table} p ON p.id = i.product_id WHERE p.imported_at >= %s AND p.feed_id=%d AND i.imported_at < %s",

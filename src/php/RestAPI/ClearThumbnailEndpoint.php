@@ -1,8 +1,8 @@
 <?php
 
-namespace Koen12344\AffiliateProductHighlights\RestAPI;
+namespace Koen12344\ProductFrame\RestAPI;
 
-use Koen12344\AffiliateProductHighlights\RestAPI\EndpointInterface;
+use Koen12344\ProductFrame\RestAPI\EndpointInterface;
 use WP_REST_Request;
 use WP_REST_Server;
 use wpdb;
@@ -21,7 +21,7 @@ class ClearThumbnailEndpoint implements EndpointInterface {
 
 	public function respond( WP_REST_Request $request ) {
 		//Delete all sideloaded media
-		$wp_media = $this->wpdb->get_results("SELECT wp_media_id FROM {$this->wpdb->prefix}phft_images WHERE wp_media_id > 0");
+		$wp_media = $this->wpdb->get_results("SELECT wp_media_id FROM {$this->wpdb->prefix}prfr_images WHERE wp_media_id > 0");
 		if($wp_media){
 			foreach($wp_media as $media){
 				wp_delete_attachment($media->wp_media_id, true);

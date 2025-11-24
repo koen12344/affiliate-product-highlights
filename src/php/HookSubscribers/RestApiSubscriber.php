@@ -1,9 +1,9 @@
 <?php
 
-namespace Koen12344\AffiliateProductHighlights\HookSubscribers;
+namespace Koen12344\ProductFrame\HookSubscribers;
 
-use Koen12344\AffiliateProductHighlights\EventManagement\SubscriberInterface;
-use Koen12344\AffiliateProductHighlights\RestAPI\EndpointInterface;
+use Koen12344\ProductFrame\EventManagement\SubscriberInterface;
+use Koen12344\ProductFrame\RestAPI\EndpointInterface;
 
 class RestApiSubscriber implements SubscriberInterface {
 	/**

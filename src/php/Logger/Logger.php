@@ -1,6 +1,6 @@
 <?php
 
-namespace Koen12344\AffiliateProductHighlights\Logger;
+namespace Koen12344\ProductFrame\Logger;
 
 use Psr\Log\AbstractLogger;
 use wpdb;
@@ -13,7 +13,7 @@ class Logger extends AbstractLogger {
 
 	public function __construct(wpdb $wpdb) {
 		$this->wpdb = $wpdb;
-		$this->table = $wpdb->prefix . "phft_logs";
+		$this->table = $wpdb->prefix . "prfr_logs";
 	}
 	public function log( $level, \Stringable|string $message, array $context = [] ): void {
 

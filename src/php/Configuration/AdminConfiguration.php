@@ -1,10 +1,10 @@
 <?php
 
-namespace Koen12344\AffiliateProductHighlights\Configuration;
+namespace Koen12344\ProductFrame\Configuration;
 
-use Koen12344\AffiliateProductHighlights\Admin\AdminPage;
-use Koen12344\AffiliateProductHighlights\DependencyInjection\Container;
-use Koen12344\AffiliateProductHighlights\DependencyInjection\ContainerConfigurationInterface;
+use Koen12344\ProductFrame\Admin\AdminPage;
+use Koen12344\ProductFrame\DependencyInjection\Container;
+use Koen12344\ProductFrame\DependencyInjection\ContainerConfigurationInterface;
 
 class AdminConfiguration implements ContainerConfigurationInterface{
 

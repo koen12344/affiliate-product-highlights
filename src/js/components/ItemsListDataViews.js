@@ -28,14 +28,14 @@ export default function ItemsListDataViews( { itemSelection, setItemSelection })
 
 	const feeds = useSelect(
 		select =>
-			select( coreDataStore ).getEntityRecords( 'postType', 'phft-feeds' ),
+			select( coreDataStore ).getEntityRecords( 'postType', 'prfr-feeds' ),
 		[]
 	);
 
 	const fields = [
 		{
 			id: 'in_selection',
-			label: __('In selection', 'affiliate-product-highlights'),
+			label: __('In selection', 'productframe'),
 			// getValue: ({ item }) => !!selection[item.id],
 			render: ( { item } ) => (
 				!!itemSelection[item.id] && <Icon icon={ check } />
@@ -44,11 +44,11 @@ export default function ItemsListDataViews( { itemSelection, setItemSelection })
 			elements: [
 				{
 					value: true,
-					label: __('Yes', 'affiliate-product-highlights'),
+					label: __('Yes', 'productframe'),
 				},
 				{
 					value: false,
-					label: __('No', 'affiliate-product-highlights'),
+					label: __('No', 'productframe'),
 				},
 			],
 			filterBy: {
@@ -58,7 +58,7 @@ export default function ItemsListDataViews( { itemSelection, setItemSelection })
 		},
 		{
 			id: 'in_latest_import',
-			label: __('In latest import', 'affiliate-product-highlights'),
+			label: __('In latest import', 'productframe'),
 			enableHiding: true,
 			render: ( { item } ) => (
 				item.in_latest_import === "1" && <Icon icon={ check } /> || <Icon icon={ notFound } />
@@ -66,11 +66,11 @@ export default function ItemsListDataViews( { itemSelection, setItemSelection })
 			elements: [
 				{
 					value: true,
-					label: __('Yes', 'affiliate-product-highlights'),
+					label: __('Yes', 'productframe'),
 				},
 				{
 					value: false,
-					label: __('No', 'affiliate-product-highlights'),
+					label: __('No', 'productframe'),
 				},
 			],
 			filterBy: {
@@ -79,7 +79,7 @@ export default function ItemsListDataViews( { itemSelection, setItemSelection })
 		},
 		{
 			id: 'product_name',
-			label: __('Product Name', 'affiliate-product-highlights'),
+			label: __('Product Name', 'productframe'),
 			enableHiding: false,
 			render: ( { item } ) => (
 				<ExternalLink target="_blank" href={item.product_url}>{item.product_name}</ExternalLink>
@@ -93,31 +93,31 @@ export default function ItemsListDataViews( { itemSelection, setItemSelection })
 			id: 'product_url',
 			label: 'Link',
 			render: ( { item } ) => (
-				<ExternalLink target="_blank" href={item.product_url}>{__('View', 'affiliate-product-highlights')}</ExternalLink>
+				<ExternalLink target="_blank" href={item.product_url}>{__('View', 'productframe')}</ExternalLink>
 			),
 			enableSorting: false,
 		},
 		{
 			id: 'product_price',
-			label: __('Price', 'affiliate-product-highlights'),
+			label: __('Price', 'productframe'),
 			render: ( { item } ) => {
 				const on_sale = parseFloat(item.product_original_price) > parseFloat(item.product_price);
 
 				return (
 					<>
 						{ formatprice(item.product_price, item.product_currency) }
-						{on_sale && <>&nbsp;<span className='phft-original-price'>{ formatprice(item.product_original_price, item.product_currency) }</span></>}
+						{on_sale && <>&nbsp;<span className='prfr-original-price'>{ formatprice(item.product_original_price, item.product_currency) }</span></>}
 					</>
 				);
 			},
 			elements: [
 				{
 					value: 'on_sale',
-					label: __('On sale', 'affiliate-product-highlights'),
+					label: __('On sale', 'productframe'),
 				},
 				{
 					value: 'not_on_sale',
-					label: __('Not on sale', 'affiliate-product-highlights'),
+					label: __('Not on sale', 'productframe'),
 				},
 			],
 			filterBy: {
@@ -126,14 +126,14 @@ export default function ItemsListDataViews( { itemSelection, setItemSelection })
 		},
 		{
 			id: 'product_description',
-			label: __('Description', 'affiliate-product-highlights'),
+			label: __('Description', 'productframe'),
 			enableSorting: false,
 		},
 		{
 			id: 'feed',
-			label: __('Feed', 'affiliate-product-highlights'),
+			label: __('Feed', 'productframe'),
 			render: ({item}) => (
-				<a target="_blank" href={ item.feed_url }>{item.feed_name}</a>
+				<a target="_blank" href={ item.feed_url }>{ item.feed_name }</a>
 			),
 			enableSorting: false,
 			elements: feeds?.map(feed => ({
@@ -146,7 +146,7 @@ export default function ItemsListDataViews( { itemSelection, setItemSelection })
 		},
 		{
 			id: 'image_url',
-			label: __('Product image', 'affiliate-product-highlights'),
+			label: __('Product image', 'productframe'),
 			enableSorting: false,
 			render: ( { item } ) => (
 				<img alt={ item.product_name } src={ item.image_url } loading="lazy" referrerPolicy="no-referrer" width="50" height="50" />
@@ -189,9 +189,8 @@ export default function ItemsListDataViews( { itemSelection, setItemSelection })
 		}
 
 		const { type, perPage, fields, sort } = view;
-		console.log(view);
 		apiFetch({
-			path: addQueryArgs('/phft/v1/view'),
+			path: addQueryArgs('/prfr/v1/view'),
 			method:'POST',
 			data: {view: {type, perPage, fields, sort}}
 
@@ -230,7 +229,7 @@ export default function ItemsListDataViews( { itemSelection, setItemSelection })
 		// },
 		{
 			id: 'add-to-selection',
-			label: __( 'Add to selection', 'affiliate-product-highlights' ),
+			label: __( 'Add to selection', 'productframe' ),
 			isPrimary: true,
 			icon: 'plus',
 			supportsBulk: true,
@@ -244,7 +243,7 @@ export default function ItemsListDataViews( { itemSelection, setItemSelection })
 		},
 		{
 			id: 'remove-from-selection',
-			label: __( 'Remove from selection', 'affiliate-product-highlights' ),
+			label: __( 'Remove from selection', 'productframe' ),
 			isPrimary: true,
 			icon: 'minus',
 			supportsBulk: true,
@@ -258,12 +257,12 @@ export default function ItemsListDataViews( { itemSelection, setItemSelection })
 		},
 		{
 			id: 'copy-link-to-clipboard',
-			label: __('Copy single product link shortcode', 'affiliate-product-highlights' ),
+			label: __('Copy single product link shortcode', 'productframe' ),
 			isPrimary: false,
 			icon: copy,
 			supportsBulk: false,
 			callback: ([ item ]) => {
-				navigator.clipboard.writeText('[phft-link product_id=' + item.id + ']');
+				navigator.clipboard.writeText('[prfr-link product_id=' + item.id + ']');
 			},
 		}
 	];
@@ -282,7 +281,7 @@ export default function ItemsListDataViews( { itemSelection, setItemSelection })
 	useEffect(() => {
 		setIsLoading(true);
 		apiFetch({
-			path: addQueryArgs('/phft/v1/items', {
+			path: addQueryArgs('/prfr/v1/items', {
 				...queryArgs
 			}),
 			method:'POST',

@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/Product Highlights for TT.iml" filepath="$PROJECT_DIR$/.idea/Product Highlights for TT.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../productframe/.idea/ProductFrame.iml" filepath="$PROJECT_DIR$/../productframe/.idea/ProductFrame.iml" />
     </modules>
   </component>
 </project>

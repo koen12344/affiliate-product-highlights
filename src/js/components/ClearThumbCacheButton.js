@@ -8,7 +8,7 @@ export default function ClearThumbCacheButton( ){
 
 	const handleClick = () => {
 		setLoading(true);
-		apiFetch({path: '/phft/v1/thumbnails', method: 'DELETE'}).finally(() => setLoading(false));
+		apiFetch({path: '/prfr/v1/thumbnails', method: 'DELETE'}).finally(() => setLoading(false));
 	}
 
 	return (
@@ -19,7 +19,7 @@ export default function ClearThumbCacheButton( ){
 			disabled={loading}
 			onClick={handleClick}
 		>
-			{loading ? __('Clearing...', 'affiliate-product-highlights') : __('Clear product thumbnail cache', 'affiliate-product-highlights')}
+			{loading ? __('Clearing...', 'productframe') : __('Clear product thumbnail cache', 'productframe')}
 		</Button>
 	);
 }

@@ -1,19 +1,21 @@
 <?php
 
-namespace Koen12344\AffiliateProductHighlights\HookSubscribers;
+namespace Koen12344\ProductFrame\HookSubscribers;
 
-use Koen12344\AffiliateProductHighlights\Admin\AdminPage;
-use Koen12344\AffiliateProductHighlights\EventManagement\EventManager;
-use Koen12344\AffiliateProductHighlights\EventManagement\EventManagerAwareSubscriberInterface;
-use Koen12344\AffiliateProductHighlights\EventManagement\SubscriberInterface;
+use Koen12344\ProductFrame\Admin\AdminPage;
+use Koen12344\ProductFrame\EventManagement\EventManager;
+use Koen12344\ProductFrame\EventManagement\EventManagerAwareSubscriberInterface;
+use Koen12344\ProductFrame\EventManagement\SubscriberInterface;
 
 class AdminPageSubscriber implements EventManagerAwareSubscriberInterface {
 
 	private mixed $admin_page;
 	private EventManager $event_manager;
+	private $dashicon;
 
-	public function __construct(AdminPage $admin_page) {
+	public function __construct(AdminPage $admin_page, $dashicon) {
 		$this->admin_page = $admin_page;
+		$this->dashicon = $dashicon;
 	}
 
 	public static function get_subscribed_hooks(): array {
@@ -30,7 +32,8 @@ class AdminPageSubscriber implements EventManagerAwareSubscriberInterface {
 			$this->admin_page->get_menu_title(),
 			'edit_posts',
 			$this->admin_page->get_menu_slug(),
-			[$this->admin_page, 'render_page']
+			[$this->admin_page, 'render_page'],
+			'data:image/svg+xml;base64,' . base64_encode( $this->dashicon )
 		);
 
 		$submenu_hook = add_submenu_page(

@@ -1,6 +1,6 @@
 <?php
 
-namespace Koen12344\AffiliateProductHighlights\PostTypes;
+namespace Koen12344\ProductFrame\PostTypes;
 
 interface PostTypeInterface {
 

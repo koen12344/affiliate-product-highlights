@@ -51,43 +51,43 @@ jobs:
         uses: actions/setup-node@v3
 
       - name: Create build directory
-        run: rsync -av --exclude='.git' --exclude-from='.gitignore' . affiliate-product-highlights
+        run: rsync -av --exclude='.git' --exclude-from='.gitignore' . productframe
 
       - name: NPM Install & Build
-        working-directory: ./affiliate-product-highlights
+        working-directory: ./productframe
         run: |
           npm install
           npm run build
 
       - name: Generate POT & Json files
-        working-directory: ./affiliate-product-highlights
+        working-directory: ./productframe
         run: |
-          wp i18n make-pot . languages/affiliate-product-highlights.pot --exclude="src/js"
+          wp i18n make-pot . languages/productframe.pot --exclude="src/js"
           wp i18n make-json languages
 
       - name: Composer install
-        working-directory: ./affiliate-product-highlights
+        working-directory: ./productframe
         run: |
           mkdir vendor-prefixed
           composer install --no-dev --classmap-authoritative --prefer-dist
           composer dump-autoload -a --ignore-platform-reqs
 
 #      - name: Download Freemius SDK
-#        working-directory: ./affiliate-product-highlights
+#        working-directory: ./productframe
 #        run: wget https://github.com/Freemius/wordpress-sdk/archive/master.zip -O wordpress-sdk-master.zip && unzip wordpress-sdk-master.zip && rm wordpress-sdk-master.zip && mv wordpress-sdk-master freemius
       #        run: |
       #          mkdir freemius
       #          wget https://freemius.s3.us-west-2.amazonaws.com/sdk-security-releases/wordpress-sdk-2.5.10.zip -O wordpress-sdk-2.5.10.zip && unzip -d freemius -P WeLoveOpenSource!!! wordpress-sdk-2.5.10.zip && rm wordpress-sdk-2.5.10.zip
 
       - name: Delete distignored files
-        working-directory: ./affiliate-product-highlights
+        working-directory: ./productframe
         run: grep -v "^#" .distignore | xargs rm -rf
 
       - name: Install zip
         uses: montudor/action-zip@v1
 
       - name: Zip plugin
-        run: zip -qq -r affiliate-product-highlights.zip affiliate-product-highlights
+        run: zip -qq -r productframe.zip productframe
 
       - name: Create Release
         id: create_release
@@ -108,8 +108,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps
-          asset_path: ./affiliate-product-highlights.zip
-          asset_name: affiliate-product-highlights.zip
+          asset_path: ./productframe.zip
+          asset_name: productframe.zip
           asset_content_type: application/zip
 
 
@@ -124,5 +124,5 @@ jobs:
 #          elif [[  "${GITHUB_REF##*/}"  == "main" ]]; then
 #              RELEASE_STATE="released"
 #          fi
-#          php bin/freemius-deploy.php $FS_USER_ID $FS_PUBLIC_KEY $FS_SECRET_KEY affiliate-product-highlights.zip $FS_PLUGIN_ID false $VERSION $RELEASE_STATE
+#          php bin/freemius-deploy.php $FS_USER_ID $FS_PUBLIC_KEY $FS_SECRET_KEY productframe.zip $FS_PLUGIN_ID false $VERSION $RELEASE_STATE
 

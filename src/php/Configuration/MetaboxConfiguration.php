@@ -1,19 +1,19 @@
 <?php
 
-namespace Koen12344\AffiliateProductHighlights\Configuration;
+namespace Koen12344\ProductFrame\Configuration;
 
-use Koen12344\AffiliateProductHighlights\DependencyInjection\Container;
-use Koen12344\AffiliateProductHighlights\DependencyInjection\ContainerConfigurationInterface;
-use Koen12344\AffiliateProductHighlights\Metabox\FeedMetabox;
-use Koen12344\AffiliateProductHighlights\Metabox\SelectionMetabox;
+use Koen12344\ProductFrame\DependencyInjection\Container;
+use Koen12344\ProductFrame\DependencyInjection\ContainerConfigurationInterface;
+use Koen12344\ProductFrame\Metabox\FeedMetabox;
+use Koen12344\ProductFrame\Metabox\SelectionMetabox;
 
 class MetaboxConfiguration implements ContainerConfigurationInterface {
 
 	public function modify( Container $container ) {
 		$container['metaboxes'] = $container->service(function(Container $container){
 			return [
-				new FeedMetabox((string)$container['posttypes']['feed_post_type']),
-				new SelectionMetabox((string)$container['posttypes']['selections_post_type']),
+				new FeedMetabox(),
+				new SelectionMetabox($container['plugin_path'], $container['plugin_url']),
 			];
 		});
 	}

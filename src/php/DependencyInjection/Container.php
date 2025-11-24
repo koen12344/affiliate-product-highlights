@@ -1,6 +1,6 @@
 <?php
 
-namespace Koen12344\AffiliateProductHighlights\DependencyInjection;
+namespace Koen12344\ProductFrame\DependencyInjection;
 
 use ArrayAccess;
 use Closure;
