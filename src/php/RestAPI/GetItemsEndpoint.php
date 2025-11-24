@@ -9,14 +9,7 @@ use wpdb;
 
 class GetItemsEndpoint implements EndpointInterface {
 
-	/**
-	 * @var wpdb
-	 */
-	private $wpdb;
 
-	public function __construct(wpdb $wpdb) {
-		$wpdb = $wpdb;
-	}
 
 	public function get_arguments(): array {
 		return [

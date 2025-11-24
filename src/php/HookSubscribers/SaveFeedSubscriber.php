@@ -22,7 +22,7 @@ class SaveFeedSubscriber implements SubscriberInterface {
 		];
 	}
 
-	public function save_feed($post_id, $post, $update){
+	public function save_feed($post_id){
 		if (!isset($_POST['prfr_feed_metabox_nonce']) || !wp_verify_nonce(sanitize_key($_POST['prfr_feed_metabox_nonce']), 'prfr_save_feed_metabox') || ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) ) {
 			return;
 		}

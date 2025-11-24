@@ -15,7 +15,7 @@ class RestApiConfiguration implements ContainerConfigurationInterface {
 	public function modify( Container $container ) {
 		$container['rest_endpoints'] = $container->service(function(Container $container){
 			return [
-				'get_items_endpoint' => new GetItemsEndpoint($container['wpdb']),
+				'get_items_endpoint' => new GetItemsEndpoint(),
 				'save_selection_endpoint' => new SaveSelectionEndpoint(),
 				'get_selection_endpoint' => new GetSelectionEndpoint(),
 				'save_view_endpoint' => new SaveViewEndpoint(),

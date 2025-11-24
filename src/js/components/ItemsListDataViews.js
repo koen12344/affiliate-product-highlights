@@ -195,12 +195,8 @@ export default function ItemsListDataViews( { itemSelection, setItemSelection })
 			data: {view: {type, perPage, fields, sort}}
 
 		})
-			.then(data => {
-
-			})
-			.finally(() => {
-
-			});
+			.then()
+			.finally();
 	}, [view.type, view.perPage, view.fields, view.sort]);
 
 

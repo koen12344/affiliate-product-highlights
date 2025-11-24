@@ -32,6 +32,7 @@ class AdminPage {
 		?>
 		<div class="wrap">
 			<h1><?php esc_html_e('Slack Settings', 'productframe'); ?></h1>
+			<!--suppress HtmlUnknownTarget -->
 			<form method="post" action="options.php">
 				<?php
 				settings_fields('prfr_slack_settings_group');
@@ -53,7 +54,7 @@ class AdminPage {
 		add_settings_section(
 			'prfr_slack_settings_section',
 			__('Slack Webhook Configuration', 'productframe'),
-			null,
+			'',
 			'prfr-settings'
 		);
 
