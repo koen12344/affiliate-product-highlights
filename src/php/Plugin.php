@@ -8,7 +8,7 @@ class Plugin {
 
 	const DOMAIN = 'productframe';
 
-	const VERSION = '0.5.0';
+	const VERSION = '0.5.1';
 
 	const REST_NAMESPACE = 'prfr/v1';
 

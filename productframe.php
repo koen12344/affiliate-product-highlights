@@ -7,13 +7,15 @@
  * Author URI:      https://koenreus.com
  * Text Domain:     productframe
  * Domain Path:     /languages
- * Version:         0.5.0
+ * Version:         0.5.1
  * License:         GPLv2 or later
  *
  * @package         ProductFrame
  */
 
 use Koen12344\ProductFrame\Plugin;
+
+if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 
 require 'vendor/autoload.php';
 

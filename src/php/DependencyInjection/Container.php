@@ -76,25 +76,25 @@ class Container implements ContainerInterface, ArrayAccess {
 	 * @throws ContainerExceptionInterface
 	 * @throws NotFoundExceptionInterface
 	 */
-	public function offsetGet( $offset ) {
+	public function offsetGet( $offset ) : mixed {
 		return $this->get($offset);
 	}
 
-	public function offsetSet( $offset, $value ) {
+	public function offsetSet( $offset, $value ): void {
 		if($this->locked){
 			throw new \RuntimeException('Container is locked and cannot be modified');
 		}
 		$this->values[$offset] = $value;
 	}
 
-	public function offsetUnset( $offset ) {
+	public function offsetUnset( $offset ): void {
 		if($this->locked){
 			throw new \RuntimeException('Container is locked and cannot be modified');
 		}
 		unset($this->values[$offset]);
 	}
 
-	private function modify($configuration) {
+	private function modify($configuration): void {
 		if(is_string($configuration)){
 			$configuration = new $configuration();
 		}

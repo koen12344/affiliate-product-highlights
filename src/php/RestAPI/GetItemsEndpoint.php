@@ -16,7 +16,7 @@ class GetItemsEndpoint implements EndpointInterface {
 			'search' => [
 				'required' => false,
 				'sanitize_callback' => function($value){
-					return filter_var($value, FILTER_SANITIZE_STRING);
+					return sanitize_text_field($value);
 				}
 			]
 		];
@@ -122,21 +122,20 @@ class GetItemsEndpoint implements EndpointInterface {
 			LIMIT %d OFFSET %d
 		", $params ) );
 
-		// Format and augment results
-		$locale = get_locale();
-		$fmt = numfmt_create( $locale, NumberFormatter::CURRENCY );
-
 		$feed_ids = array_unique( array_column($results, 'feed_id') );
 
 		$product_ids = implode(',', wp_parse_id_list(array_column($results, 'id')));
 
-		$images = $wpdb->get_results("SELECT product_id, image_url FROM {$wpdb->prefix}prfr_images WHERE product_id IN ({$product_ids})");
-
 		$images_by_id = [];
-		foreach($images as $image){
-			//So we only get the first image
-			if(!isset($images_by_id[$image->product_id])){
-				$images_by_id[$image->product_id] = $image->image_url;
+
+		if(!empty($product_ids)){
+			$images = $wpdb->get_results("SELECT product_id, image_url FROM {$wpdb->prefix}prfr_images WHERE product_id IN ({$product_ids})");
+
+			foreach($images as $image){
+				//So we only get the first image
+				if(!isset($images_by_id[$image->product_id])){
+					$images_by_id[$image->product_id] = $image->image_url;
+				}
 			}
 		}
 
@@ -151,8 +150,7 @@ class GetItemsEndpoint implements EndpointInterface {
 			$feeds_by_id[ $feed->ID ] = $feed;
 		}
 
-		$products = array_map(function($product) use ($fmt, $selection, $images_by_id, $feeds_by_id){
-//			$product->product_price = numfmt_format_currency( $fmt, $product->product_price, $product->product_currency );
+		$products = array_map(function($product) use ( $selection, $images_by_id, $feeds_by_id){
 			$product->feed_name     = $feeds_by_id[ $product->feed_id ]->post_title ?? '';
 			$product->feed_url      = get_edit_post_link( $product->feed_id, null );
 			$product->product_description = html_entity_decode(wp_trim_words(wp_strip_all_tags( $product->product_description ), 15),ENT_QUOTES | ENT_HTML5, 'UTF-8');

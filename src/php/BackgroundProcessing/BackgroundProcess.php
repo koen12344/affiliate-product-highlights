@@ -173,7 +173,7 @@ class BackgroundProcess extends \Koen12344_APH_Vendor_WP_Background_Process {
 							break;
 						}
 
-						if($wpdb->last_error && strpos($wpdb->last_error, "for key 'slug_unique'") !== false){
+						if( $wpdb->last_error && str_contains( $wpdb->last_error, 'Duplicate entry' ) ){
 							$product_data['slug'] = $product_slug . '-' . $suffix;
 							$suffix++;
 							continue;
